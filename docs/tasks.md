@@ -1,8 +1,7 @@
 # Tasks & Milestones
 
 ## Version 0.1 (MVP)
-- [ ] Project structure scaffolding (frontend, backend, docs)
-- [ ] Database schema created and migrated (PostgreSQL)
+- [x] Database schema created and migrated (PostgreSQL)
 - [ ] Auth (JWT for API, NextAuth.js for frontend)
 - [ ] Restaurant onboarding flow (form, sample file upload, rule training)
 - [ ] File upload endpoint and S3 integration
