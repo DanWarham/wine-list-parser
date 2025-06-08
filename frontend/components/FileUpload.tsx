@@ -24,7 +24,7 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.jpg,.jpeg,.pn
       formData.append('file', file)
       formData.append('restaurant_id', restaurantId)
       
-      const response = await apiPost('/auth/wine-lists/upload', formData)
+      const response = await apiPost('/wine-lists/upload', formData)
       onFileSelect(file)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed')

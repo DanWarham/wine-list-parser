@@ -5,11 +5,14 @@
 - [x] Auth (JWT for API, NextAuth.js for frontend)
 - [x] Admin CRUD UI (restaurants, users, wine lists, wine entries, rules) — backend and frontend CRUD implemented and wired up
 - [ ] Restaurant onboarding flow (form, sample file upload, rule training)
-- [ ] File upload endpoint and S3 integration
+- [x] File upload endpoint and S3 integration (basic upload working; S3/MinIO integration in place)
 - [ ] PDF & OCR parsing pipeline (including AI fallback)
 - [ ] Wine entry extraction with per-field confidence
 - [ ] Basic refinement UI (TanStack Table, inline edit, approve/reject)
-- [ ] Restaurant admin UI (CRUD, rule editor, list files)
+- [x] Restaurant admin UI (CRUD, rule editor, list files) — fully styled and professional dashboard, cards, and navigation
+- [x] Frontend and UI styling (user menu, login, registration, dashboard, search pages) — consistent Tailwind/shadcn/ui styling throughout admin
+- [x] Authentication/session issues resolved (NextAuth, token refresh, error handling)
+- [ ] Wine lists stat on dashboard (blocked: no global wine lists endpoint; only per-restaurant for now)
 
 ---
 
@@ -30,7 +33,6 @@
 - [ ] Documentation and onboarding guides
 - [ ] Comprehensive E2E tests and UX polish
 - [ ] Prepare for first production deployment
-- [ ] Frontend and UI styling (user menu, login, registration, dashboard, search pages)
 
 ---
 

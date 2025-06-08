@@ -44,7 +44,7 @@ export default function AdminUsers() {
   async function fetchUsers() {
     setLoading(true)
     try {
-      const res = await apiGet('/auth/users')
+      const res = await apiGet('/users')
       setUsers(res.data)
     } catch (e) { setError('Failed to load users') }
     setLoading(false)
@@ -54,7 +54,7 @@ export default function AdminUsers() {
     e.preventDefault()
     setError('')
     try {
-      await apiPost('/auth/users', form)
+      await apiPost('/users', form)
       setForm({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
       fetchUsers()
     } catch (e) { setError('Failed to add') }
@@ -63,7 +63,7 @@ export default function AdminUsers() {
   async function handleDelete(id: string) {
     if (!window.confirm('Delete this user?')) return
     try {
-      await apiDelete(`/auth/users/${id}`)
+      await apiDelete(`/users/${id}`)
       fetchUsers()
     } catch (e) { setError('Failed to delete') }
   }
@@ -85,7 +85,7 @@ export default function AdminUsers() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
     try {
-      await apiPut(`/auth/users/${editing}`, form)
+      await apiPut(`/users/${editing}`, form)
       setEditing(null)
       setForm({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
       fetchUsers()

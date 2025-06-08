@@ -21,7 +21,7 @@ export default function RestaurantSelect({ onSelect, selectedId }: RestaurantSel
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await apiGet('/auth/restaurants')
+        const response = await apiGet('/restaurants')
         setRestaurants(response.data)
       } catch (err) {
         setError('Failed to load restaurants')

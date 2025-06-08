@@ -47,7 +47,7 @@ export default function AdminWineLists() {
   async function fetchRestaurants() {
     setLoading(true)
     try {
-      const res = await apiGet('/auth/restaurants')
+      const res = await apiGet('/restaurants')
       setRestaurants(res.data)
       if (res.data.length) setSelected(res.data[0].id)
     } catch (e) { setError('Failed to load restaurants') }
@@ -57,7 +57,7 @@ export default function AdminWineLists() {
   async function fetchWineLists(restaurantId: string) {
     setLoading(true)
     try {
-      const res = await apiGet(`/auth/restaurants/${restaurantId}/wine-lists`)
+      const res = await apiGet(`/restaurants/${restaurantId}/wine-lists`)
       setWineLists(res.data)
     } catch (e) { setError('Failed to load wine lists') }
     setLoading(false)
@@ -66,7 +66,7 @@ export default function AdminWineLists() {
   async function handleDelete(id: string) {
     if (!window.confirm('Delete this wine list file?')) return
     try {
-      await apiDelete(`/auth/wine-lists/${id}`)
+      await apiDelete(`/wine-lists/${id}`)
       fetchWineLists(selected)
     } catch (e) { setError('Failed to delete') }
   }

@@ -41,7 +41,7 @@ export default function AdminRestaurants() {
   async function fetchRestaurants() {
     setLoading(true)
     try {
-      const res = await apiGet('/auth/restaurants')
+      const res = await apiGet('/restaurants')
       setRestaurants(res.data)
     } catch (e) { setError('Failed to load restaurants') }
     setLoading(false)
@@ -51,7 +51,7 @@ export default function AdminRestaurants() {
     e.preventDefault()
     setError('')
     try {
-      await apiPost('/auth/restaurants', form)
+      await apiPost('/restaurants', form)
       setForm({ name: '', contact_email: '', notes: '' })
       fetchRestaurants()
     } catch (e) { setError('Failed to add') }
@@ -60,7 +60,7 @@ export default function AdminRestaurants() {
   async function handleDelete(id: string) {
     if (!window.confirm('Delete this restaurant?')) return
     try {
-      await apiDelete(`/auth/restaurants/${id}`)
+      await apiDelete(`/restaurants/${id}`)
       fetchRestaurants()
     } catch (e) { setError('Failed to delete') }
   }
@@ -76,7 +76,7 @@ export default function AdminRestaurants() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
     try {
-      await apiPut(`/auth/restaurants/${editing}`, form)
+      await apiPut(`/restaurants/${editing}`, form)
       setEditing(null)
       setForm({ name: '', contact_email: '', notes: '' })
       fetchRestaurants()

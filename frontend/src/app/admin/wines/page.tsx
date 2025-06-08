@@ -29,7 +29,7 @@ export default function AdminWines() {
   async function fetchWineLists() {
     setLoading(true)
     try {
-      const res = await apiGet('/auth/wine-lists')
+      const res = await apiGet('/wine-lists')
       setWineLists(res.data)
       if (res.data.length) setSelected(res.data[0].id)
     } catch (e) { setError('Failed to load wine lists') }
@@ -39,7 +39,7 @@ export default function AdminWines() {
   async function fetchEntries(fileId: string) {
     setLoading(true)
     try {
-      const res = await apiGet(`/auth/wine-entries/${fileId}`)
+      const res = await apiGet(`/wine-entries/${fileId}`)
       setEntries(res.data)
     } catch (e) { setError('Failed to load entries') }
     setLoading(false)
@@ -53,7 +53,7 @@ export default function AdminWines() {
 
   async function handleSave(id: string) {
     try {
-      await apiPut(`/auth/wine-entries/${id}`, editData)
+      await apiPut(`/wine-entries/${id}`, editData)
       setEditRow(null)
       fetchEntries(selected)
     } catch (e) { setError('Failed to update') }

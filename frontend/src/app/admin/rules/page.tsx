@@ -33,7 +33,7 @@ export default function AdminRules() {
   async function fetchRestaurants() {
     setLoading(true)
     try {
-      const res = await apiGet('/auth/restaurants')
+      const res = await apiGet('/restaurants')
       setRestaurants(res.data)
       if (res.data.length) setSelected(res.data[0].id)
     } catch (e) { setError('Failed to load restaurants') }
@@ -43,7 +43,7 @@ export default function AdminRules() {
   async function fetchRules(restaurantId: string) {
     setLoading(true)
     try {
-      const res = await apiGet(`/auth/restaurants/${restaurantId}/ruleset`)
+      const res = await apiGet(`/restaurants/${restaurantId}/ruleset`)
       setRules(JSON.stringify(res.data.rules_json, null, 2))
     } catch (e) { setError('Failed to load ruleset'); setRules('') }
     setLoading(false)
@@ -51,7 +51,7 @@ export default function AdminRules() {
 
   async function handleSave() {
     try {
-      await apiPut(`/auth/restaurants/${selected}/ruleset`, { rules_json: JSON.parse(rules) })
+      await apiPut(`/restaurants/${selected}/ruleset`, { rules_json: JSON.parse(rules) })
       alert('Ruleset updated')
     } catch (e) { setError('Failed to update ruleset') }
   }
