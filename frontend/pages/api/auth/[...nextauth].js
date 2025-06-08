@@ -2,6 +2,8 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+
 export default NextAuth({
   providers: [
     CredentialsProvider({
@@ -13,7 +15,7 @@ export default NextAuth({
       async authorize(credentials) {
         try {
           const res = await axios.post(
-            "http://127.0.0.1:8000/api/auth/login",
+            `${API_BASE}/auth/login`,
             {
               email: credentials.email,
               password: credentials.password
@@ -54,7 +56,7 @@ export default NextAuth({
         if (Date.now() >= tokenExp - 5 * 60 * 1000) { // Refresh 5 minutes before expiry
           try {
             const res = await axios.post(
-              "http://127.0.0.1:8000/api/auth/refresh",
+              `${API_BASE}/auth/refresh`,
               { refresh_token: token.refreshToken },
               { headers: { "Content-Type": "application/json" } }
             );

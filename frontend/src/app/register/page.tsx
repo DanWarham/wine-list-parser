@@ -5,6 +5,8 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE
+
 export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -21,7 +23,7 @@ export default function Register() {
     setSuccess(false)
     setLoading(true)
     try {
-      await axios.post('http://127.0.0.1:8000/api/auth/register', {
+      await axios.post(`${API_BASE}/auth/register`, {
         email,
         password,
         name

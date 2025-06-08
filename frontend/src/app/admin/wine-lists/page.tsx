@@ -11,6 +11,8 @@ import { Select } from '@/components/ui/select'
 import axios from 'axios'
 import ClientLayout from '../../client-layout'
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE
+
 interface Restaurant {
   id: string;
   name: string;
@@ -88,7 +90,7 @@ export default function AdminWineLists() {
     try {
       const sessionToken = (session as any)?.accessToken
       await axios.post(
-        'http://127.0.0.1:8000/api/wine-lists/upload',
+        `${API_BASE}/wine-lists/upload`,
         formData,
         {
           headers: {
