@@ -31,8 +31,8 @@ export default function AdminPage() {
       console.log('Fetching admin stats...');
       try {
         const [restaurantsRes, usersRes] = await Promise.all([
-          apiGet('/auth/restaurants'),
-          apiGet('/auth/users')
+          apiGet('/restaurants'),
+          apiGet('/users')
         ])
         console.log('Restaurants API response:', restaurantsRes);
         console.log('Users API response:', usersRes);

@@ -88,7 +88,7 @@ export default function AdminWineLists() {
     try {
       const sessionToken = (session as any)?.accessToken
       await axios.post(
-        'http://127.0.0.1:8000/api/auth/wine-lists/upload',
+        'http://127.0.0.1:8000/api/wine-lists/upload',
         formData,
         {
           headers: {
