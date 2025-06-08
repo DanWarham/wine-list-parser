@@ -15,3 +15,5 @@ Thumbs.db
 # VSCode/Cursor
 .vscode
 .idea
+
+/frontend/.env.local
