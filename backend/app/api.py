@@ -22,6 +22,9 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
 # --- Pydantic Schemas ---
 class RestaurantCreate(BaseModel):
     name: str
@@ -108,8 +111,8 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     }
 
 @auth_router.post("/refresh")
-def refresh_token(refresh_token: str, db: Session = Depends(get_db)):
-    payload = decode_refresh_token(refresh_token)
+def refresh_token(data: RefreshRequest, db: Session = Depends(get_db)):
+    payload = decode_refresh_token(data.refresh_token)
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
     user_id = payload.get("sub")
