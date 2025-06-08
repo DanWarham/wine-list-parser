@@ -2,7 +2,8 @@
 
 ## Version 0.1 (MVP)
 - [x] Database schema created and migrated (PostgreSQL)
-- [ ] Auth (JWT for API, NextAuth.js for frontend)
+- [x] Auth (JWT for API, NextAuth.js for frontend)
+- [x] Admin CRUD UI (restaurants, users, wine lists, wine entries, rules) — backend and frontend CRUD implemented and wired up
 - [ ] Restaurant onboarding flow (form, sample file upload, rule training)
 - [ ] File upload endpoint and S3 integration
 - [ ] PDF & OCR parsing pipeline (including AI fallback)
@@ -29,6 +30,7 @@
 - [ ] Documentation and onboarding guides
 - [ ] Comprehensive E2E tests and UX polish
 - [ ] Prepare for first production deployment
+- [ ] Frontend and UI styling (user menu, login, registration, dashboard, search pages)
 
 ---
 
