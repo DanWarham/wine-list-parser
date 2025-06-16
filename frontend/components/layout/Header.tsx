@@ -1,11 +1,9 @@
 import { Menu, Wine } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { useSession } from 'next-auth/react'
+import { Button } from '../ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import UserMenu from '@/components/UserMenu'
 import { 
   Search, 
   Upload, 
@@ -16,26 +14,22 @@ import {
   Download,
   LayoutDashboard
 } from 'lucide-react'
+import { useAuth } from '@/src/supabase-auth-context'
+import UserMenu from '@/components/UserMenu'
 
 export default function Header() {
-  const { data: session } = useSession()
+  const { user, session } = useAuth()
   const pathname = usePathname()
-  const role = (session?.user as any)?.role
 
   const isActive = (path: string) => pathname === path
 
   const navItems = [
     {
-      href: role === 'admin' ? '/admin' : '/search',
-      label: role === 'admin' ? 'Admin Dashboard' : 'Search',
+      href: session?.access_token ? '/admin' : '/search',
+      label: session?.access_token ? 'Admin Dashboard' : 'Search',
       icon: LayoutDashboard
     },
-    ...(role === 'admin' ? [
-      {
-        href: '/admin/upload',
-        label: 'Upload Wine List',
-        icon: Upload
-      },
+    ...(session?.access_token ? [
       {
         href: '/admin/restaurants',
         label: 'Restaurants',
@@ -61,19 +55,6 @@ export default function Header() {
       href: '/settings',
       label: 'Settings',
       icon: Settings
-    }
-  ]
-
-  const toolItems = [
-    {
-      href: '/parser',
-      label: 'Parser',
-      icon: FileText
-    },
-    {
-      href: '/export',
-      label: 'Export',
-      icon: Download
     }
   ]
 
@@ -113,29 +94,6 @@ export default function Header() {
                     ))}
                   </div>
                 </div>
-                <div className="px-3 py-2">
-                  <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                    Tools
-                  </h2>
-                  <div className="space-y-1">
-                    {toolItems.map((item) => (
-                      <Button
-                        key={item.href}
-                        asChild
-                        variant="ghost"
-                        className={cn(
-                          "w-full justify-start gap-2",
-                          isActive(item.href) && "bg-accent text-accent-foreground"
-                        )}
-                      >
-                        <Link href={item.href}>
-                          <item.icon className="h-4 w-4" />
-                          {item.label}
-                        </Link>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -149,12 +107,6 @@ export default function Header() {
           <nav className="hidden items-center gap-6 lg:flex">
             <Link href="/search" className="text-sm font-medium transition-colors hover:text-primary">
               Search
-            </Link>
-            <Link href="/parser" className="text-sm font-medium transition-colors hover:text-primary">
-              Parser
-            </Link>
-            <Link href="/export" className="text-sm font-medium transition-colors hover:text-primary">
-              Export
             </Link>
           </nav>
           <UserMenu />

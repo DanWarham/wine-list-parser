@@ -1,10 +1,8 @@
 'use client'
-
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+import { Button } from '../ui/button'
+import { Separator } from '../ui/separator'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
 import { 
   Search, 
   Upload, 
@@ -17,13 +15,38 @@ import {
   LayoutDashboard
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '@/src/supabase-auth-context'
+import { useEffect, useState } from 'react'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function Sidebar({ className, ...props }: SidebarProps) {
-  const { data: session } = useSession()
-  const role = (session?.user as any)?.role
+  const { user, session } = useAuth()
   const pathname = usePathname()
+  const [role, setRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchRole() {
+      if (session?.access_token) {
+        try {
+          const res = await fetch('/api/me', {
+            headers: { Authorization: `Bearer ${session.access_token}` }
+          })
+          if (res.ok) {
+            const data = await res.json()
+            setRole(data.role)
+          } else {
+            setRole(null)
+          }
+        } catch {
+          setRole(null)
+        }
+      } else {
+        setRole(null)
+      }
+    }
+    fetchRole()
+  }, [session?.access_token])
 
   const isActive = (path: string) => pathname === path
 
@@ -46,15 +69,6 @@ export default function Sidebar({ className, ...props }: SidebarProps) {
             </Button>
             {role === 'admin' && (
               <>
-                <Button asChild variant="ghost" className={cn(
-                  "w-full justify-start gap-2",
-                  isActive('/admin/upload') && "bg-accent text-accent-foreground"
-                )}>
-                  <Link href="/admin/upload">
-                    <Upload className="h-4 w-4" />
-                    Upload Wine List
-                  </Link>
-                </Button>
                 <Button asChild variant="ghost" className={cn(
                   "w-full justify-start gap-2",
                   isActive('/admin/restaurants') && "bg-accent text-accent-foreground"
@@ -105,31 +119,6 @@ export default function Sidebar({ className, ...props }: SidebarProps) {
           </div>
         </div>
         <Separator />
-        <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            Tools
-          </h2>
-          <div className="space-y-1">
-            <Button asChild variant="ghost" className={cn(
-              "w-full justify-start gap-2",
-              isActive('/parser') && "bg-accent text-accent-foreground"
-            )}>
-              <Link href="/parser">
-                <FileText className="h-4 w-4" />
-                Parser
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" className={cn(
-              "w-full justify-start gap-2",
-              isActive('/export') && "bg-accent text-accent-foreground"
-            )}>
-              <Link href="/export">
-                <Download className="h-4 w-4" />
-                Export
-              </Link>
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   )

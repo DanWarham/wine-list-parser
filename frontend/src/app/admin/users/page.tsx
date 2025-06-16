@@ -1,6 +1,5 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, ChangeEvent } from 'react'
 import { apiGet, apiPost, apiPut, apiDelete } from '@/utils/api'
@@ -8,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import ClientLayout from '../../client-layout'
+import { useAuth } from '@/src/supabase-auth-context'
+import { getAuthHeaders } from '@/utils/api'
 
 interface User {
   id: string;
@@ -19,43 +20,67 @@ interface User {
 
 interface UserForm {
   email: string;
-  password: string;
   name: string;
   role: string;
   restaurant_id: string;
 }
 
 export default function AdminUsers() {
-  const { data: session, status } = useSession()
+  const { user, loading, session } = useAuth()
   const router = useRouter()
   const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loadingUsers, setLoadingUsers] = useState(true)
   const [error, setError] = useState('')
-  const [form, setForm] = useState<UserForm>({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
+  const [form, setForm] = useState<UserForm>({ email: '', name: '', role: 'staff', restaurant_id: '' })
   const [editing, setEditing] = useState<string | null>(null)
+  const [userRole, setUserRole] = useState<string | null>(null)
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/login')
-    else if (status === 'authenticated' && (session?.user as any)?.role !== 'admin') router.push('/search')
-  }, [status, session, router])
+    if (!loading && session) {
+      // Fetch user role from backend
+      fetch('/api/me', { headers: getAuthHeaders(session.access_token) })
+        .then(res => res.json())
+        .then(data => setUserRole(data.role))
+        .catch(() => setUserRole(null))
+    }
+  }, [loading, session])
 
-  useEffect(() => { fetchUsers() }, [])
+  useEffect(() => {
+    if (!loading && (!user || userRole !== 'admin')) {
+      router.push('/login')
+    }
+  }, [user, loading, userRole, router])
+
+  useEffect(() => {
+    if (!loading && user && userRole === 'admin') fetchUsers()
+  }, [user, loading, userRole])
 
   async function fetchUsers() {
-    setLoading(true)
+    setLoadingUsers(true)
     try {
-      const res = await apiGet('/users')
-      setUsers(res.data)
+      const res = await fetch('/api/users', { headers: getAuthHeaders(session?.access_token) })
+      const data = await res.json()
+      setUsers(data)
     } catch (e) { setError('Failed to load users') }
-    setLoading(false)
+    setLoadingUsers(false)
   }
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setError('')
     try {
-      await apiPost('/users', form)
-      setForm({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
+      const payload = {
+        email: form.email,
+        name: form.name,
+        role: form.role,
+        ...(form.restaurant_id ? { restaurant_id: form.restaurant_id } : {})
+      };
+      await fetch('/api/users', {
+        method: 'POST',
+        headers: getAuthHeaders(session?.access_token),
+        body: JSON.stringify(payload)
+      })
+      setForm({ email: '', name: '', role: 'staff', restaurant_id: '' })
       fetchUsers()
     } catch (e) { setError('Failed to add') }
   }
@@ -63,7 +88,10 @@ export default function AdminUsers() {
   async function handleDelete(id: string) {
     if (!window.confirm('Delete this user?')) return
     try {
-      await apiDelete(`/users/${id}`)
+      await fetch(`/api/users/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(session?.access_token)
+      })
       fetchUsers()
     } catch (e) { setError('Failed to delete') }
   }
@@ -74,7 +102,6 @@ export default function AdminUsers() {
     if (u) {
       setForm({ 
         email: u.email, 
-        password: '', 
         name: u.name, 
         role: u.role, 
         restaurant_id: u.restaurant_id || '' 
@@ -85,14 +112,18 @@ export default function AdminUsers() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault()
     try {
-      await apiPut(`/users/${editing}`, form)
+      await fetch(`/api/users/${editing}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(session?.access_token),
+        body: JSON.stringify(form)
+      })
       setEditing(null)
-      setForm({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
+      setForm({ email: '', name: '', role: 'staff', restaurant_id: '' })
       fetchUsers()
     } catch (e) { setError('Failed to update') }
   }
 
-  if (status === 'loading' || loading) return <div>Loading...</div>
+  if (loading || loadingUsers) return <div>Loading...</div>
 
   return (
     <ClientLayout>
@@ -109,13 +140,6 @@ export default function AdminUsers() {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setForm(f => ({ ...f, email: e.target.value }))}
               required
               disabled={!!editing}
-            />
-            <Input
-              placeholder="Password"
-              type="password"
-              value={form.password}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setForm(f => ({ ...f, password: e.target.value }))}
-              required={!editing}
             />
             <Input
               placeholder="Name"
@@ -146,7 +170,7 @@ export default function AdminUsers() {
                 variant="outline"
                 onClick={() => {
                   setEditing(null)
-                  setForm({ email: '', password: '', name: '', role: 'staff', restaurant_id: '' })
+                  setForm({ email: '', name: '', role: 'staff', restaurant_id: '' })
                 }}
               >
                 Cancel

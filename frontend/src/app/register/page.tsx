@@ -1,39 +1,67 @@
 'use client'
 
-import { useState } from 'react'
-import axios from 'axios'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE
+import { supabase } from '../../lib/supabaseClient'
+import { useAuth } from '@/src/supabase-auth-context'
+import axios from 'axios'
 
 export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState('')
+  const [isAdmin, setIsAdmin] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { user, loading: authLoading, session } = useAuth()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (!authLoading && user) {
+    router.replace('/')
+    return null
+  }
+
+  useEffect(() => {
+    if (success) {
+      const timeout = setTimeout(() => {
+        router.replace('/login')
+      }, 2000) // 2 seconds delay
+      return () => clearTimeout(timeout)
+    }
+  }, [success, router])
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setSuccess(false)
     setLoading(true)
     try {
-      await axios.post(`${API_BASE}/auth/register`, {
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        name
+      })
+      if (signUpError) throw signUpError
+      // Wait for session/user to be available
+      let supabaseUser = data.user
+      if (!supabaseUser) {
+        // Try to get the user from the session
+        const { data: sessionData } = await supabase.auth.getSession()
+        supabaseUser = sessionData.session?.user ?? null
+      }
+      if (!supabaseUser) throw new Error('No Supabase user found after registration')
+      // Call backend to create user row
+      await axios.post('/api/users', {
+        email,
+        name,
+        supabase_user_id: supabaseUser.id,
+        role: 'staff',
       })
       setSuccess(true)
-      setTimeout(() => {
-        router.push('/login')
-      }, 1000)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed')
+      setError(err.message || 'Registration failed')
     }
     setLoading(false)
   }
@@ -42,7 +70,7 @@ export default function Register() {
     <div className="flex min-h-[80vh] items-center justify-center bg-background">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg border">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
             <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" autoComplete="email" />

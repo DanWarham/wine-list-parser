@@ -1,9 +1,10 @@
 'use client'
 
-import { signIn, useSession } from 'next-auth/react'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { supabase } from '../../lib/supabaseClient'
+import { useAuth } from '@/src/supabase-auth-context'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -11,31 +12,38 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { data: session, status } = useSession()
   const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
 
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      if ((session.user as any).role === 'admin') {
-        router.replace('/admin')
-      } else {
-        router.replace('/')
-      }
-    }
-  }, [session, status, router])
+  if (!authLoading && user) {
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const res = await signIn('credentials', {
-      redirect: false,
-      email,
-      password
-    })
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (signInError) throw signInError
+      const session = data.session
+      const token = session?.access_token
+      const res = await fetch('/api/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const userInfo = await res.json()
+      if (userInfo.role === 'admin') {
+        await router.push('/admin')
+      } else {
+        await router.push('/search')
+      }
+    } catch (err: any) {
+      setError('Invalid credentials')
+    }
     setLoading(false)
-    if (!res?.ok) setError('Invalid credentials')
-    // No need to manually redirect, useEffect will handle it
   }
 
   return (

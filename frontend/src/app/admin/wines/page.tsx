@@ -1,48 +1,66 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import UserMenu from '@/components/UserMenu'
 import { apiGet, apiPut } from '@/utils/api'
 import ClientLayout from '../../client-layout'
+import { useAuth } from '@/src/supabase-auth-context'
 
 export default function AdminWines() {
-  const { data: session, status } = useSession()
+  const { user, loading, session } = useAuth()
   const router = useRouter()
   const [wineLists, setWineLists] = useState<any[]>([])
   const [selected, setSelected] = useState('')
   const [entries, setEntries] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loadingPage, setLoadingPage] = useState(true)
   const [error, setError] = useState('')
   const [editRow, setEditRow] = useState<string | null>(null)
   const [editData, setEditData] = useState<any>({})
+  const [roleChecked, setRoleChecked] = useState(false)
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/login')
-    else if (status === 'authenticated' && (session?.user as any)?.role !== 'admin') router.push('/search')
-  }, [status, session, router])
+    const checkRole = async () => {
+      if (!loading && user) {
+        const token = session?.access_token
+        const res = await fetch('/api/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const userInfo = await res.json()
+        if (userInfo.role !== 'admin') {
+          router.replace('/search')
+        } else {
+          setRoleChecked(true)
+        }
+      } else if (!loading && !user) {
+        router.replace('/login')
+      }
+    }
+    checkRole()
+  }, [user, loading, router, session])
 
-  useEffect(() => { fetchWineLists() }, [])
-  useEffect(() => { if (selected) fetchEntries(selected) }, [selected])
+  useEffect(() => {
+    if (roleChecked && user) fetchWineLists()
+  }, [roleChecked, user])
+  useEffect(() => { if (selected && roleChecked && user) fetchEntries(selected) }, [selected, roleChecked, user])
 
   async function fetchWineLists() {
-    setLoading(true)
+    setLoadingPage(true)
     try {
       const res = await apiGet('/wine-lists')
       setWineLists(res.data)
       if (res.data.length) setSelected(res.data[0].id)
     } catch (e) { setError('Failed to load wine lists') }
-    setLoading(false)
+    setLoadingPage(false)
   }
 
   async function fetchEntries(fileId: string) {
-    setLoading(true)
+    setLoadingPage(true)
     try {
       const res = await apiGet(`/wine-entries/${fileId}`)
       setEntries(res.data)
     } catch (e) { setError('Failed to load entries') }
-    setLoading(false)
+    setLoadingPage(false)
   }
 
   async function handleEdit(id: string) {
@@ -59,7 +77,8 @@ export default function AdminWines() {
     } catch (e) { setError('Failed to update') }
   }
 
-  if (status === 'loading' || loading) return <div>Loading...</div>
+  if (loading || !roleChecked || loadingPage) return <div>Loading...</div>
+  if (!user) return null
 
   return (
     <ClientLayout>

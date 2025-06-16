@@ -1,11 +1,11 @@
 'use client'
 import Header from '@/components/layout/Header';
 import Sidebar from '@/components/layout/Sidebar';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/src/supabase-auth-context';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useSession();
-  const isAuthenticated = status === 'authenticated';
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
 
   return (
     <div className="min-h-screen bg-background">

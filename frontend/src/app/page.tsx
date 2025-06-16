@@ -1,29 +1,40 @@
 "use client"
 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ClientLayout from './client-layout'
 import { Wine, Search, Upload } from 'lucide-react'
+import { useAuth } from '@/src/supabase-auth-context'
 
 export default function Home() {
-  const { data: session, status } = useSession()
+  const { user, loading, session } = useAuth()
   const router = useRouter()
+  const [roleChecked, setRoleChecked] = useState(false)
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      if ((session?.user as any)?.role === 'admin') {
+    const checkRoleAndRedirect = async () => {
+      if (!loading && user) {
+        const token = session?.access_token
+        const res = await fetch('/api/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const userInfo = await res.json()
+        if (userInfo.role === 'admin') {
         router.replace('/admin')
       } else {
         router.replace('/search')
+        }
+      } else {
+        setRoleChecked(true)
       }
     }
-  }, [status, session, router])
+    checkRoleAndRedirect()
+  }, [user, loading, router, session])
 
-  if (status === 'loading') return <div>Loading...</div>
-  if (status === 'authenticated') return null
+  if (loading || (!user && !roleChecked)) return <div>Loading...</div>
+  if (user) return null
 
   return (
     <ClientLayout>

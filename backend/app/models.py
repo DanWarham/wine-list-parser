@@ -6,6 +6,8 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 import enum
+from typing import Optional
+from pydantic import BaseModel
 
 Base = declarative_base()
 
@@ -16,6 +18,7 @@ class WineListFileStatus(enum.Enum):
     parsed = "parsed"
     refined = "refined"
     finalized = "finalized"
+    error = "error"
 
 class WineEntryStatus(enum.Enum):
     auto = "auto"
@@ -34,12 +37,11 @@ class Restaurant(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String, unique=True, nullable=False)
     date_created = Column(DateTime, default=datetime.utcnow)
-    contact_email = Column(String)
-    notes = Column(Text)
+    wine_list_url = Column(String, nullable=True)
 
-    ruleset = relationship("Ruleset", back_populates="restaurant", uselist=False)
-    wine_list_files = relationship("WineListFile", back_populates="restaurant")
-    users = relationship("User", back_populates="restaurant")
+    ruleset = relationship("Ruleset", back_populates="restaurant", uselist=False, cascade="all, delete-orphan")
+    wine_list_files = relationship("WineListFile", back_populates="restaurant", cascade="all, delete-orphan")
+    users = relationship("User", back_populates="restaurant", cascade="all, delete-orphan")
 
 # WineListFile table
 class WineListFile(Base):
@@ -54,7 +56,7 @@ class WineListFile(Base):
     notes = Column(Text)
 
     restaurant = relationship("Restaurant", back_populates="wine_list_files")
-    wine_entries = relationship("WineEntry", back_populates="wine_list_file")
+    wine_entries = relationship("WineEntry", back_populates="wine_list_file", cascade="all, delete-orphan")
 
 # WineEntry table
 class WineEntry(Base):
@@ -79,6 +81,10 @@ class WineEntry(Base):
     raw_text = Column(Text)
     status = Column(Enum(WineEntryStatus), default=WineEntryStatus.auto)
     last_modified = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    designation = Column(String, nullable=True)  # e.g. Grand Cru, Premier Cru
+    classification = Column(String, nullable=True)  # e.g. AOC, DOCG
+    sub_type = Column(String, nullable=True)  # e.g. Brut, Sec, Demi-Sec
+    extra_data = Column(JSON, nullable=True)
 
     wine_list_file = relationship("WineListFile", back_populates="wine_entries")
 
@@ -99,7 +105,7 @@ class User(Base):
     __tablename__ = "user"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True, nullable=False)
-    password_hash = Column(String, nullable=False)
+    supabase_user_id = Column(String, unique=True, nullable=False)  # New field for Supabase user id
     name = Column(String)
     role = Column(Enum(UserRole), default=UserRole.staff)
     restaurant_id = Column(UUID(as_uuid=True), ForeignKey("restaurant.id"), nullable=True)
@@ -123,3 +129,10 @@ class AuditLog(Base):
     # user = relationship("User")
     # wine_entry = relationship("WineEntry")
     # wine_list_file = relationship("WineListFile")
+
+class UserCreate(BaseModel):
+    email: str
+    supabase_user_id: str
+    name: Optional[str] = None
+    role: Optional[str] = "staff"
+    restaurant_id: Optional[uuid.UUID] = None

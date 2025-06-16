@@ -1,6 +1,5 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -8,56 +7,90 @@ import Link from 'next/link'
 import ClientLayout from '../client-layout'
 import { Wine, Search, Upload, Building2, Users, FileText, Settings } from 'lucide-react'
 import { apiGet } from '@/utils/api'
+import { useAuth } from '@/src/supabase-auth-context'
 
 export default function AdminPage() {
-  const { data: session, status } = useSession()
+  const { user, loading, session } = useAuth()
   const router = useRouter()
   const [stats, setStats] = useState({
     restaurants: 0,
     users: 0
   })
-  const [loading, setLoading] = useState(true)
+  const [loadingStats, setLoadingStats] = useState(true)
+  const [roleChecked, setRoleChecked] = useState(false)
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-    } else if (status === 'authenticated' && (session?.user as any)?.role !== 'admin') {
-      router.push('/search')
-    }
-  }, [status, session, router])
-
-  useEffect(() => {
-    async function fetchStats() {
-      console.log('Fetching admin stats...');
-      try {
-        const [restaurantsRes, usersRes] = await Promise.all([
-          apiGet('/restaurants'),
-          apiGet('/users')
-        ])
-        console.log('Restaurants API response:', restaurantsRes);
-        console.log('Users API response:', usersRes);
-        setStats({
-          restaurants: Array.isArray(restaurantsRes.data) ? restaurantsRes.data.length : 0,
-          users: Array.isArray(usersRes.data) ? usersRes.data.length : 0
-        })
-      } catch (e) {
-        // ignore for now
+    const checkRole = async () => {
+      if (loading) return; // Wait for auth to be ready
+      
+      if (!user || !session) {
+        router.push('/login')
+        return
       }
-      setLoading(false)
-    }
-    fetchStats()
-  }, [])
 
-  if (status === 'loading' || loading) return <div>Loading...</div>
+      try {
+        const token = session.access_token
+        const res = await fetch('/api/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (!res.ok) {
+          throw new Error('Failed to fetch user info')
+        }
+        const userInfo = await res.json()
+        if (userInfo.role !== 'admin') {
+          router.push('/search')
+        } else {
+          setRoleChecked(true)
+        }
+      } catch (error) {
+        console.error('Role check failed:', error)
+        router.push('/login')
+      }
+    }
+    checkRole()
+  }, [user, loading, router, session])
+
+  useEffect(() => {
+    if (!loading && user && roleChecked && session?.access_token) {
+      const fetchStats = async () => {
+        setLoadingStats(true)
+        try {
+          const [restaurantsRes, usersRes] = await Promise.all([
+            apiGet('/restaurants', session.access_token),
+            apiGet('/users', session.access_token)
+          ])
+          setStats({
+            restaurants: Array.isArray(restaurantsRes.data) ? restaurantsRes.data.length : 0,
+            users: Array.isArray(usersRes.data) ? usersRes.data.length : 0
+          })
+        } catch (e) {
+          console.error('Failed to fetch stats:', e)
+        }
+        setLoadingStats(false)
+      }
+      fetchStats()
+    }
+  }, [user, loading, roleChecked, session])
+
+  // Show loading state while checking auth and role
+  if (loading || !roleChecked) {
+    return (
+      <ClientLayout>
+        <div className="container py-8">
+          <div className="flex items-center justify-center h-[50vh]">
+            <div className="text-lg">Loading...</div>
+          </div>
+        </div>
+      </ClientLayout>
+    )
+  }
+
+  // Don't render anything if not authenticated
+  if (!user || !session) {
+    return null
+  }
 
   const cards = [
-    {
-      title: 'Upload Wine List',
-      description: 'Upload a new wine list file for a restaurant.',
-      icon: <Upload className="h-8 w-8 text-primary" />,
-      href: '/admin/upload',
-      color: 'bg-red-50'
-    },
     {
       title: 'Manage Restaurants',
       description: 'View and edit restaurant information.',
