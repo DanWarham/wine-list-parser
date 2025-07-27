@@ -7,6 +7,9 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from app.config import LWIN_XLSX_PATH, BATCH_SIZE
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Fields to normalize for matching
 LWIN_KEY_FIELDS = ['producer', 'cuvee', 'vintage', 'region', 'country', 'grape_variety']
@@ -81,6 +84,10 @@ def get_lwin_db() -> pd.DataFrame:
 
 def normalize_wine_dict(wine: Dict[str, Any]) -> Dict[str, str]:
     """Return a normalized dict of key fields for matching."""
+    if wine is None:
+        logger.warning("normalize_wine_dict called with None wine, returning empty dict")
+        return {f: '' for f in LWIN_KEY_FIELDS}
+    
     norm = {f: (str(wine.get(f, '')).lower().strip() if wine.get(f) else '') for f in LWIN_KEY_FIELDS}
     
     # Apply alias table
@@ -159,6 +166,10 @@ def calculate_match_score(wine_norm: Dict[str, str], lwin_row: pd.Series) -> Tup
 
 def enrich_wine_entry(wine: Dict[str, Any], lwin_match: Dict[str, Any]) -> Dict[str, Any]:
     """Enrich wine entry with LWIN data, preserving original values if they exist."""
+    if wine is None:
+        logger.warning("enrich_wine_entry called with None wine, returning empty dict")
+        return {}
+    
     enriched = wine.copy()
     
     # Map LWIN fields to our model fields
@@ -239,6 +250,12 @@ def match_lwin_batch(wines: List[Dict[str, Any]], batch_size: int = 100) -> List
             batch = wines[i:i + batch_size]
             # 1. Try vectorized direct match on all normalized fields
             for wine in batch:
+                # Check if wine is None
+                if wine is None:
+                    logger.warning(f"Found None wine in batch at index {i}, skipping")
+                    results.append({})
+                    continue
+                
                 wine_norm = normalize_wine_dict(wine)
                 mask = np.ones(len(lwin_db), dtype=bool)
                 for field in LWIN_KEY_FIELDS:
@@ -289,6 +306,10 @@ def match_lwin_batch(wines: List[Dict[str, Any]], batch_size: int = 100) -> List
 def match_lwin(wine: Dict[str, Any]) -> Tuple[Dict[str, Any], float]:
     """Match a wine entry against the LWIN database."""
     try:
+        if wine is None:
+            logger.warning("match_lwin called with None wine, returning empty dict")
+            return {}, 0.0
+        
         # Get normalized wine data
         normalized = normalize_wine_dict(wine)
         

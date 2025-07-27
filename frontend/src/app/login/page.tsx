@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '../../lib/supabaseClient'
 import { useAuth } from '@/src/supabase-auth-context'
+import { api } from '@/utils/api_v2'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -30,11 +31,9 @@ export default function Login() {
       })
       if (signInError) throw signInError
       const session = data.session
-      const token = session?.access_token
-      const res = await fetch('/api/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      const userInfo = await res.json()
+      if (!session) throw new Error('No session after login')
+      
+      const userInfo = await api.getCurrentUser(session.access_token)
       if (userInfo.role === 'admin') {
         await router.push('/admin')
       } else {
@@ -47,31 +46,85 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-[80vh] items-center justify-center bg-background">
-      <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg border">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-            <input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" autoComplete="email" />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-            <div className="relative">
-              <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary pr-10" autoComplete="current-password" />
-              <button type="button" tabIndex={-1} className="absolute right-2 top-2 text-xs text-muted-foreground" onClick={() => setShowPassword(v => !v)}>{showPassword ? 'Hide' : 'Show'}</button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email-address"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
           </div>
-          <button type="submit" className="w-full bg-primary text-white rounded-md py-2 font-semibold hover:bg-primary/90 transition disabled:opacity-50" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
-          {error && <div className="text-red-600 text-sm text-center">{error}</div>}
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="show-password"
+                name="show-password"
+                type="checkbox"
+                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                checked={showPassword}
+                onChange={(e) => setShowPassword(e.target.checked)}
+              />
+              <label htmlFor="show-password" className="ml-2 block text-sm text-gray-900">
+                Show password
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <Link href="/register" className="font-medium text-primary hover:text-primary-dark">
+                Create an account
+              </Link>
+            </div>
+          </div>
+
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
         </form>
-        <div className="flex justify-between items-center mt-4 text-sm">
-          <Link href="/forgot-password" className="text-primary hover:underline">Forgot password?</Link>
-          <span>
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-primary hover:underline">Register here</Link>
-          </span>
-        </div>
       </div>
     </div>
   )

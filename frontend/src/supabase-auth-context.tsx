@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "./lib/supabaseClient";
 import { Session, User } from "@supabase/supabase-js";
+import { api } from "@/utils/api_v2";
 
 interface AuthContextType {
   user: User | null;
@@ -20,21 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 async function syncUserWithBackend(user: User | null, session: Session | null) {
   if (!user || !session) return;
   try {
-    const res = await fetch('/api/sync-user', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`
-      },
-      body: JSON.stringify({
-        supabase_user_id: user.id,
-        email: user.email,
-      }),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Sync user failed:', err);
-    }
+    await api.getCurrentUser(session.access_token);
   } catch (e) {
     console.error('Sync user error:', e);
   }

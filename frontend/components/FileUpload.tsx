@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react'
-import { Upload, FileText, AlertCircle } from 'lucide-react'
+import { Upload, FileText, AlertCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { apiPost } from '@/utils/api'
+import { api } from '@/utils/api_v2'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/supabase-auth-context'
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void
@@ -14,21 +15,45 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.jpg,.jpeg,.pn
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  const { session } = useAuth()
 
   const handleUpload = async (file: File) => {
     setIsUploading(true)
     setError(null)
+    setSuccess(null)
     
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('restaurant_id', restaurantId)
+      if (!session?.access_token) {
+        throw new Error('No authentication token available')
+      }
       
-      const response = await apiPost('/wine-lists/upload', formData)
-      onFileSelect(file)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Upload failed')
+      console.log('Starting upload for file:', file.name)
+      const response = await api.uploadWineList(session.access_token, restaurantId, file)
+      console.log('Upload response:', response)
+      
+      if (response.status === 'parsed') {
+        setSuccess(`Successfully processed ${file.name}! ${response.message}`)
+        onFileSelect(file)
+      } else if (response.status === 'error') {
+        throw new Error(response.message || 'Upload failed')
+      } else {
+        setSuccess(`File uploaded successfully. Status: ${response.status}`)
+        onFileSelect(file)
+      }
+    } catch (err: any) {
       console.error('Upload failed:', err)
+      
+      // Handle different types of errors
+      if (err.name === 'APIError') {
+        setError(err.message)
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail)
+      } else if (err.message) {
+        setError(err.message)
+      } else {
+        setError('Upload failed. Please try again.')
+      }
     } finally {
       setIsUploading(false)
     }
@@ -92,8 +117,14 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.jpg,.jpeg,.pn
           className="gap-2"
         >
           <FileText className="h-4 w-4" />
-          {isUploading ? 'Uploading...' : 'Select File'}
+          {isUploading ? 'Processing...' : 'Select File'}
         </Button>
+        {isUploading && (
+          <div className="text-sm text-muted-foreground">
+            <p>Uploading and processing your wine list...</p>
+            <p className="text-xs">This may take a few moments for large files.</p>
+          </div>
+        )}
         <input
           id="file-upload"
           type="file"
@@ -102,10 +133,25 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.jpg,.jpeg,.pn
           onChange={handleFileInput}
           disabled={isUploading}
         />
+        {success && (
+          <div className="flex flex-col items-center gap-2 text-sm text-green-600 bg-green-50 p-3 rounded-md border border-green-200">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              <span className="font-medium">Upload Successful</span>
+            </div>
+            <p className="text-center max-w-md">{success}</p>
+          </div>
+        )}
         {error && (
-          <div className="flex items-center gap-2 text-sm text-destructive">
-            <AlertCircle className="h-4 w-4" />
-            {error}
+          <div className="flex flex-col items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-md border border-destructive/20">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-4 w-4" />
+              <span className="font-medium">Upload Error</span>
+            </div>
+            <p className="text-center max-w-md">{error}</p>
+            <p className="text-xs text-muted-foreground">
+              Please check your file format and try again. Supported formats: PDF, JPG, JPEG, PNG
+            </p>
           </div>
         )}
       </div>

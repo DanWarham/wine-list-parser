@@ -1,0 +1,308 @@
+2025-07-27 14:21:23,641 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:21:23,642 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:21:23,986 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:21:23,988 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:21:23,988 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:21:24,027 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:21:24,028 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:21:24,029 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:21:24,029 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:21:24,030 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:21:24,031 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:21:24,051 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:21:24,052 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:21:24,052 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:21:24,067 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:21:24,067 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:21:24,073 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:21:24,075 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:21:24,075 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:21:24,090 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:21:24,090 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:21:24,091 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:21:24,091 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:21:24,092 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:21:24,092 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:21:24,182 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:21:24,182 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:21:24,863 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:21:24,867 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:21:24,870 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:21:24,871 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:21:24,871 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:21:24,872 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:21:27,070 - app.config - INFO - [config] Starting configuration loading...
+2025-07-27 14:21:27,071 - app.config - INFO - [config] dotenv import successful
+2025-07-27 14:21:27,234 - app.config - INFO - [config] supabase import successful
+2025-07-27 14:21:27,236 - app.config - INFO - [config] Environment variables loaded
+2025-07-27 14:21:27,237 - app.config - INFO - [config] OpenAI config loaded - Model: gpt-3.5-turbo
+2025-07-27 14:21:27,237 - app.config - INFO - [config] LWIN path: C:\Users\Dan\Projects\wine-list-parser\backend\specs\LWINdatabase.xlsx
+2025-07-27 14:21:27,238 - app.config - INFO - [config] Parsing configuration loaded
+2025-07-27 14:21:27,238 - app.config - INFO - [config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: True
+2025-07-27 14:21:27,238 - app.config - INFO - [config] Validation configuration loaded
+2025-07-27 14:21:27,239 - app.config - INFO - [config] Supabase configuration loaded
+2025-07-27 14:21:27,333 - app.config - INFO - [config] Supabase client created successfully
+2025-07-27 14:21:27,334 - app.config - INFO - [config] Configuration loading completed successfully
+2025-07-27 14:21:27,339 - app.api_v2 - INFO - [api_v2] Field extractor imports successful
+2025-07-27 14:21:27,340 - app.api_v2 - INFO - [api_v2] Rule manager imports successful
+2025-07-27 14:21:27,361 - app.storage - INFO - [storage] Module loaded.
+2025-07-27 14:21:27,361 - app.api_v2 - INFO - [api_v2] Storage imports successful
+2025-07-27 14:21:27,363 - app.pdf_processing.categorizer - INFO - [PDFBlockCategorizer] Module loaded.
+2025-07-27 14:21:27,364 - app.api_v2 - INFO - [api_v2] PDF categorizer imports successful
+2025-07-27 14:21:27,370 - app.api_v2 - INFO - [api_v2] Hybrid extraction pipeline imports successful
+2025-07-27 14:21:27,371 - app.api_v2 - INFO - [api_v2] Config imports successful
+2025-07-27 14:21:27,371 - app.api_v2 - INFO - [api_v2] All imports completed successfully
+2025-07-27 14:21:27,372 - app.api_v2 - INFO - [api_v2] Module loaded.
+2025-07-27 14:21:34,206 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:21:34,206 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:21:34,620 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:21:34,621 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:21:34,622 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:21:34,685 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:21:34,686 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:21:34,686 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:21:34,687 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:21:34,688 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:21:34,689 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:21:34,718 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:21:34,718 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:21:34,719 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:21:34,743 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:21:34,744 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:21:34,752 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:21:34,755 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:21:34,755 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:21:34,785 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:21:34,786 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:21:34,787 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:21:34,787 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:21:34,788 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:21:34,788 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:21:34,933 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:21:34,933 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:21:35,887 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:21:35,890 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:21:35,893 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:21:35,893 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:21:35,894 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:21:35,894 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:21:38,132 - app.config - INFO - [config] Starting configuration loading...
+2025-07-27 14:21:38,133 - app.config - INFO - [config] dotenv import successful
+2025-07-27 14:21:38,248 - app.config - INFO - [config] supabase import successful
+2025-07-27 14:21:38,251 - app.config - INFO - [config] Environment variables loaded
+2025-07-27 14:21:38,251 - app.config - INFO - [config] OpenAI config loaded - Model: gpt-3.5-turbo
+2025-07-27 14:21:38,251 - app.config - INFO - [config] LWIN path: C:\Users\Dan\Projects\wine-list-parser\backend\specs\LWINdatabase.xlsx
+2025-07-27 14:21:38,252 - app.config - INFO - [config] Parsing configuration loaded
+2025-07-27 14:21:38,252 - app.config - INFO - [config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: True
+2025-07-27 14:21:38,253 - app.config - INFO - [config] Validation configuration loaded
+2025-07-27 14:21:38,253 - app.config - INFO - [config] Supabase configuration loaded
+2025-07-27 14:21:38,311 - app.config - INFO - [config] Supabase client created successfully
+2025-07-27 14:21:38,312 - app.config - INFO - [config] Configuration loading completed successfully
+2025-07-27 14:21:38,316 - app.api_v2 - INFO - [api_v2] Field extractor imports successful
+2025-07-27 14:21:38,316 - app.api_v2 - INFO - [api_v2] Rule manager imports successful
+2025-07-27 14:21:38,331 - app.storage - INFO - [storage] Module loaded.
+2025-07-27 14:21:38,331 - app.api_v2 - INFO - [api_v2] Storage imports successful
+2025-07-27 14:21:38,332 - app.pdf_processing.categorizer - INFO - [PDFBlockCategorizer] Module loaded.
+2025-07-27 14:21:38,333 - app.api_v2 - INFO - [api_v2] PDF categorizer imports successful
+2025-07-27 14:21:38,337 - app.api_v2 - INFO - [api_v2] Hybrid extraction pipeline imports successful
+2025-07-27 14:21:38,338 - app.api_v2 - INFO - [api_v2] Config imports successful
+2025-07-27 14:21:38,338 - app.api_v2 - INFO - [api_v2] All imports completed successfully
+2025-07-27 14:21:38,338 - app.api_v2 - INFO - [api_v2] Module loaded.
+2025-07-27 14:21:40,856 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:21:40,856 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:21:41,287 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:21:41,289 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:21:41,289 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:21:41,352 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:21:41,353 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:21:41,354 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:21:41,354 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:21:41,355 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:21:41,356 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:21:41,388 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:21:41,388 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:21:41,389 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:21:41,408 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:21:41,408 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:21:41,415 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:21:41,417 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:21:41,418 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:21:41,440 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:21:41,441 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:21:41,442 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:21:41,442 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:21:41,443 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:21:41,443 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:21:41,568 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:21:41,568 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:21:43,038 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:21:43,042 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:21:43,046 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:21:43,046 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:21:43,048 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:21:43,048 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:21:45,429 - app.config - INFO - [config] Starting configuration loading...
+2025-07-27 14:21:45,430 - app.config - INFO - [config] dotenv import successful
+2025-07-27 14:21:45,628 - app.config - INFO - [config] supabase import successful
+2025-07-27 14:21:45,631 - app.config - INFO - [config] Environment variables loaded
+2025-07-27 14:21:45,631 - app.config - INFO - [config] OpenAI config loaded - Model: gpt-3.5-turbo
+2025-07-27 14:21:45,632 - app.config - INFO - [config] LWIN path: C:\Users\Dan\Projects\wine-list-parser\backend\specs\LWINdatabase.xlsx
+2025-07-27 14:21:45,632 - app.config - INFO - [config] Parsing configuration loaded
+2025-07-27 14:21:45,633 - app.config - INFO - [config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: True
+2025-07-27 14:21:45,634 - app.config - INFO - [config] Validation configuration loaded
+2025-07-27 14:21:45,634 - app.config - INFO - [config] Supabase configuration loaded
+2025-07-27 14:21:45,737 - app.config - INFO - [config] Supabase client created successfully
+2025-07-27 14:21:45,738 - app.config - INFO - [config] Configuration loading completed successfully
+2025-07-27 14:21:45,744 - app.api_v2 - INFO - [api_v2] Field extractor imports successful
+2025-07-27 14:21:45,745 - app.api_v2 - INFO - [api_v2] Rule manager imports successful
+2025-07-27 14:21:45,769 - app.storage - INFO - [storage] Module loaded.
+2025-07-27 14:21:45,771 - app.api_v2 - INFO - [api_v2] Storage imports successful
+2025-07-27 14:21:45,772 - app.pdf_processing.categorizer - INFO - [PDFBlockCategorizer] Module loaded.
+2025-07-27 14:21:45,773 - app.api_v2 - INFO - [api_v2] PDF categorizer imports successful
+2025-07-27 14:21:45,783 - app.api_v2 - INFO - [api_v2] Hybrid extraction pipeline imports successful
+2025-07-27 14:21:45,784 - app.api_v2 - INFO - [api_v2] Config imports successful
+2025-07-27 14:21:45,785 - app.api_v2 - INFO - [api_v2] All imports completed successfully
+2025-07-27 14:21:45,786 - app.api_v2 - INFO - [api_v2] Module loaded.
+2025-07-27 14:21:48,806 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:21:48,807 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:21:49,206 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:21:49,207 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:21:49,208 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:21:49,260 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:21:49,260 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:21:49,261 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:21:49,262 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:21:49,262 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:21:49,264 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:21:49,303 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:21:49,304 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:21:49,305 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:21:49,330 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:21:49,331 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:21:49,345 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:21:49,349 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:21:49,350 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:21:49,381 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:21:49,381 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:21:49,382 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:21:49,383 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:21:49,384 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:21:49,385 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:21:49,515 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:21:49,516 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:21:50,695 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:21:50,699 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:21:50,701 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:21:50,702 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:21:50,702 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:21:50,703 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:26:37,671 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:26:37,671 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:26:38,078 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:26:38,080 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:26:38,081 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:26:38,136 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:26:38,136 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:26:38,136 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:26:38,136 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:26:38,137 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:26:38,138 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:26:38,165 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:26:38,166 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:26:38,166 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:26:38,189 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:26:38,190 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:26:38,201 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:26:38,205 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:26:38,205 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:26:38,232 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:26:38,233 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:26:38,234 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:26:38,235 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:26:38,236 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:26:38,237 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:26:38,388 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:26:38,389 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:26:39,397 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:26:39,401 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:26:39,404 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:26:39,405 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:26:39,405 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:26:39,406 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:26:41,278 - app.api_v2 - INFO - [api_v2] Starting imports...
+2025-07-27 14:26:41,279 - app.api_v2 - INFO - [api_v2] FastAPI imports successful
+2025-07-27 14:26:41,756 - app.api_v2 - INFO - [api_v2] SQLAlchemy imports successful
+2025-07-27 14:26:41,758 - app.models - INFO - [models] Starting models module initialization...
+2025-07-27 14:26:41,758 - app.models - INFO - [models] SQLAlchemy core imports successful
+2025-07-27 14:26:41,836 - app.models - INFO - [models] PostgreSQL dialect imports successful
+2025-07-27 14:26:41,837 - app.models - INFO - [models] SQLAlchemy ORM imports successful
+2025-07-27 14:26:41,837 - app.models - INFO - [models] Standard library imports successful
+2025-07-27 14:26:41,838 - app.models - INFO - [models] All imports completed successfully
+2025-07-27 14:26:41,838 - app.models - INFO - [models] SQLAlchemy Base created
+2025-07-27 14:26:41,839 - app.models - INFO - [models] Enum definitions created
+2025-07-27 14:26:41,885 - app.models - INFO - [models] All model classes defined successfully
+2025-07-27 14:26:41,886 - app.models - INFO - [models] Models module initialization completed successfully
+2025-07-27 14:26:41,887 - app.api_v2 - INFO - [api_v2] Models imports successful
+2025-07-27 14:26:41,912 - app.database - INFO - [database] Starting database module initialization...
+2025-07-27 14:26:41,913 - app.database - INFO - [database] SQLAlchemy imports successful
+2025-07-27 14:26:41,926 - app.database - INFO - [database] dotenv import successful
+2025-07-27 14:26:41,932 - app.database - INFO - [database] Environment variables loaded
+2025-07-27 14:26:41,933 - app.database - INFO - [database] DATABASE_URL configured: postgresql://postgre...
+2025-07-27 14:26:41,972 - app.database - INFO - [database] SQLAlchemy engine created
+2025-07-27 14:26:41,973 - app.database - INFO - [database] Session maker configured
+2025-07-27 14:26:41,974 - app.database - INFO - [database] Database module initialization completed successfully
+2025-07-27 14:26:41,976 - app.api_v2 - INFO - [api_v2] Supabase auth imports successful
+2025-07-27 14:26:41,977 - app.api_v2 - INFO - [api_v2] Database imports successful
+2025-07-27 14:26:41,979 - app.api_v2 - INFO - [api_v2] Standard library imports successful
+2025-07-27 14:26:42,149 - app.api_v2 - INFO - [api_v2] Additional standard library imports successful
+2025-07-27 14:26:42,149 - app.api_v2 - INFO - [api_v2] Attempting to import PDF processing modules...
+2025-07-27 14:26:42,356 - app.config - INFO - [config] Starting configuration loading...
+2025-07-27 14:26:42,358 - app.config - INFO - [config] dotenv import successful
+2025-07-27 14:26:42,604 - app.config - INFO - [config] supabase import successful
+2025-07-27 14:26:42,608 - app.config - INFO - [config] Environment variables loaded
+2025-07-27 14:26:42,609 - app.config - INFO - [config] OpenAI config loaded - Model: gpt-3.5-turbo
+2025-07-27 14:26:42,610 - app.config - INFO - [config] LWIN path: C:\Users\Dan\Projects\wine-list-parser\backend\specs\LWINdatabase.xlsx
+2025-07-27 14:26:42,611 - app.config - INFO - [config] Parsing configuration loaded
+2025-07-27 14:26:42,612 - app.config - INFO - [config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: True
+2025-07-27 14:26:42,613 - app.config - INFO - [config] Validation configuration loaded
+2025-07-27 14:26:42,615 - app.config - INFO - [config] Supabase configuration loaded
+2025-07-27 14:26:42,786 - app.config - INFO - [config] Supabase client created successfully
+2025-07-27 14:26:42,787 - app.config - INFO - [config] Configuration loading completed successfully
+2025-07-27 14:26:42,794 - app.api_v2 - INFO - [api_v2] Field extractor imports successful
+2025-07-27 14:26:42,795 - app.api_v2 - INFO - [api_v2] Rule manager imports successful
+2025-07-27 14:26:42,829 - app.storage - INFO - [storage] Module loaded.
+2025-07-27 14:26:42,830 - app.api_v2 - INFO - [api_v2] Storage imports successful
+2025-07-27 14:26:42,833 - app.pdf_processing.categorizer - INFO - [PDFBlockCategorizer] Module loaded.
+2025-07-27 14:26:42,835 - app.api_v2 - INFO - [api_v2] PDF categorizer imports successful
+2025-07-27 14:26:42,848 - app.api_v2 - INFO - [api_v2] Hybrid extraction pipeline imports successful
+2025-07-27 14:26:42,849 - app.api_v2 - INFO - [api_v2] Config imports successful
+2025-07-27 14:26:42,850 - app.api_v2 - INFO - [api_v2] All imports completed successfully
+2025-07-27 14:26:42,851 - app.api_v2 - INFO - [api_v2] Module loaded.
+2025-07-27 14:26:43,376 - app.pdf_processing.extractor - INFO - [PDFExtractor] Module loaded.
+2025-07-27 14:26:43,381 - app.pdf_processing.preprocessor - INFO - [PDFPreprocessor] Module loaded.
+2025-07-27 14:26:43,386 - app.api_v2 - INFO - [api_v2] PDF extractor imports successful
+2025-07-27 14:26:43,386 - app.api_v2 - INFO - [api_v2] PDF preprocessor imports successful
+2025-07-27 14:26:43,387 - app.api_v2 - INFO - [api_v2] PDF metadata imports successful
+2025-07-27 14:26:43,388 - app.api_v2 - INFO - [api_v2] PDF exceptions imports successful
+2025-07-27 14:26:45,692 - app.config - INFO - [config] Starting configuration loading...
+2025-07-27 14:26:45,693 - app.config - INFO - [config] dotenv import successful
+2025-07-27 14:26:45,872 - app.config - INFO - [config] supabase import successful
+2025-07-27 14:26:45,875 - app.config - INFO - [config] Environment variables loaded
+2025-07-27 14:26:45,876 - app.config - INFO - [config] OpenAI config loaded - Model: gpt-3.5-turbo
+2025-07-27 14:26:45,876 - app.config - INFO - [config] LWIN path: C:\Users\Dan\Projects\wine-list-parser\backend\specs\LWINdatabase.xlsx
+2025-07-27 14:26:45,877 - app.config - INFO - [config] Parsing configuration loaded
+2025-07-27 14:26:45,878 - app.config - INFO - [config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: True
+2025-07-27 14:26:45,879 - app.config - INFO - [config] Validation configuration loaded
+2025-07-27 14:26:45,879 - app.config - INFO - [config] Supabase configuration loaded
+2025-07-27 14:26:45,966 - app.config - INFO - [config] Supabase client created successfully
+2025-07-27 14:26:45,967 - app.config - INFO - [config] Configuration loading completed successfully
+2025-07-27 14:26:45,973 - app.api_v2 - INFO - [api_v2] Field extractor imports successful
+2025-07-27 14:26:45,974 - app.api_v2 - INFO - [api_v2] Rule manager imports successful
+2025-07-27 14:26:46,007 - app.storage - INFO - [storage] Module loaded.
+2025-07-27 14:26:46,007 - app.api_v2 - INFO - [api_v2] Storage imports successful
+2025-07-27 14:26:46,010 - app.pdf_processing.categorizer - INFO - [PDFBlockCategorizer] Module loaded.
+2025-07-27 14:26:46,011 - app.api_v2 - INFO - [api_v2] PDF categorizer imports successful
+2025-07-27 14:26:46,022 - app.api_v2 - INFO - [api_v2] Hybrid extraction pipeline imports successful
+2025-07-27 14:26:46,023 - app.api_v2 - INFO - [api_v2] Config imports successful
+2025-07-27 14:26:46,023 - app.api_v2 - INFO - [api_v2] All imports completed successfully
+2025-07-27 14:26:46,024 - app.api_v2 - INFO - [api_v2] Module loaded.

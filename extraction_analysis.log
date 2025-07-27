@@ -1,0 +1,14 @@
+2025-07-26 02:45:25,680 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): vwnvmjladuvnthcfkjqi.supabase.co:443
+2025-07-26 02:45:26,257 - urllib3.connectionpool - DEBUG - https://vwnvmjladuvnthcfkjqi.supabase.co:443 "POST /auth/v1/token?grant_type=password HTTP/1.1" 200 None
+2025-07-26 02:45:26,267 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8000
+2025-07-26 02:45:28,282 - urllib3.connectionpool - DEBUG - http://localhost:8000 "POST /api/v2/wine-lists/upload HTTP/1.1" 400 43
+2025-07-26 02:45:31,409 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): vwnvmjladuvnthcfkjqi.supabase.co:443
+2025-07-26 02:45:31,629 - urllib3.connectionpool - DEBUG - https://vwnvmjladuvnthcfkjqi.supabase.co:443 "POST /auth/v1/token?grant_type=password HTTP/1.1" 200 None
+2025-07-26 02:45:31,638 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8000
+2025-07-26 02:45:33,648 - urllib3.connectionpool - DEBUG - http://localhost:8000 "POST /api/v2/wine-lists/upload HTTP/1.1" 400 43
+2025-07-26 02:45:49,929 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): vwnvmjladuvnthcfkjqi.supabase.co:443
+2025-07-26 02:45:50,130 - urllib3.connectionpool - DEBUG - https://vwnvmjladuvnthcfkjqi.supabase.co:443 "POST /auth/v1/token?grant_type=password HTTP/1.1" 200 None
+2025-07-26 02:45:50,142 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8000
+2025-07-26 02:46:39,800 - urllib3.connectionpool - DEBUG - http://localhost:8000 "POST /api/v2/wine-lists/upload HTTP/1.1" 200 37129
+2025-07-26 02:46:41,976 - urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): localhost:8000
+2025-07-26 02:46:44,081 - urllib3.connectionpool - DEBUG - http://localhost:8000 "GET /api/v2/wine-entries/6be6252f-f7bb-4c78-aa76-94fc53be0556 HTTP/1.1" 200 21179

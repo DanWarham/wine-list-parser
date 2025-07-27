@@ -1,29 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import UserMenu from '@/components/UserMenu'
-import { apiGet, apiDelete } from '@/utils/api'
+import { api } from '@/utils/api_v2'
 import { useDropzone } from 'react-dropzone'
 import { Button } from '@/components/ui/button'
-import { Select } from '@/components/ui/select'
-import axios from 'axios'
 import ClientLayout from '../../client-layout'
 import { useAuth } from '@/src/supabase-auth-context'
 import { Loader2, CheckCircle2, XCircle } from 'lucide-react'
-import { useRef } from 'react'
-
-interface Restaurant {
-  id: string;
-  name: string;
-}
-
-interface WineList {
-  id: string;
-  filename: string;
-  status: string;
-  uploaded_at: string;
-}
+import type { Restaurant, WineList } from '@/utils/api_v2'
 
 export default function AdminWineLists() {
   const { user, loading, session } = useAuth()
@@ -36,9 +22,11 @@ export default function AdminWineLists() {
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadError, setUploadError] = useState('')
+  const [uploadSuccess, setUploadSuccess] = useState('')
   const [parsedDate, setParsedDate] = useState('')
   const [roleChecked, setRoleChecked] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<'idle'|'uploading'|'processing'|'parsing'|'complete'|'error'>('idle')
+  const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set())
   const pollRef = useRef<NodeJS.Timeout|null>(null)
 
   useEffect(() => {
@@ -51,14 +39,7 @@ export default function AdminWineLists() {
       }
 
       try {
-        const token = session.access_token
-        const res = await fetch('/api/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        if (!res.ok) {
-          throw new Error('Failed to fetch user info')
-        }
-        const userInfo = await res.json()
+        const userInfo = await api.getCurrentUser(session.access_token)
         if (userInfo.role !== 'admin') {
           router.push('/search')
         } else {
@@ -87,9 +68,9 @@ export default function AdminWineLists() {
   async function fetchRestaurants() {
     setLoadingPage(true)
     try {
-      const res = await apiGet('/restaurants', session!.access_token)
-      setRestaurants(res.data)
-      if (res.data.length) setSelected(res.data[0].id)
+      const data = await api.getRestaurants(session!.access_token)
+      setRestaurants(data)
+      if (data.length) setSelected(data[0].id)
     } catch (e) { 
       console.error('Failed to load restaurants:', e)
       setError('Failed to load restaurants') 
@@ -100,8 +81,8 @@ export default function AdminWineLists() {
   async function fetchWineLists(restaurantId: string) {
     setLoadingPage(true)
     try {
-      const res = await apiGet(`/restaurants/${restaurantId}/wine-lists`, session!.access_token)
-      setWineLists(res.data)
+      const data = await api.getWineLists(session!.access_token, restaurantId)
+      setWineLists(data)
     } catch (e) { 
       console.error('Failed to load wine lists:', e)
       setError('Failed to load wine lists') 
@@ -112,13 +93,60 @@ export default function AdminWineLists() {
   async function handleDelete(id: string) {
     if (!window.confirm('Delete this wine list file?')) return
     try {
-      await apiDelete(`/wine-lists/${id}`, session!.access_token)
+      await api.deleteWineList(session!.access_token, id)
       fetchWineLists(selected)
     } catch (e) { 
       console.error('Failed to delete wine list:', e)
       setError('Failed to delete') 
     }
   }
+
+  async function handleReprocess(id: string) {
+    if (!window.confirm('Reprocess this wine list file?')) return
+    try {
+      setReprocessingFiles(prev => new Set(prev).add(id))
+      await api.reprocessWineList(session!.access_token, id)
+      fetchWineLists(selected)
+    } catch (e) { 
+      console.error('Failed to reprocess wine list:', e)
+      setError('Failed to reprocess') 
+    } finally {
+      setReprocessingFiles(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(id)
+        return newSet
+      })
+    }
+  }
+
+  // Handle status updates from polling
+  const handleStatusUpdate = useCallback((currentList: any) => {
+    switch (currentList.status) {
+      case 'uploaded':
+        setUploadStatus('uploading')
+        break
+      case 'processing':
+        setUploadStatus('processing')
+        break
+      case 'parsed':
+        setUploadStatus('complete')
+        setUploadSuccess('File processed successfully! Redirecting to results...')
+        if (pollRef.current) clearInterval(pollRef.current)
+        fetchWineLists(selected)
+        // Navigate to refinement page after successful parsing
+        setTimeout(() => {
+          router.push(`/admin/refine/${currentList.id}`)
+        }, 2000) // Small delay to show completion status
+        break
+      case 'error':
+        setUploadStatus('error')
+        setUploadError(currentList.notes || 'Failed to process wine list')
+        if (pollRef.current) clearInterval(pollRef.current)
+        break
+      default:
+        setUploadStatus(currentList.status as any)
+    }
+  }, [selected, session, router])
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (!selected) {
@@ -127,57 +155,96 @@ export default function AdminWineLists() {
     }
     if (!acceptedFiles.length) return
     setUploadError('')
+    setUploadSuccess('')
     setUploading(true)
     setUploadProgress(0)
     setUploadStatus('uploading')
     const file = acceptedFiles[0]
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('restaurant_id', selected)
-    if (parsedDate) formData.append('parsed_date', parsedDate)
+    
+    // Log file info for debugging
+    console.log(`Uploading file: ${file.name}, Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`)
 
     try {
-      const response = await axios.post('/api/wine-lists', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${session!.access_token}`
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total!)
-          setUploadProgress(percentCompleted)
+      console.log('Starting upload for file:', file.name)
+      const wineList = await api.uploadWineList(
+        session!.access_token, 
+        selected, 
+        file,
+        (progress) => {
+          setUploadProgress(progress);
         }
-      })
+      )
+      
+      console.log('Upload API call successful:', wineList)
       setUploadStatus('processing')
       // Start polling for status
       pollRef.current = setInterval(async () => {
         try {
-          const statusRes = await fetch(`/api/wine-lists/${response.data.id}/status`, {
-            headers: { Authorization: `Bearer ${session!.access_token}` }
-          })
-          const status = await statusRes.json()
-          if (status.status === 'complete') {
-            setUploadStatus('complete')
-            if (pollRef.current) clearInterval(pollRef.current)
-            fetchWineLists(selected)
-          } else if (status.status === 'error') {
-            setUploadStatus('error')
-            setUploadError(status.error || 'Failed to process wine list')
-            if (pollRef.current) clearInterval(pollRef.current)
+          const updatedList = await api.getWineLists(session!.access_token, selected)
+          const currentList = updatedList.find(wl => wl.id === wineList.id)
+          
+          if (currentList) {
+            handleStatusUpdate(currentList)
           }
         } catch (e) {
           console.error('Failed to check status:', e)
-          setUploadStatus('error')
-          setUploadError('Failed to check status')
-          if (pollRef.current) clearInterval(pollRef.current)
+          // Don't immediately fail - the file might still be processing
+          // Only fail after multiple consecutive errors
+          if (!pollRef.current) return
+          
+          // Count consecutive errors
+          const errorCount = (pollRef.current as any).errorCount || 0
+          ;(pollRef.current as any).errorCount = errorCount + 1
+          
+          if (errorCount >= 3) {
+            setUploadStatus('error')
+            setUploadError('Failed to check status after multiple attempts')
+            clearInterval(pollRef.current)
+          }
         }
       }, 2000)
-    } catch (e) {
-      console.error('Upload failed:', e)
-      setUploadStatus('error')
-      setUploadError('Failed to upload file')
+    } catch (e: any) {
+      console.error('Upload API call failed:', e)
+      console.log('Error details:', {
+        message: e?.message || 'Unknown error',
+        status: e?.response?.status,
+        data: e?.response?.data
+      })
+      
+      // The upload response failed, but the file might still be processing
+      // Start polling to see if the file appears in the list
+      setUploadStatus('processing')
+      setUploadError('Upload response failed, but checking if file was processed...')
+      
+      // Start polling immediately to check if file was uploaded despite the error
+      pollRef.current = setInterval(async () => {
+        try {
+          const updatedList = await api.getWineLists(session!.access_token, selected)
+          const newFile = updatedList.find(wl => wl.filename === file.name && wl.status !== 'error')
+          
+          if (newFile) {
+            // File was uploaded successfully despite the error response
+            console.log('File found in list despite upload error response:', newFile)
+            setUploadError('') // Clear any error message
+            handleStatusUpdate(newFile)
+            return
+          }
+        } catch (pollError) {
+          console.error('Failed to check for uploaded file:', pollError)
+        }
+      }, 2000)
+      
+      // If no file appears after 10 seconds, then it really failed
+      setTimeout(() => {
+        if (pollRef.current) {
+          clearInterval(pollRef.current)
+          setUploadStatus('error')
+          setUploadError('Upload failed - file not found in system after 10 seconds')
+          setUploading(false)
+        }
+      }, 10000)
     }
-    setUploading(false)
-  }, [selected, parsedDate, session])
+  }, [selected, session])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -190,26 +257,26 @@ export default function AdminWineLists() {
 
   return (
     <ClientLayout>
-      <div className="container py-6">
+      <div className="container py-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Manage Wine List Files</h1>
+          <h1 className="text-2xl font-bold">Manage Wine List Files</h1>
           <UserMenu />
         </div>
         
-        {error && <div className="text-destructive mb-4">{error}</div>}
+        {error && <div className="text-red-500 mb-4">{error}</div>}
         
         <div className="space-y-6">
           <div className="flex items-center gap-4">
             <label className="text-sm font-medium">Restaurant:</label>
-            <Select
+            <select
               value={selected}
               onChange={(e) => setSelected(e.target.value)}
-              className="w-[300px]"
+              className="w-[300px] rounded-md border px-3 py-2 text-sm"
             >
               {restaurants.map(r => (
                 <option key={r.id} value={r.id}>{r.name}</option>
               ))}
-            </Select>
+            </select>
           </div>
 
           <div className="rounded-lg border p-6">
@@ -239,6 +306,10 @@ export default function AdminWineLists() {
             
             {uploading && (
               <div className="mt-4">
+                <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                  <span>Upload Progress</span>
+                  <span>{uploadProgress}%</span>
+                </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full bg-primary transition-all duration-300"
@@ -248,15 +319,13 @@ export default function AdminWineLists() {
                 <div className="flex items-center gap-2 mt-2">
                   {uploadStatus === 'uploading' && <Loader2 className="animate-spin h-4 w-4 text-primary" />}
                   {uploadStatus === 'processing' && <Loader2 className="animate-spin h-4 w-4 text-primary" />}
-                  {uploadStatus === 'parsing' && <Loader2 className="animate-spin h-4 w-4 text-primary" />}
                   {uploadStatus === 'complete' && <CheckCircle2 className="h-4 w-4 text-green-600" />}
                   {uploadStatus === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
                   <p className="text-sm text-muted-foreground">
-                    {uploadStatus === 'uploading' && `Uploading... ${uploadProgress}%`}
-                    {uploadStatus === 'processing' && 'Processing...'}
-                    {uploadStatus === 'parsing' && 'Parsing...'}
-                    {uploadStatus === 'complete' && 'Complete!'}
-                    {uploadStatus === 'error' && 'Error'}
+                    {uploadStatus === 'uploading' && `Uploading file... ${uploadProgress}%`}
+                    {uploadStatus === 'processing' && 'Processing wine list with AI...'}
+                    {uploadStatus === 'complete' && 'Complete! Redirecting to results...'}
+                    {uploadStatus === 'error' && 'Error occurred'}
                   </p>
                   {uploadStatus !== 'uploading' && uploadStatus !== 'complete' && (
                     <Button size="sm" variant="ghost" onClick={() => { if (pollRef.current) clearInterval(pollRef.current); setUploading(false); setUploadStatus('idle'); }}>
@@ -269,6 +338,9 @@ export default function AdminWineLists() {
             
             {uploadError && (
               <div className="mt-4 text-destructive text-sm">{uploadError}</div>
+            )}
+            {uploadSuccess && (
+              <div className="mt-4 text-green-600 text-sm font-medium">{uploadSuccess}</div>
             )}
           </div>
 
@@ -286,16 +358,58 @@ export default function AdminWineLists() {
                 {wineLists.map(wl => (
                   <tr key={wl.id} className="border-t">
                     <td className="p-4">{wl.filename}</td>
-                    <td className="p-4">{wl.status}</td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        wl.status === 'parsed' ? 'bg-green-100 text-green-800' :
+                        wl.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                        wl.status === 'uploaded' ? 'bg-yellow-100 text-yellow-800' :
+                        wl.status === 'error' ? 'bg-red-100 text-red-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {wl.status === 'parsed' ? '✅ Parsed' :
+                         wl.status === 'processing' ? '⏳ Processing' :
+                         wl.status === 'uploaded' ? '📤 Uploaded' :
+                         wl.status === 'error' ? '❌ Error' :
+                         wl.status}
+                      </span>
+                    </td>
                     <td className="p-4">{wl.uploaded_at}</td>
                     <td className="p-4">
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(wl.id)}
-                      >
-                        Delete
-                      </Button>
+                      <div className="flex gap-2">
+                        {wl.status === 'parsed' && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => router.push(`/admin/refine/${wl.id}`)}
+                          >
+                            View Results
+                          </Button>
+                        )}
+                        {(wl.status === 'error' || wl.status === 'uploaded') && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleReprocess(wl.id)}
+                            disabled={reprocessingFiles.has(wl.id)}
+                          >
+                            {reprocessingFiles.has(wl.id) ? (
+                              <>
+                                <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                                Processing...
+                              </>
+                            ) : (
+                              'Reprocess'
+                            )}
+                          </Button>
+                        )}
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(wl.id)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}

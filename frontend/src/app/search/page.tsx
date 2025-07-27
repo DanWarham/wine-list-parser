@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import ClientLayout from '../client-layout'
 import { useAuth } from '@/src/supabase-auth-context'
+import { api } from '@/utils/api_v2'
 
 export default function SearchPage() {
   const { user, loading, session } = useAuth()
@@ -16,15 +17,16 @@ export default function SearchPage() {
   useEffect(() => {
     const checkRole = async () => {
       if (!loading && user) {
-        const token = session?.access_token
-        const res = await fetch('/api/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        const userInfo = await res.json()
-        if (userInfo.role === 'admin') {
-          router.replace('/admin')
-        } else {
-          setRoleChecked(true)
+        try {
+          const userInfo = await api.getCurrentUser(session?.access_token ?? '')
+          if (userInfo.role === 'admin') {
+            router.replace('/admin')
+          } else {
+            setRoleChecked(true)
+          }
+        } catch (error) {
+          console.error('Role check failed:', error)
+          router.replace('/login')
         }
       } else if (!loading && !user) {
         router.replace('/login')
@@ -38,30 +40,32 @@ export default function SearchPage() {
 
   return (
     <ClientLayout>
-      <main className="container py-8">
-        <h1 className="text-2xl font-bold mb-4">Wine Search</h1>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <div className="container py-8">
+        <h1 className="text-2xl font-bold mb-6">Search Wine Lists</h1>
+        <div className="flex gap-4 mb-6">
           <input
             type="text"
-            placeholder="Search wines, producers, regions..."
-            className="w-full md:w-1/2 rounded-md border border-input px-3 py-2 text-sm"
+            placeholder="Search..."
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 rounded-md border px-3 py-2"
           />
           <select
-            className="w-full md:w-1/4 rounded-md border border-input px-3 py-2 text-sm"
             value={filter}
-            onChange={e => setFilter(e.target.value)}
+            onChange={(e) => setFilter(e.target.value)}
+            className="rounded-md border px-3 py-2"
           >
-            <option value="">All Restaurants</option>
-            {/* TODO: Populate with restaurant list */}
+            <option value="">All</option>
+            <option value="red">Red</option>
+            <option value="white">White</option>
+            <option value="sparkling">Sparkling</option>
           </select>
           <Button>Search</Button>
         </div>
-        <div className="bg-muted rounded-lg p-6 min-h-[200px] flex items-center justify-center text-muted-foreground">
-          Search results will appear here.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Search results will go here */}
         </div>
-      </main>
+      </div>
     </ClientLayout>
   )
 } 

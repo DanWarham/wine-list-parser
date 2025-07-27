@@ -1,0 +1,3611 @@
+2025-07-25 23:37:10,069 - INFO - ================================================================================
+2025-07-25 23:37:10,070 - INFO - STARTING COMPREHENSIVE PIPELINE ANALYSIS TEST
+2025-07-25 23:37:10,071 - INFO - ================================================================================
+2025-07-25 23:37:10,071 - INFO - Authenticating with Supabase...
+2025-07-25 23:37:10,444 - INFO - Successfully authenticated with Supabase
+2025-07-25 23:37:10,444 - INFO - Clearing rules for restaurant 3cce3b48-a801-475b-9552-5fb7377cb0be...
+2025-07-25 23:37:17,944 - INFO - No existing rules found
+2025-07-25 23:37:18,003 - INFO - Uploading test file: C:\Users\Dan\Projects\wine-list-parser\backend\tests\real-files\Sager & Wilde-Test1.pdf
+2025-07-25 23:39:10,372 - INFO - Successfully uploaded file. File ID: da619db5-d5a5-4b6e-bc05-80bbf0c25a7d
+2025-07-25 23:39:10,373 - INFO - Waiting for processing to complete (timeout: 300s)...
+2025-07-25 23:39:10,491 - INFO - File status: parsed
+2025-07-25 23:39:17,663 - INFO - File status: parsed
+2025-07-25 23:39:24,809 - INFO - File status: parsed
+2025-07-25 23:39:31,917 - INFO - File status: parsed
+2025-07-25 23:39:39,035 - INFO - File status: parsed
+2025-07-25 23:39:46,152 - INFO - File status: parsed
+2025-07-25 23:39:53,372 - INFO - File status: parsed
+2025-07-25 23:40:00,571 - INFO - File status: parsed
+2025-07-25 23:40:07,741 - INFO - File status: parsed
+2025-07-25 23:40:14,850 - INFO - File status: parsed
+2025-07-25 23:40:21,999 - INFO - File status: parsed
+2025-07-25 23:40:29,151 - INFO - File status: parsed
+2025-07-25 23:40:36,305 - INFO - File status: parsed
+2025-07-25 23:40:43,435 - INFO - File status: parsed
+2025-07-25 23:40:50,572 - INFO - File status: parsed
+2025-07-25 23:40:57,728 - INFO - File status: parsed
+2025-07-25 23:41:04,841 - INFO - File status: parsed
+2025-07-25 23:41:12,096 - INFO - File status: parsed
+2025-07-25 23:43:42,544 - INFO - ================================================================================
+2025-07-25 23:43:42,545 - INFO - STARTING COMPREHENSIVE PIPELINE ANALYSIS TEST
+2025-07-25 23:43:42,546 - INFO - ================================================================================
+2025-07-25 23:43:42,547 - INFO - Authenticating with Supabase...
+2025-07-25 23:43:43,143 - INFO - Successfully authenticated with Supabase
+2025-07-25 23:43:43,144 - INFO - Clearing rules for restaurant 3cce3b48-a801-475b-9552-5fb7377cb0be...
+2025-07-25 23:43:45,781 - INFO - Found existing rules: {
+  "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+  "rules_json": {
+    "rules": {
+      "vintage": {
+        "regex_patterns": [
+          "\\b(19|20)\\d{2}\\b",
+          "\\bNV\\b",
+          "Vintage:\\s*(\\d{4}|NV)",
+          "(\\d{4})\\s*[-\u2013]\\s*"
+        ],
+        "positional_rules": [],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "vintage"
+            ],
+            "confidence": 0.9
+          },
+          {
+            "type": "structure",
+            "pattern": [
+              "vintage",
+              "price"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "validation_rules": [
+          {
+            "type": "range",
+            "min": 1900,
+            "max": 2024,
+            "confidence": 0.9
+          },
+          {
+            "type": "format",
+            "pattern": "^(\\d{4}|NV)$",
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "DATE",
+            "field": "vintage",
+            "valid_values": [
+              "2014",
+              "2008"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER DATE entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 3
+      },
+      "price": {
+        "regex_patterns": [
+          "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+          "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+          "(\\d+(?:\\.\\d{2})?)\\s*$",
+          "Price:\\s*([\u00a3\u20ac$\u00a5]?\\s*\\d+(?:\\.\\d{2})?)"
+        ],
+        "positional_rules": [],
+        "validation_rules": [
+          {
+            "type": "format",
+            "pattern": "^\\d+(\\.\\d{2})?$",
+            "confidence": 0.8
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 4
+      },
+      "producer_name": {
+        "regex_patterns": [
+          "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+          "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+        ],
+        "positional_rules": [],
+        "format_rules": [
+          {
+            "type": "capitalization",
+            "pattern": "^[A-Z]",
+            "confidence": 0.9
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "ORG",
+            "field": "producer_name",
+            "valid_values": [
+              "SCHLOSS",
+              "VALAIS",
+              "MOSEL",
+              "NEUBURGER"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER ORG entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 1
+      },
+      "wine_name": {
+        "regex_patterns": [
+          "\"([^\"]+)\"",
+          "\\*([^*]+)\\*",
+          "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+        ],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "wine_name"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "PRODUCT",
+            "field": "wine_name",
+            "valid_values": [
+              "BETONT"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER PRODUCT entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 2
+      },
+      "grape_variety": {
+        "regex_patterns": [
+          "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+          "Grapes?:\\s*([A-Za-z\\s,]+)"
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 7
+      },
+      "region": {
+        "regex_patterns": [
+          "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+          "Region:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 5
+      },
+      "country": {
+        "regex_patterns": [
+          "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+          "Country:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 6
+      }
+    },
+    "metadata": {
+      "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+      "created_at": "2025-07-25T22:39:09.877154",
+      "validation_results": {
+        "field_validation": {
+          "vintage": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 13,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "price": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 11,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "producer_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "format": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "wine_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "grape_variety": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "region": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "country": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          }
+        },
+        "pattern_validation": {},
+        "overall_metrics": {
+          "precision": 0,
+          "recall": 0,
+          "f1_score": 0,
+          "accuracy": 0
+        },
+        "rule_adjustments": {},
+        "adjusted_rules": {
+          "vintage": {
+            "regex_patterns": [
+              "\\b(19|20)\\d{2}\\b",
+              "\\bNV\\b",
+              "Vintage:\\s*(\\d{4}|NV)",
+              "(\\d{4})\\s*[-\u2013]\\s*"
+            ],
+            "positional_rules": [],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "vintage"
+                ],
+                "confidence": 0.9
+              },
+              {
+                "type": "structure",
+                "pattern": [
+                  "vintage",
+                  "price"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "validation_rules": [
+              {
+                "type": "range",
+                "min": 1900,
+                "max": 2024,
+                "confidence": 0.9
+              },
+              {
+                "type": "format",
+                "pattern": "^(\\d{4}|NV)$",
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "DATE",
+                "field": "vintage",
+                "valid_values": [
+                  "2014",
+                  "2008"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER DATE entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 3
+          },
+          "price": {
+            "regex_patterns": [
+              "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+              "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+              "(\\d+(?:\\.\\d{2})?)\\s*$",
+              "Price:\\s*([\u00a3\u20ac$\u00a5]?\\s*\\d+(?:\\.\\d{2})?)"
+            ],
+            "positional_rules": [],
+            "validation_rules": [
+              {
+                "type": "format",
+                "pattern": "^\\d+(\\.\\d{2})?$",
+                "confidence": 0.8
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 4
+          },
+          "producer_name": {
+            "regex_patterns": [
+              "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+              "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+            ],
+            "positional_rules": [],
+            "format_rules": [
+              {
+                "type": "capitalization",
+                "pattern": "^[A-Z]",
+                "confidence": 0.9
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "ORG",
+                "field": "producer_name",
+                "valid_values": [
+                  "SCHLOSS",
+                  "VALAIS",
+                  "MOSEL",
+                  "NEUBURGER"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER ORG entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 1
+          },
+          "wine_name": {
+            "regex_patterns": [
+              "\"([^\"]+)\"",
+              "\\*([^*]+)\\*",
+              "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+            ],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "wine_name"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "PRODUCT",
+                "field": "wine_name",
+                "valid_values": [
+                  "BETONT"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER PRODUCT entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 2
+          },
+          "grape_variety": {
+            "regex_patterns": [
+              "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+              "Grapes?:\\s*([A-Za-z\\s,]+)"
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 7
+          },
+          "region": {
+            "regex_patterns": [
+              "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+              "Region:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 5
+          },
+          "country": {
+            "regex_patterns": [
+              "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+              "Country:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 6
+          }
+        }
+      },
+      "rule_count": 7
+    }
+  },
+  "last_updated": "2025-07-25T22:39:09.913808",
+  "date_created": "2025-07-25T22:37:53.515126",
+  "id": "d3d00a9c-a5ef-4f06-b013-cd0d6a87f656",
+  "active": true
+}
+2025-07-25 23:43:46,242 - INFO - Successfully cleared restaurant rules
+2025-07-25 23:43:46,321 - INFO - Uploading test file: C:\Users\Dan\Projects\wine-list-parser\backend\tests\real-files\Sager & Wilde-Test1.pdf
+2025-07-25 23:46:18,835 - INFO - ================================================================================
+2025-07-25 23:46:18,836 - INFO - STARTING COMPREHENSIVE PIPELINE ANALYSIS TEST
+2025-07-25 23:46:18,836 - INFO - ================================================================================
+2025-07-25 23:46:18,836 - INFO - Authenticating with Supabase...
+2025-07-25 23:46:19,230 - INFO - Successfully authenticated with Supabase
+2025-07-25 23:46:19,230 - INFO - Clearing rules for restaurant 3cce3b48-a801-475b-9552-5fb7377cb0be...
+2025-07-25 23:46:27,967 - INFO - Found existing rules: {
+  "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+  "rules_json": {
+    "rules": {
+      "vintage": {
+        "regex_patterns": [
+          "\\b(19|20)\\d{2}\\b",
+          "\\bNV\\b",
+          "Vintage:\\s*(\\d{4}|NV)",
+          "(\\d{4})\\s*[-\u2013]\\s*"
+        ],
+        "positional_rules": [],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "vintage"
+            ],
+            "confidence": 0.9
+          },
+          {
+            "type": "structure",
+            "pattern": [
+              "vintage",
+              "price"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "validation_rules": [
+          {
+            "type": "range",
+            "min": 1900,
+            "max": 2024,
+            "confidence": 0.9
+          },
+          {
+            "type": "format",
+            "pattern": "^(\\d{4}|NV)$",
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "DATE",
+            "field": "vintage",
+            "valid_values": [
+              "2008",
+              "2014"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER DATE entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 3
+      },
+      "price": {
+        "regex_patterns": [
+          "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+          "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+          "(\\d+(?:\\.\\d{2})?)\\s*$"
+        ],
+        "positional_rules": [],
+        "validation_rules": [
+          {
+            "type": "format",
+            "pattern": "^\\d+(\\.\\d{2})?$",
+            "confidence": 0.8
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 4
+      },
+      "producer_name": {
+        "regex_patterns": [
+          "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+          "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+        ],
+        "positional_rules": [],
+        "format_rules": [
+          {
+            "type": "capitalization",
+            "pattern": "^[A-Z]",
+            "confidence": 0.9
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "ORG",
+            "field": "producer_name",
+            "valid_values": [
+              "MOSEL",
+              "VALAIS",
+              "SCHLOSS",
+              "NEUBURGER"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER ORG entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 1
+      },
+      "wine_name": {
+        "regex_patterns": [
+          "\"([^\"]+)\"",
+          "\\*([^*]+)\\*",
+          "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+        ],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "wine_name"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "PRODUCT",
+            "field": "wine_name",
+            "valid_values": [
+              "BETONT"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER PRODUCT entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 2
+      },
+      "grape_variety": {
+        "regex_patterns": [
+          "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+          "Grapes?:\\s*([A-Za-z\\s,]+)"
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 7
+      },
+      "region": {
+        "regex_patterns": [
+          "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+          "Region:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Mosel",
+              "Valais"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Switzerland",
+              "Germany"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 5
+      },
+      "country": {
+        "regex_patterns": [
+          "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+          "Country:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Mosel",
+              "Valais"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Switzerland",
+              "Germany"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 6
+      }
+    },
+    "metadata": {
+      "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+      "created_at": "2025-07-25T22:45:34.445316",
+      "validation_results": {
+        "field_validation": {
+          "vintage": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 13,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "price": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 11,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "producer_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "format": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "wine_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "grape_variety": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "region": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "country": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          }
+        },
+        "pattern_validation": {},
+        "overall_metrics": {
+          "precision": 0,
+          "recall": 0,
+          "f1_score": 0,
+          "accuracy": 0
+        },
+        "rule_adjustments": {},
+        "adjusted_rules": {
+          "vintage": {
+            "regex_patterns": [
+              "\\b(19|20)\\d{2}\\b",
+              "\\bNV\\b",
+              "Vintage:\\s*(\\d{4}|NV)",
+              "(\\d{4})\\s*[-\u2013]\\s*"
+            ],
+            "positional_rules": [],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "vintage"
+                ],
+                "confidence": 0.9
+              },
+              {
+                "type": "structure",
+                "pattern": [
+                  "vintage",
+                  "price"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "validation_rules": [
+              {
+                "type": "range",
+                "min": 1900,
+                "max": 2024,
+                "confidence": 0.9
+              },
+              {
+                "type": "format",
+                "pattern": "^(\\d{4}|NV)$",
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "DATE",
+                "field": "vintage",
+                "valid_values": [
+                  "2008",
+                  "2014"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER DATE entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 3
+          },
+          "price": {
+            "regex_patterns": [
+              "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+              "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+              "(\\d+(?:\\.\\d{2})?)\\s*$"
+            ],
+            "positional_rules": [],
+            "validation_rules": [
+              {
+                "type": "format",
+                "pattern": "^\\d+(\\.\\d{2})?$",
+                "confidence": 0.8
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 4
+          },
+          "producer_name": {
+            "regex_patterns": [
+              "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+              "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+            ],
+            "positional_rules": [],
+            "format_rules": [
+              {
+                "type": "capitalization",
+                "pattern": "^[A-Z]",
+                "confidence": 0.9
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "ORG",
+                "field": "producer_name",
+                "valid_values": [
+                  "MOSEL",
+                  "VALAIS",
+                  "SCHLOSS",
+                  "NEUBURGER"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER ORG entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 1
+          },
+          "wine_name": {
+            "regex_patterns": [
+              "\"([^\"]+)\"",
+              "\\*([^*]+)\\*",
+              "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+            ],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "wine_name"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "PRODUCT",
+                "field": "wine_name",
+                "valid_values": [
+                  "BETONT"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER PRODUCT entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 2
+          },
+          "grape_variety": {
+            "regex_patterns": [
+              "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+              "Grapes?:\\s*([A-Za-z\\s,]+)"
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 7
+          },
+          "region": {
+            "regex_patterns": [
+              "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+              "Region:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Mosel",
+                  "Valais"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Switzerland",
+                  "Germany"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 5
+          },
+          "country": {
+            "regex_patterns": [
+              "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+              "Country:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Mosel",
+                  "Valais"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Switzerland",
+                  "Germany"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 6
+          }
+        }
+      },
+      "rule_count": 7
+    }
+  },
+  "last_updated": "2025-07-25T22:45:34.500750",
+  "date_created": "2025-07-25T22:37:53.515126",
+  "id": "d3d00a9c-a5ef-4f06-b013-cd0d6a87f656",
+  "active": true
+}
+2025-07-25 23:46:28,464 - INFO - Successfully cleared restaurant rules
+2025-07-25 23:46:28,500 - INFO - Uploading test file: C:\Users\Dan\Projects\wine-list-parser\backend\tests\real-files\Sager & Wilde-Test1.pdf
+2025-07-25 23:48:24,246 - INFO - Successfully uploaded file. File ID: b69c72cc-a8c3-4b38-9a67-4ae731488415
+2025-07-25 23:48:24,247 - INFO - Waiting for processing to complete (timeout: 300s)...
+2025-07-25 23:48:24,369 - INFO - File status: parsed
+2025-07-25 23:48:31,532 - INFO - File status: parsed
+2025-07-25 23:48:38,699 - INFO - File status: parsed
+2025-07-25 23:48:45,832 - INFO - File status: parsed
+2025-07-25 23:48:52,965 - INFO - File status: parsed
+2025-07-25 23:49:00,205 - INFO - File status: parsed
+2025-07-25 23:49:07,335 - INFO - File status: parsed
+2025-07-25 23:49:14,476 - INFO - File status: parsed
+2025-07-25 23:49:21,626 - INFO - File status: parsed
+2025-07-25 23:49:28,819 - INFO - File status: parsed
+2025-07-25 23:49:35,930 - INFO - File status: parsed
+2025-07-25 23:50:52,329 - INFO - ================================================================================
+2025-07-25 23:50:52,329 - INFO - STARTING COMPREHENSIVE PIPELINE ANALYSIS TEST
+2025-07-25 23:50:52,330 - INFO - ================================================================================
+2025-07-25 23:50:52,330 - INFO - Authenticating with Supabase...
+2025-07-25 23:50:52,785 - INFO - Successfully authenticated with Supabase
+2025-07-25 23:50:52,785 - INFO - Clearing rules for restaurant 3cce3b48-a801-475b-9552-5fb7377cb0be...
+2025-07-25 23:50:57,266 - INFO - Found existing rules: {
+  "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+  "rules_json": {
+    "rules": {
+      "vintage": {
+        "regex_patterns": [
+          "\\b(19|20)\\d{2}\\b",
+          "\\bNV\\b",
+          "Vintage:\\s*(\\d{4}|NV)",
+          "(\\d{4})\\s*[-\u2013]\\s*"
+        ],
+        "positional_rules": [],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "vintage"
+            ],
+            "confidence": 0.9
+          },
+          {
+            "type": "structure",
+            "pattern": [
+              "vintage",
+              "price"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "validation_rules": [
+          {
+            "type": "range",
+            "min": 1900,
+            "max": 2024,
+            "confidence": 0.9
+          },
+          {
+            "type": "format",
+            "pattern": "^(19|20)\\d{2}|NV$",
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "DATE",
+            "field": "vintage",
+            "valid_values": [
+              "2014",
+              "2008"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER DATE entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 3
+      },
+      "price": {
+        "regex_patterns": [
+          "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+          "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+          "(\\d+(?:\\.\\d{2})?)\\s*$"
+        ],
+        "positional_rules": [],
+        "validation_rules": [
+          {
+            "type": "format",
+            "pattern": "^\\d+(\\.\\d{2})?$",
+            "confidence": 0.8
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 4
+      },
+      "producer_name": {
+        "regex_patterns": [
+          "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+          "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+        ],
+        "positional_rules": [],
+        "format_rules": [
+          {
+            "type": "capitalization",
+            "pattern": "^[A-Z]",
+            "confidence": 0.9
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "ORG",
+            "field": "producer_name",
+            "valid_values": [
+              "MOSEL",
+              "VALAIS",
+              "SCHLOSS",
+              "NEUBURGER"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER ORG entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 1
+      },
+      "wine_name": {
+        "regex_patterns": [
+          "\"([^\"]+)\"",
+          "\\*([^*]+)\\*",
+          "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+        ],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "wine_name"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "PRODUCT",
+            "field": "wine_name",
+            "valid_values": [
+              "BETONT"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER PRODUCT entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 2
+      },
+      "grape_variety": {
+        "regex_patterns": [
+          "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+          "Grapes?:\\s*([A-Za-z\\s,]+)"
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 7
+      },
+      "region": {
+        "regex_patterns": [
+          "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+          "Region:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 5
+      },
+      "country": {
+        "regex_patterns": [
+          "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+          "Country:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 6
+      }
+    },
+    "metadata": {
+      "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+      "created_at": "2025-07-25T22:48:23.684343",
+      "validation_results": {
+        "field_validation": {
+          "vintage": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 13,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "price": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 11,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "producer_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "format": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "wine_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "grape_variety": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "region": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "country": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          }
+        },
+        "pattern_validation": {},
+        "overall_metrics": {
+          "precision": 0,
+          "recall": 0,
+          "f1_score": 0,
+          "accuracy": 0
+        },
+        "rule_adjustments": {},
+        "adjusted_rules": {
+          "vintage": {
+            "regex_patterns": [
+              "\\b(19|20)\\d{2}\\b",
+              "\\bNV\\b",
+              "Vintage:\\s*(\\d{4}|NV)",
+              "(\\d{4})\\s*[-\u2013]\\s*"
+            ],
+            "positional_rules": [],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "vintage"
+                ],
+                "confidence": 0.9
+              },
+              {
+                "type": "structure",
+                "pattern": [
+                  "vintage",
+                  "price"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "validation_rules": [
+              {
+                "type": "range",
+                "min": 1900,
+                "max": 2024,
+                "confidence": 0.9
+              },
+              {
+                "type": "format",
+                "pattern": "^(19|20)\\d{2}|NV$",
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "DATE",
+                "field": "vintage",
+                "valid_values": [
+                  "2014",
+                  "2008"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER DATE entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 3
+          },
+          "price": {
+            "regex_patterns": [
+              "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+              "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+              "(\\d+(?:\\.\\d{2})?)\\s*$"
+            ],
+            "positional_rules": [],
+            "validation_rules": [
+              {
+                "type": "format",
+                "pattern": "^\\d+(\\.\\d{2})?$",
+                "confidence": 0.8
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 4
+          },
+          "producer_name": {
+            "regex_patterns": [
+              "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+              "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+            ],
+            "positional_rules": [],
+            "format_rules": [
+              {
+                "type": "capitalization",
+                "pattern": "^[A-Z]",
+                "confidence": 0.9
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "ORG",
+                "field": "producer_name",
+                "valid_values": [
+                  "MOSEL",
+                  "VALAIS",
+                  "SCHLOSS",
+                  "NEUBURGER"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER ORG entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 1
+          },
+          "wine_name": {
+            "regex_patterns": [
+              "\"([^\"]+)\"",
+              "\\*([^*]+)\\*",
+              "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+            ],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "wine_name"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "PRODUCT",
+                "field": "wine_name",
+                "valid_values": [
+                  "BETONT"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER PRODUCT entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 2
+          },
+          "grape_variety": {
+            "regex_patterns": [
+              "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+              "Grapes?:\\s*([A-Za-z\\s,]+)"
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 7
+          },
+          "region": {
+            "regex_patterns": [
+              "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+              "Region:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 5
+          },
+          "country": {
+            "regex_patterns": [
+              "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+              "Country:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 6
+          }
+        }
+      },
+      "rule_count": 7
+    }
+  },
+  "last_updated": "2025-07-25T22:48:23.723049",
+  "date_created": "2025-07-25T22:37:53.515126",
+  "id": "d3d00a9c-a5ef-4f06-b013-cd0d6a87f656",
+  "active": true
+}
+2025-07-25 23:50:57,720 - INFO - Successfully cleared restaurant rules
+2025-07-25 23:50:57,787 - INFO - Uploading test file: C:\Users\Dan\Projects\wine-list-parser\backend\tests\real-files\Sager & Wilde-Test1.pdf
+2025-07-25 23:53:48,592 - INFO - ================================================================================
+2025-07-25 23:53:48,592 - INFO - STARTING COMPREHENSIVE PIPELINE ANALYSIS TEST
+2025-07-25 23:53:48,593 - INFO - ================================================================================
+2025-07-25 23:53:48,593 - INFO - Authenticating with Supabase...
+2025-07-25 23:53:49,073 - INFO - Successfully authenticated with Supabase
+2025-07-25 23:53:49,073 - INFO - Clearing rules for restaurant 3cce3b48-a801-475b-9552-5fb7377cb0be...
+2025-07-25 23:53:59,536 - INFO - Found existing rules: {
+  "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+  "rules_json": {
+    "rules": {
+      "vintage": {
+        "regex_patterns": [
+          "\\b(19|20)\\d{2}\\b",
+          "\\bNV\\b",
+          "Vintage:\\s*(\\d{4}|NV)",
+          "(\\d{4})\\s*[-\u2013]\\s*"
+        ],
+        "positional_rules": [],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "vintage"
+            ],
+            "confidence": 0.9
+          },
+          {
+            "type": "structure",
+            "pattern": [
+              "vintage",
+              "price"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "validation_rules": [
+          {
+            "type": "range",
+            "min": 1900,
+            "max": 2024,
+            "confidence": 0.9
+          },
+          {
+            "type": "format",
+            "pattern": "^(\\d{4}|NV)$",
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "DATE",
+            "field": "vintage",
+            "valid_values": [
+              "2014",
+              "2008"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER DATE entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 3
+      },
+      "price": {
+        "regex_patterns": [
+          "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+          "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+          "(\\d+(?:\\.\\d{2})?)\\s*$"
+        ],
+        "positional_rules": [],
+        "validation_rules": [
+          {
+            "type": "format",
+            "pattern": "^\\d+(\\.\\d{2})?$",
+            "confidence": 0.8
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 4
+      },
+      "producer_name": {
+        "regex_patterns": [
+          "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+          "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+        ],
+        "positional_rules": [],
+        "format_rules": [
+          {
+            "type": "capitalization",
+            "pattern": "^[A-Z]",
+            "confidence": 0.9
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "ORG",
+            "field": "producer_name",
+            "valid_values": [
+              "VALAIS",
+              "NEUBURGER",
+              "MOSEL",
+              "SCHLOSS"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER ORG entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 1
+      },
+      "wine_name": {
+        "regex_patterns": [
+          "\"([^\"]+)\"",
+          "\\*([^*]+)\\*",
+          "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+        ],
+        "structural_rules": [
+          {
+            "type": "structure",
+            "pattern": [
+              "producer",
+              "wine_name"
+            ],
+            "confidence": 0.8
+          }
+        ],
+        "ner_validation_rules": [
+          {
+            "type": "ner_entity_match",
+            "entity_type": "PRODUCT",
+            "field": "wine_name",
+            "valid_values": [
+              "BETONT"
+            ],
+            "confidence": 0.8,
+            "description": "Validate against NER PRODUCT entities"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 2
+      },
+      "grape_variety": {
+        "regex_patterns": [
+          "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+          "Grapes?:\\s*([A-Za-z\\s,]+)"
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 7
+      },
+      "region": {
+        "regex_patterns": [
+          "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+          "Region:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 5
+      },
+      "country": {
+        "regex_patterns": [
+          "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+          "Country:\\s*([A-Za-z\\s]+)"
+        ],
+        "database_validation_rules": [
+          {
+            "type": "database_match",
+            "field": "region",
+            "valid_values": [
+              "Valais",
+              "Mosel"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted regions"
+          },
+          {
+            "type": "database_match",
+            "field": "country",
+            "valid_values": [
+              "Germany",
+              "Switzerland"
+            ],
+            "confidence": 0.9,
+            "description": "Validate against database-extracted countries"
+          }
+        ],
+        "cross_strategy_rules": [
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "ner"
+            ],
+            "confidence_boost": 0.2,
+            "description": "Boost confidence when database and NER agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "database",
+              "regex"
+            ],
+            "confidence_boost": 0.15,
+            "description": "Boost confidence when database and regex agree"
+          },
+          {
+            "type": "cross_strategy_agreement",
+            "strategies": [
+              "ner",
+              "regex"
+            ],
+            "confidence_boost": 0.1,
+            "description": "Boost confidence when NER and regex agree"
+          }
+        ],
+        "confidence_threshold": 0.35,
+        "priority": 6
+      }
+    },
+    "metadata": {
+      "restaurant_id": "3cce3b48-a801-475b-9552-5fb7377cb0be",
+      "created_at": "2025-07-25T22:52:44.661852",
+      "validation_results": {
+        "field_validation": {
+          "vintage": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 13,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "price": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 11,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "producer_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "positional": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "format": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "wine_name": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              },
+              "structural": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "grape_variety": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "region": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          },
+          "country": {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "pattern_performance": {},
+            "rule_type_performance": {
+              "regex": {
+                "true_positives": 0,
+                "false_positives": 0,
+                "false_negatives": 0
+              }
+            },
+            "validation_errors": [],
+            "metrics": {
+              "precision": 0,
+              "recall": 0,
+              "f1_score": 0,
+              "accuracy": 0
+            }
+          }
+        },
+        "pattern_validation": {},
+        "overall_metrics": {
+          "precision": 0,
+          "recall": 0,
+          "f1_score": 0,
+          "accuracy": 0
+        },
+        "rule_adjustments": {},
+        "adjusted_rules": {
+          "vintage": {
+            "regex_patterns": [
+              "\\b(19|20)\\d{2}\\b",
+              "\\bNV\\b",
+              "Vintage:\\s*(\\d{4}|NV)",
+              "(\\d{4})\\s*[-\u2013]\\s*"
+            ],
+            "positional_rules": [],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "vintage"
+                ],
+                "confidence": 0.9
+              },
+              {
+                "type": "structure",
+                "pattern": [
+                  "vintage",
+                  "price"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "validation_rules": [
+              {
+                "type": "range",
+                "min": 1900,
+                "max": 2024,
+                "confidence": 0.9
+              },
+              {
+                "type": "format",
+                "pattern": "^(\\d{4}|NV)$",
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "DATE",
+                "field": "vintage",
+                "valid_values": [
+                  "2014",
+                  "2008"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER DATE entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 3
+          },
+          "price": {
+            "regex_patterns": [
+              "[\u00a3\u20ac$\u00a5]\\s*(\\d+(?:\\.\\d{2})?)",
+              "(\\d+(?:\\.\\d{2})?)\\s*[\u00a3\u20ac$\u00a5]",
+              "(\\d+(?:\\.\\d{2})?)\\s*$"
+            ],
+            "positional_rules": [],
+            "validation_rules": [
+              {
+                "type": "format",
+                "pattern": "^\\d+(\\.\\d{2})?$",
+                "confidence": 0.8
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 4
+          },
+          "producer_name": {
+            "regex_patterns": [
+              "^([A-Z][A-Za-z\\s&-]+?)(?=\\s+\\d{4}|\\s+NV|\\s+\"|\\s+[A-Z]|\\s*$)",
+              "([A-Z][A-Za-z\\s&-]+?)\\s*[,:\u2013-]"
+            ],
+            "positional_rules": [],
+            "format_rules": [
+              {
+                "type": "capitalization",
+                "pattern": "^[A-Z]",
+                "confidence": 0.9
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "ORG",
+                "field": "producer_name",
+                "valid_values": [
+                  "VALAIS",
+                  "NEUBURGER",
+                  "MOSEL",
+                  "SCHLOSS"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER ORG entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 1
+          },
+          "wine_name": {
+            "regex_patterns": [
+              "\"([^\"]+)\"",
+              "\\*([^*]+)\\*",
+              "([A-Z][a-z]+\\s+(?:Reserve|Grand\\s+Cru|Premier\\s+Cru))"
+            ],
+            "structural_rules": [
+              {
+                "type": "structure",
+                "pattern": [
+                  "producer",
+                  "wine_name"
+                ],
+                "confidence": 0.8
+              }
+            ],
+            "ner_validation_rules": [
+              {
+                "type": "ner_entity_match",
+                "entity_type": "PRODUCT",
+                "field": "wine_name",
+                "valid_values": [
+                  "BETONT"
+                ],
+                "confidence": 0.8,
+                "description": "Validate against NER PRODUCT entities"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 2
+          },
+          "grape_variety": {
+            "regex_patterns": [
+              "\\b(Chardonnay|Cabernet|Merlot|Pinot|Sauvignon|Riesling|Syrah|Nebbiolo|Sangiovese)\\b",
+              "Grapes?:\\s*([A-Za-z\\s,]+)"
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 7
+          },
+          "region": {
+            "regex_patterns": [
+              "\\b(Bordeaux|Burgundy|Champagne|Tuscany|Piedmont|Rioja|Napa|Sonoma|Barossa)\\b",
+              "Region:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 5
+          },
+          "country": {
+            "regex_patterns": [
+              "\\b(France|Italy|Spain|Germany|USA|Australia|New Zealand|Argentina|Chile)\\b",
+              "Country:\\s*([A-Za-z\\s]+)"
+            ],
+            "database_validation_rules": [
+              {
+                "type": "database_match",
+                "field": "region",
+                "valid_values": [
+                  "Valais",
+                  "Mosel"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted regions"
+              },
+              {
+                "type": "database_match",
+                "field": "country",
+                "valid_values": [
+                  "Germany",
+                  "Switzerland"
+                ],
+                "confidence": 0.9,
+                "description": "Validate against database-extracted countries"
+              }
+            ],
+            "cross_strategy_rules": [
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "ner"
+                ],
+                "confidence_boost": 0.2,
+                "description": "Boost confidence when database and NER agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "database",
+                  "regex"
+                ],
+                "confidence_boost": 0.15,
+                "description": "Boost confidence when database and regex agree"
+              },
+              {
+                "type": "cross_strategy_agreement",
+                "strategies": [
+                  "ner",
+                  "regex"
+                ],
+                "confidence_boost": 0.1,
+                "description": "Boost confidence when NER and regex agree"
+              }
+            ],
+            "confidence_threshold": 0.35,
+            "priority": 6
+          }
+        }
+      },
+      "rule_count": 7
+    }
+  },
+  "last_updated": "2025-07-25T22:52:44.714684",
+  "date_created": "2025-07-25T22:37:53.515126",
+  "id": "d3d00a9c-a5ef-4f06-b013-cd0d6a87f656",
+  "active": true
+}
+2025-07-25 23:53:59,931 - INFO - Successfully cleared restaurant rules
+2025-07-25 23:53:59,987 - INFO - Uploading test file: C:\Users\Dan\Projects\wine-list-parser\backend\tests\real-files\Sager & Wilde-Test1.pdf
