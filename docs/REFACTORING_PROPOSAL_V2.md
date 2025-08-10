@@ -42,7 +42,28 @@ This proposal outlines a complete refactoring of the Wine List Parser applicatio
 
 ## 🏗️ Proposed New Architecture
 
-### 1. Core Service Layer
+### 1. Frontend Consolidation & Refactoring
+**Current State**: Separate pages for restaurants and wine lists with duplicated functionality
+- `frontend/src/app/admin/restaurants/page.tsx` (291 lines) - Restaurant CRUD operations
+- `frontend/src/app/admin/wine-lists/page.tsx` (436 lines) - Wine list file management
+- Duplicated restaurant fetching logic
+- Separate state management for similar entities
+- Inconsistent UI patterns and user experience
+
+**Target State**: Unified restaurant management interface
+- `frontend/src/app/admin/restaurants/page.tsx` - Consolidated restaurant & wine list management
+- Single page handling both restaurant configuration and wine list operations
+- Unified state management and data flow
+- Consistent UI patterns and improved user experience
+- **Expected reduction**: 436 + 291 = 727 lines → ~400 lines (45% reduction)
+
+**Key Consolidation Benefits**:
+- **Eliminate duplication**: Single source of truth for restaurant data
+- **Improved UX**: Users can manage restaurants and wine lists in one place
+- **Better data flow**: Unified state management reduces complexity
+- **Consistent patterns**: Single UI component library and interaction patterns
+
+### 2. Core Service Layer
 ```
 backend/
 ├── services/
@@ -95,7 +116,7 @@ frontend/
 │   │   ├── QualityDashboard.tsx         # Extraction quality metrics
 │   │   └── RefinementInterface.tsx      # User correction interface
 │   └── management/
-│       ├── RestaurantManager.tsx        # Restaurant configuration
+│       ├── UnifiedRestaurantManager.tsx # Consolidated restaurant & wine list management
 │       ├── RuleManager.tsx              # Rule management interface
 │       └── PerformanceAnalytics.tsx     # System performance metrics
 ```
@@ -338,6 +359,13 @@ CREATE TABLE extraction_rules (
 - **Feedback loop**: Continuous improvement through user input
 - **Transparency**: Clear visibility into processing decisions
 
+### 4. Frontend Consolidation Benefits
+- **Unified interface**: Single page for restaurant and wine list management
+- **Reduced complexity**: 45% reduction in frontend code (727 → 400 lines)
+- **Better UX**: Users manage related operations in one place
+- **Consistent patterns**: Unified UI components and interaction flows
+- **Eliminated duplication**: Single source of truth for restaurant data
+
 ## 🚦 Implementation Roadmap
 
 ### Phase 1: Foundation (Weeks 1-2)
@@ -346,6 +374,7 @@ CREATE TABLE extraction_rules (
 - [ ] Set up new database schema
 - [ ] Create basic setup workflow structure
 - [ ] Implement confidence system with 3-tier approach
+- [ ] **Frontend consolidation**: Merge restaurant and wine list management pages
 
 ### Phase 2: Core Services (Weeks 3-4)
 - [ ] Implement restaurant setup service
@@ -381,6 +410,7 @@ CREATE TABLE extraction_rules (
 - **Performance**: Process 1000+ entries in under 30 seconds
 - **Reliability**: 99.9% uptime with graceful error handling
 - **AI efficiency**: Process 95%+ of entries without AI (rules + database only)
+- **Frontend consolidation**: 45% reduction in admin interface code (727 → 400 lines)
 
 ### Business Metrics
 - **User adoption**: 80% of users complete setup in first attempt
@@ -416,7 +446,14 @@ CREATE TABLE extraction_rules (
 
 ## 🧪 Testing & Validation Strategy
 
-### 1. Confidence System Testing
+### 1. Frontend Consolidation Testing
+- **Component integration**: Test unified restaurant manager with both restaurant and wine list operations
+- **State management**: Validate unified state handling for restaurant and wine list data
+- **User workflow**: Test complete user journey from restaurant creation to wine list management
+- **Performance testing**: Ensure consolidated page loads as fast as separate pages
+- **Responsive design**: Test on different screen sizes and devices
+
+### 2. Confidence System Testing
 - **Unit tests**: Test each confidence tier with known inputs
 - **Integration tests**: Validate confidence scores across different wine list formats
 - **A/B testing**: Compare different threshold values (0.7 vs 0.8, 0.4 vs 0.5)
@@ -438,6 +475,61 @@ CREATE TABLE extraction_rules (
 - **Mobile setup**: Complete restaurant setup from mobile devices
 - **Offline processing**: Handle file processing without internet connection
 - **Push notifications**: Real-time updates on processing status
+
+## 🎨 Frontend Consolidation Implementation Details
+
+### Current Architecture Analysis
+**Restaurant Management Page** (`/admin/restaurants/page.tsx` - 291 lines)
+- Restaurant CRUD operations (Create, Read, Update, Delete)
+- Rule clearing functionality
+- Basic restaurant information management
+- Separate state management for restaurants
+
+**Wine List Management Page** (`/admin/wine-lists/page.tsx` - 436 lines)
+- Wine list file upload and management
+- File processing status monitoring
+- Wine list deletion and reprocessing
+- Restaurant selection and wine list fetching
+- Complex state management for uploads and processing
+
+### Consolidation Strategy
+**Target**: Single unified page at `/admin/restaurants/page.tsx`
+
+**Key Consolidation Areas**:
+1. **State Management Unification**
+   - Single `useState` for restaurants and wine lists
+   - Unified data fetching and caching
+   - Combined error and loading states
+
+2. **Component Structure**
+   - Tab-based interface: "Restaurant Info" | "Wine Lists" | "Rules & Settings"
+   - Shared restaurant selector component
+   - Unified data refresh mechanisms
+
+3. **Data Flow Optimization**
+   - Single API call to fetch restaurant with wine lists
+   - Unified state updates for all restaurant operations
+   - Consistent error handling and user feedback
+
+4. **UI/UX Improvements**
+   - Consistent button styles and layouts
+   - Unified loading states and progress indicators
+   - Better visual hierarchy and information organization
+
+### Expected Benefits
+- **Code Reduction**: 727 lines → ~400 lines (45% reduction)
+- **Maintenance**: Single page to maintain and update
+- **User Experience**: Related operations in one place
+- **Performance**: Reduced component re-renders and state updates
+- **Consistency**: Unified UI patterns and interaction flows
+
+### Implementation Steps
+1. **Create unified state structure** combining restaurant and wine list data
+2. **Build tab-based navigation** for different management areas
+3. **Consolidate API calls** to reduce redundant requests
+4. **Unify error handling** and user feedback mechanisms
+5. **Test integration** of all functionality in single interface
+6. **Remove old wine-lists page** and update navigation
 
 ## 🎉 Conclusion
 
