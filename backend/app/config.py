@@ -35,13 +35,8 @@ try:
     OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-3.5-turbo')  # Default to gpt-3.5-turbo for cost efficiency
     logger.info(f"[config] OpenAI config loaded - Model: {OPENAI_MODEL}")
 
-    # LWIN configuration
-    LWIN_XLSX_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'specs', 'LWINdatabase.xlsx')
-    logger.info(f"[config] LWIN path: {LWIN_XLSX_PATH}")
-
     # Parsing configuration
     MIN_CONFIDENCE_THRESHOLD = 0.75
-    BATCH_SIZE = 5  # Number of entries to process in parallel
     logger.info("[config] Parsing configuration loaded")
 
     # AI Hybrid Rule Generation Configuration

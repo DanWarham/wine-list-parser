@@ -6,7 +6,7 @@ class RegexStrategy:
         self.default_rules = self._load_default_rules()
 
     def _load_default_rules(self) -> Dict[str, str]:
-        # Load default regex rules for LWIN standard fields with enhanced bullet point support
+        # Load default regex rules for wine list standard fields with enhanced bullet point support
         return {
             # Enhanced producer patterns - handle bullet points and complex formatting
             'producer_name': [

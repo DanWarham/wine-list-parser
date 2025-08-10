@@ -2,7 +2,6 @@ from typing import List, Dict, Any, Optional
 from .strategies.regex_strategy import RegexStrategy
 from .strategies.ner_strategy import NERStrategy
 from .strategies.ai_strategy import AIStrategy
-from .strategies.lwin_strategy import LWINStrategy
 from app.database_enhanced_rules.database_manager import DatabaseManager
 from app.rules.rule_manager import RuleManager
 from app.rules.confidence_calculator import ConfidenceCalculator
@@ -10,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Define the fields to be extracted based on LWIN standard plus additional fields
+# Define the fields to be extracted based on wine list standard plus additional fields
 FIELDS_TO_EXTRACT = [
     # Producer information
     'producer_title',  # Title of producer or owner of wine
@@ -38,8 +37,7 @@ FIELDS_TO_EXTRACT = [
     'classification', # Officially declared quality level
     
     # Additional fields
-    'price',          # Price of the wine
-    'lwin_match'      # LWIN database match information
+    'price'           # Price of the wine
 ]
 
 class FieldExtractor:
@@ -59,7 +57,6 @@ class FieldExtractor:
         self.regex_strategy = RegexStrategy() if 'regex' in self.strategies else None
         self.ner_strategy = NERStrategy() if 'ner' in self.strategies else None
         self.ai_strategy = AIStrategy() if 'ai' in self.strategies else None  # Enable AI strategy
-        self.lwin_strategy = LWINStrategy() if 'lwin' in self.strategies else None
         
         # Initialize confidence calculator
         self.confidence_calculator = ConfidenceCalculator()
@@ -104,12 +101,6 @@ class FieldExtractor:
             ai_fields, ai_conf = self.ai_strategy.extract(block)
             strategy_results['ai'] = {'fields': ai_fields, 'confidence': ai_conf}
             logger.debug(f"[FieldExtractor] AI extraction confidence: {ai_conf}")
-
-        # 5. LWIN strategy
-        if self.lwin_strategy:
-            lwin_fields, lwin_conf = self.lwin_strategy.extract(block)
-            strategy_results['lwin'] = {'fields': lwin_fields, 'confidence': lwin_conf}
-            logger.debug(f"[FieldExtractor] LWIN extraction confidence: {lwin_conf}")
 
         # Intelligent field merging with cross-strategy validation
         extracted_fields = self._merge_strategy_results(strategy_results, restaurant_rules)
