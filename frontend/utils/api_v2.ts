@@ -220,6 +220,17 @@ export const api = {
     }
   },
 
+  async getProcessingSteps(token: string, fileId: string): Promise<any> {
+    try {
+      const response = await axios.get(`${API_BASE}/wine-lists/${fileId}/processing-steps`, {
+        headers: getAuthHeaders(token),
+      });
+      return response.data;
+    } catch (error) {
+      return handleError(error);
+    }
+  },
+
   async uploadWineList(
     token: string, 
     restaurantId: string, 

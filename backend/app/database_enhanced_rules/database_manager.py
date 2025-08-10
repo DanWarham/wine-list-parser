@@ -8,6 +8,7 @@ It provides fast local lookups for grape varieties, regions, and producers.
 import json
 import os
 import logging
+import re
 from typing import Dict, List, Optional, Any, Tuple
 from pathlib import Path
 from functools import lru_cache
@@ -41,26 +42,47 @@ class DatabaseManager:
             return
         
         try:
-            # Load grape varieties database
-            grape_file = self.databases_path / "grape_varieties.json"
+            # Load grape varieties database (enhanced_grape_varieties.json)
+            grape_file = self.databases_path / "enhanced_grape_varieties.json"
             if grape_file.exists():
                 with open(grape_file, 'r', encoding='utf-8') as f:
                     self._databases['grape_varieties'] = json.load(f)
-                logger.info(f"Loaded grape varieties database: {len(self._databases['grape_varieties'])} countries")
+                logger.info(f"Loaded enhanced grape varieties database: {len(self._databases['grape_varieties'])} countries")
+            else:
+                # Fallback to original file if enhanced doesn't exist
+                grape_file = self.databases_path / "grape_varieties.json"
+                if grape_file.exists():
+                    with open(grape_file, 'r', encoding='utf-8') as f:
+                        self._databases['grape_varieties'] = json.load(f)
+                    logger.info(f"Loaded original grape varieties database: {len(self._databases['grape_varieties'])} countries")
             
-            # Load producers database (producer_locations.json)
-            producers_file = self.databases_path / "producer_locations.json"
+            # Load producers database (enhanced_producer_locations.json)
+            producers_file = self.databases_path / "enhanced_producer_locations.json"
             if producers_file.exists():
                 with open(producers_file, 'r', encoding='utf-8') as f:
                     self._databases['producers'] = json.load(f)
-                logger.info(f"Loaded producers database: {len(self._databases['producers'])} producers")
+                logger.info(f"Loaded enhanced producers database: {len(self._databases['producers'])} producers")
+            else:
+                # Fallback to original file if enhanced doesn't exist
+                producers_file = self.databases_path / "producer_locations.json"
+                if producers_file.exists():
+                    with open(producers_file, 'r', encoding='utf-8') as f:
+                        self._databases['producers'] = json.load(f)
+                    logger.info(f"Loaded original producers database: {len(self._databases['producers'])} producers")
             
-            # Load regions database (geo_hierarchy.json)
-            regions_file = self.databases_path / "geo_hierarchy.json"
+            # Load regions database (enhanced_geo_hierarchy.json)
+            regions_file = self.databases_path / "enhanced_geo_hierarchy.json"
             if regions_file.exists():
                 with open(regions_file, 'r', encoding='utf-8') as f:
                     self._databases['regions'] = json.load(f)
-                logger.info(f"Loaded regions database: {len(self._databases['regions'])} countries")
+                logger.info(f"Loaded enhanced regions database: {len(self._databases['regions'])} countries")
+            else:
+                # Fallback to original file if enhanced doesn't exist
+                regions_file = self.databases_path / "geo_hierarchy.json"
+                if regions_file.exists():
+                    with open(regions_file, 'r', encoding='utf-8') as f:
+                        self._databases['regions'] = json.load(f)
+                    logger.info(f"Loaded original regions database: {len(self._databases['regions'])} countries")
             
             self._loaded = True
             logger.info("All databases loaded successfully")
@@ -108,32 +130,229 @@ class DatabaseManager:
         Returns:
             Tuple of (best_match, confidence_score)
         """
+        # First try exact word boundary matches
+        words = text.split()
+        for word in words:
+            # Clean the word
+            clean_word = re.sub(r'[^\w\s]', '', word).strip()
+            if clean_word in choices:
+                return clean_word, 1.0
+        
+        # Then try fuzzy matching with word boundaries
+        for choice in choices:
+            # Look for the choice as a whole word in the text
+            pattern = r'\b' + re.escape(choice) + r'\b'
+            if re.search(pattern, text, re.IGNORECASE):
+                return choice, 0.95
+        
+        # Finally try fuzzy matching
         return self._fuzzy_match(text, choices, cutoff)
     
-    def extract_fields(self, block: Dict[str, Any], cutoff: float = 0.8) -> Tuple[Dict[str, Any], float]:
+    def extract_fields(self, block: Dict[str, Any], cutoff: float = 0.6) -> Tuple[Dict[str, Any], float]:
         """
-        Extract fields from a wine block using database lookups.
-        This method provides the same interface as DatabaseStrategy.extract()
+        Extract wine fields from text block using enhanced databases and improved patterns.
+        """
+        text = block.get('text', '').strip()
+        if not text:
+            return {}, 0.0
+
+        extracted_fields = {}
+        total_confidence = 0.0
+        field_count = 0
+
+        # Enhanced regex patterns for specific wine list formats
+        wine_list_patterns = {
+            'vintage': [
+                r'^(\d{4})\s+',  # VINTAGE at start
+                r'\b(19|20)\d{2}\b',  # Any 4-digit year
+                r'NV\b',  # Non-vintage
+                r'(\d{4})\s*[-\u2013]',  # Year followed by dash
+                r'(\d{4})\s*[|]',  # Year followed by pipe
+                r'(\d{4})\s*[A-Z]',  # Year followed by capital letter
+                r'Vintage:\s*(\d{4}|NV)',  # With label
+                r'Year:\s*(\d{4}|NV)',  # With label
+                r'(\d{4})\s*[£€$¥]',  # Year before currency
+                r'(\d{4})\s*ml',  # Year before ml
+                r'(\d{4})\s*[A-Z][a-z]+',  # Year before grape variety
+            ],
+            'price': [
+                # More specific price patterns to avoid vintage confusion
+                r'(\d{2,3})\s*$',  # 2-3 digit number at end (likely price)
+                r'[£€$¥]\s*(\d+(?:\.\d{2})?)',  # Currency symbols
+                r'(\d+)\s*[A-Z][a-z]+\s*$',  # Number before grape variety at end
+                r'(\d+)\s*[|]\s*[A-Z]',  # Number before pipe followed by capital
+                r'(\d+)\s*[-–]\s*[A-Z]',  # Number before dash followed by capital
+                r'Price:\s*(\d+)',  # With label
+                r'(\d{2,3})\s*[A-Z][A-Za-z\s&-]+\s*$',  # Number before producer at end
+                # Avoid 4-digit numbers that are likely vintages
+                r'(?<!19|20)(\d{2,3})\b(?!\d)',  # 2-3 digits not preceded by 19/20
+            ],
+            'producer_name': [
+                # Pattern 1: Producer after region separator (most common) - FIXED
+                r'\|\s*([A-Z][A-Za-z\s&-]+?)(?:\s+\d{2,3})?\s*$',
+                # Pattern 2: Producer before price at end - FIXED
+                r'([A-Z][A-Za-z\s&-]+?)\s+(\d{2,3})\s*$',
+                # Pattern 3: Producer with common prefixes - FIXED
+                r'(Domaine|Château|Maison|Cave|Cantina|Bodega|Weingut|Tenuta)\s+([A-Z][A-Za-z\s&-]+?)(?:\s+\d{2,3})?\s*$',
+                # Pattern 4: Producer with quotes - FIXED
+                r'([A-Z][A-Za-z\s&-]+?)\s*[\'"]',
+                # Pattern 5: Producer before vintage - FIXED
+                r'([A-Z][A-Za-z\s&-]+?)\s+(19|20)\d{2}',
+                # Pattern 6: Producer at start of line - FIXED
+                r'^([A-Z][A-Za-z\s&-]+?)(?=\s+\d{4}|\s+NV|\s+"|\s+[A-Z]|$)',
+                # Pattern 7: Producer with common suffixes - FIXED
+                r'([A-Z][A-Za-z\s&-]+?)\s+(Reserve|Grand|Premier|Vieilles|Vignes|Brut|Sec|Demi-Sec)',
+                # Pattern 8: Producer after grape variety - FIXED
+                r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+\|\s+([A-Z][A-Za-z\s&-]+?)(?:\s+\d{2,3})?\s*$',
+                # Pattern 9: Producer with multiple words - IMPROVED
+                r'([A-Z][A-Za-z\s&-]{3,}?)(?=\s+\d{2,3}\s*$|\s+\d{4}|\s+NV)',
+                # Pattern 10: Producer with ampersand - IMPROVED
+                r'([A-Z][A-Za-z\s&]+?)\s+(?=\d{2,3}\s*$|\d{4})',
+                # Pattern 11: Producer with "de" or "du" - IMPROVED
+                r'([A-Z][A-Za-z\s]+(?:de|du)\s+[A-Z][A-Za-z\s]+?)(?=\s+\d{2,3}\s*$|\s+\d{4})',
+                # Pattern 12: Producer with "Dr." prefix - NEW
+                r'(Dr\.\s+[A-Z][A-Za-z\s]+?)(?=\s+\d{2,3}\s*$|\s+\d{4})',
+                # Pattern 13: Producer with "&" in name - NEW
+                r'([A-Z][A-Za-z\s]+&[A-Za-z\s]+?)(?=\s+\d{2,3}\s*$|\s+\d{4})',
+            ],
+            'wine_name': [
+                # Pattern 1: Quoted wine names
+                r'[\'"]([^\'"]+)[\'"]',
+                # Pattern 2: Wine name after vintage
+                r'(19|20)\d{2}\s+([A-Z][A-Za-z\s&-]+?)(?:\s+\|)',
+                # Pattern 3: Wine name with common suffixes - IMPROVED
+                r'([A-Z][A-Za-z\s&-]+?)\s+(Reserve|Grand|Premier|Vieilles|Vignes|Brut|Sec|Demi-Sec|Grand Cru|Premier Cru)',
+                # Pattern 4: Wine name between grape and region
+                r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+([A-Z][A-Za-z\s&-]+?)\s+\|\s+[A-Z]',
+                # Pattern 5: Wine name with designation - IMPROVED
+                r'([A-Z][A-Za-z\s&-]+?)\s+(Grand Cru|Premier Cru|Village|Regional|Reserve)',
+                # Pattern 6: Wine name in parentheses
+                r'\(([A-Za-z\s&-]+?)\)',
+                # Pattern 7: Wine name after grape variety - NEW
+                r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+([A-Z][A-Za-z\s&-]+?)(?=\s+\|)',
+            ],
+            'grape_variety': [
+                r'\b(Chardonnay|Pinot Noir|Cabernet Sauvignon|Merlot|Syrah|Riesling|Sauvignon Blanc)\b',
+                r'\b(Meunier|Nebbiolo|Sangiovese|Verdejo|Albarino|Tempranillo|Grenache)\b',
+                r'\b(Pinot Grigio|Pinot Gris|Chenin Blanc|Viognier|Marsanne|Roussanne)\b',
+                r'\b(Malbec|Carmenère|Petit Verdot|Cabernet Franc|Barbera|Dolcetto)\b',
+                r'\b(Mourvèdre|Cinsault|Carignan|Grenache Blanc|Rolle|Vermentino)\b',
+                r'\b(Aligoté|Gamay|Pinot Blanc|Auxerrois|Muscat|Gewürztraminer)\b',
+            ]
+        }
+
+        # Apply wine list format patterns first with priority handling
+        # Handle vintage and price patterns with disambiguation
+        vintage_matches = []
+        price_matches = []
         
-        Args:
-            block: Wine block containing text
-            cutoff: Minimum confidence threshold
+        # Collect all vintage matches
+        for pattern in wine_list_patterns['vintage']:
+            matches = re.finditer(pattern, text, re.IGNORECASE)
+            for match in matches:
+                value = match.group(1) if len(match.groups()) > 0 else match.group(0)
+                vintage_matches.append({
+                    'value': value,
+                    'start': match.start(),
+                    'end': match.end(),
+                    'pattern': pattern
+                })
+        
+        # Collect all price matches
+        for pattern in wine_list_patterns['price']:
+            matches = re.finditer(pattern, text, re.IGNORECASE)
+            for match in matches:
+                value = match.group(1) if len(match.groups()) > 0 else match.group(0)
+                price_matches.append({
+                    'value': value,
+                    'start': match.start(),
+                    'end': match.end(),
+                    'pattern': pattern
+                })
+        
+        # Enhanced disambiguation: vintage vs price
+        for vintage_match in vintage_matches:
+            value = vintage_match['value']
+            # Skip if this looks like a price (2-3 digits, likely price)
+            if value.isdigit() and len(value) <= 3 and int(value) < 1000:
+                continue
+            # Skip if it's a 4-digit year that's too recent (likely not a vintage)
+            if value.isdigit() and len(value) == 4 and int(value) > 2024:
+                continue
+            # This is likely a vintage
+            if value == 'NV':
+                extracted_fields['vintage'] = {'value': 'NV', 'confidence': 0.9, 'provenance': 'regex'}
+            else:
+                extracted_fields['vintage'] = {'value': value, 'confidence': 0.9, 'provenance': 'regex'}
+            total_confidence += 0.9
+            field_count += 1
+            break
+        
+        # Enhanced price handling (avoid conflicts with vintage)
+        for price_match in price_matches:
+            value = price_match['value']
+            # Skip if this conflicts with an already extracted vintage
+            if 'vintage' in extracted_fields:
+                vintage_value = extracted_fields['vintage']['value']
+                if value == vintage_value:
+                    continue
             
-        Returns:
-            Tuple of (extracted_fields, overall_confidence)
-        """
+            # Enhanced price validation
+            if value.isdigit():
+                price_int = int(value)
+                # Skip if it's likely a vintage (4 digits, reasonable year range)
+                if len(value) == 4 and 1900 <= price_int <= 2024:
+                    continue
+                # Skip if it's too small to be a realistic price
+                if price_int < 10:
+                    continue
+                # Skip if it's too large to be a realistic price (over 1000)
+                if price_int > 1000:
+                    continue
+            
+            # This is likely a price
+            extracted_fields['price'] = {'value': value, 'confidence': 0.9, 'provenance': 'regex'}
+            total_confidence += 0.9
+            field_count += 1
+            break
+        
+        # Apply other patterns
+        for field, patterns in wine_list_patterns.items():
+            if field in ['vintage', 'price']:  # Already handled above
+                continue
+            for pattern in patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    value = match.group(1) if len(match.groups()) > 0 else match.group(0)
+                    if field == 'grape_variety':
+                        # Clean up grape variety
+                        clean_value = value.strip().replace('  ', ' ')
+                        extracted_fields[field] = {'value': clean_value, 'confidence': 0.9, 'provenance': 'regex'}
+                    elif field == 'wine_name':
+                        # Map wine_name to cuvee field for database compatibility
+                        extracted_fields['cuvee'] = {'value': value.strip(), 'confidence': 0.9, 'provenance': 'regex'}
+                        # Also keep wine_name for compatibility
+                        extracted_fields[field] = {'value': value.strip(), 'confidence': 0.9, 'provenance': 'regex'}
+                    elif field == 'producer_name':
+                        # Map producer_name to producer field for database compatibility
+                        extracted_fields['producer'] = {'value': value.strip(), 'confidence': 0.9, 'provenance': 'regex'}
+                        # Also keep producer_name for compatibility
+                        extracted_fields[field] = {'value': value.strip(), 'confidence': 0.9, 'provenance': 'regex'}
+                    else:
+                        extracted_fields[field] = {'value': value.strip(), 'confidence': 0.9, 'provenance': 'regex'}
+                    total_confidence += 0.9
+                    field_count += 1
+                    break
+
+        # Continue with existing database matching for fields not found by regex
         if not self._loaded:
             self.load_databases()
-        
-        text = block.get('text', '')
-        extracted = {}
-        confidence = 0.0
         
         # Get all available choices
         producer_names = set(self._databases.get('producers', {}).keys())
         country_names = set(self._databases.get('regions', {}).keys())
         
-        # Get grape variety names
+        # Get grape variety names (including individual varieties for blends)
         grape_names = set()
         grape_db = self._databases.get('grape_varieties', {})
         for country_data in grape_db.values():
@@ -144,58 +363,147 @@ class DatabaseManager:
                     if isinstance(region_data, list):
                         grape_names.update(region_data)
         
-        # Producer extraction
-        producer, prod_conf = self._fuzzy_match_in_text(text, producer_names, cutoff)
-        if producer:
-            extracted['producer_name'] = {'value': producer, 'confidence': prod_conf, 'provenance': 'database'}
-            confidence += prod_conf * 0.25
+        # Enhanced producer extraction with multiple strategies
+        if 'producer_name' not in extracted_fields and 'producer' not in extracted_fields:
+            producer = None
+            prod_conf = 0.0
             
-            # Try to get country/region/subregion from producer db
-            locations = self._databases.get('producers', {}).get(producer, [])
-            if locations:
-                loc = locations[0]  # Use the first location for now
-                if loc.get('country'):
-                    extracted['country'] = {'value': loc['country'], 'confidence': prod_conf, 'provenance': 'database'}
-                    confidence += prod_conf * 0.15
-                if loc.get('region'):
-                    extracted['region'] = {'value': loc['region'], 'confidence': prod_conf, 'provenance': 'database'}
-                    confidence += prod_conf * 0.1
-                if loc.get('subregion'):
-                    extracted['sub_region'] = {'value': loc['subregion'], 'confidence': prod_conf, 'provenance': 'database'}
-                    confidence += prod_conf * 0.05
+            # Strategy 1: Try enhanced regex patterns first
+            producer_patterns = [
+                r'\|\s*([A-Z][A-Za-z\s&-]+?)(?:\s+\d{2,3})?\s*$',  # After region separator
+                r'([A-Z][A-Za-z\s&-]+?)\s+(\d{2,3})\s*$',  # Before price
+                r'(Domaine|Château|Maison|Cave|Cantina|Bodega|Weingut|Tenuta)\s+([A-Z][A-Za-z\s&-]+?)(?:\s+\d{2,3})?\s*$',  # With prefix
+                r'(Dr\.\s+[A-Z][A-Za-z\s]+?)(?=\s+\d{2,3}\s*$|\s+\d{4})',  # Dr. prefix
+                r'([A-Z][A-Za-z\s]+&[A-Za-z\s]+?)(?=\s+\d{2,3}\s*$|\s+\d{4})',  # & in name
+            ]
+            
+            for pattern in producer_patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    if len(match.groups()) > 1:
+                        producer = ' '.join([g for g in match.groups() if g])
+                    else:
+                        producer = match.group(1)
+                    prod_conf = 0.9
+                    break
+            
+            # Strategy 2: Try database matching if regex failed
+            if not producer:
+                producer, prod_conf = self._fuzzy_match_in_text(text, producer_names, cutoff)
+            
+            if producer:
+                # Map producer_name to producer field for database compatibility
+                extracted_fields['producer'] = {'value': producer, 'confidence': prod_conf, 'provenance': 'enhanced_regex' if prod_conf == 0.9 else 'database'}
+                # Also keep producer_name for compatibility with other systems
+                extracted_fields['producer_name'] = {'value': producer, 'confidence': prod_conf, 'provenance': 'enhanced_regex' if prod_conf == 0.9 else 'database'}
+                total_confidence += prod_conf
+                field_count += 1
+                
+                # Try to get country/region/subregion from producer db
+                locations = self._databases.get('producers', {}).get(producer, [])
+                if locations:
+                    loc = locations[0]  # Use the first location for now
+                    if loc.get('country') and 'country' not in extracted_fields:
+                        extracted_fields['country'] = {'value': loc['country'], 'confidence': prod_conf, 'provenance': 'database'}
+                        total_confidence += prod_conf
+                        field_count += 1
+                    if loc.get('region') and 'region' not in extracted_fields:
+                        extracted_fields['region'] = {'value': loc['region'], 'confidence': prod_conf, 'provenance': 'database'}
+                        total_confidence += prod_conf
+                        field_count += 1
+                    if loc.get('subregion') and 'subregion' not in extracted_fields:
+                        extracted_fields['subregion'] = {'value': loc['subregion'], 'confidence': prod_conf, 'provenance': 'database'}
+                        total_confidence += prod_conf
+                        field_count += 1
         
-        # Grape variety extraction
-        grape, grape_conf = self._fuzzy_match_in_text(text, grape_names, cutoff)
-        if grape:
-            extracted['grape_variety'] = {'value': grape, 'confidence': grape_conf, 'provenance': 'database'}
-            confidence += grape_conf * 0.2
+        # Grape variety extraction - try blends first, then individual varieties
+        if 'grape_variety' not in extracted_fields:
+            grape = None
+            grape_conf = 0.0
+            
+            # Try to extract grape blends by looking for multiple varieties first
+            blend_patterns = [
+                r'\b(Pinot\s+Noir\s*/\s*Pinot\s+Blanc)\b',
+                r'\b(Chardonnay\s*/\s*Meunier\s*/\s*Pinot\s+Noir)\b',
+                r'\b(Pinot\s+Noir\s*/\s*Chardonnay)\b',
+                r'\b(Chardonnay\s*/\s*Meunier)\b',
+                r'\b(Pinot\s+Noir\s*/\s*Chardonnay\s*/\s*Meunier)\b'
+            ]
+            
+            for pattern in blend_patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    blend = match.group(1)
+                    grape = blend
+                    grape_conf = 0.8
+                    break
+            
+            # If no blend found, try individual varieties
+            if not grape:
+                grape, grape_conf = self._fuzzy_match_in_text(text, grape_names, cutoff)
+            
+            if grape:
+                extracted_fields['grape_variety'] = {'value': grape, 'confidence': grape_conf, 'provenance': 'database_blend' if '/' in grape else 'database'}
+                total_confidence += grape_conf
+                field_count += 1
         
         # Country extraction
-        country, country_conf = self._fuzzy_match_in_text(text, country_names, cutoff)
-        if country:
-            extracted['country'] = {'value': country, 'confidence': country_conf, 'provenance': 'database'}
-            confidence += country_conf * 0.1
+        if 'country' not in extracted_fields:
+            country, country_conf = self._fuzzy_match_in_text(text, country_names, cutoff)
+            if country:
+                extracted_fields['country'] = {'value': country, 'confidence': country_conf, 'provenance': 'database'}
+                total_confidence += country_conf
+                field_count += 1
         
-        # Region/Subregion extraction
-        regions_db = self._databases.get('regions', {})
-        for country_name, regions in regions_db.items():
-            if isinstance(regions, dict):
-                region_names = set(regions.keys())
-                region, region_conf = self._fuzzy_match_in_text(text, region_names, cutoff)
-                if region:
-                    extracted['region'] = {'value': region, 'confidence': region_conf, 'provenance': 'database'}
-                    confidence += region_conf * 0.05
-                    
-                    # Check for subregions
-                    subregions = set(regions[region]) if isinstance(regions[region], list) else set()
-                    subregion, subregion_conf = self._fuzzy_match_in_text(text, subregions, cutoff)
-                    if subregion:
-                        extracted['sub_region'] = {'value': subregion, 'confidence': subregion_conf, 'provenance': 'database'}
-                        confidence += subregion_conf * 0.05
+        # Region/Subregion extraction with enhanced matching
+        if 'region' not in extracted_fields:
+            regions_db = self._databases.get('regions', {})
+            
+            # Try to extract specific French regions that might not be in the database
+            french_region_patterns = [
+                r'\b(Riceys\s+sur\s+Marnes)\b',
+                r'\b(Mareuil-sur-Aÿ)\b',
+                r'\b(Mareuil-Sur-Aÿ)\b',
+                r'\b(Côte\s+des\s+Blancs)\b',
+                r'\b(Côtes\s+des\s+Blancs)\b',
+                r'\b(Montagne\s+de\s+Reims)\b',
+                r'\b(Marne\s+Valley)\b',
+                r'\b(Grand\s+Cru\s+\w+)\b',
+                r'\b(1er\s+Cru\s+\w+)\b'
+            ]
+            
+            for pattern in french_region_patterns:
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    region = match.group(1)
+                    extracted_fields['region'] = {'value': region, 'confidence': 0.8, 'provenance': 'database_pattern'}
+                    total_confidence += 0.8
+                    field_count += 1
+                    break
+            
+            # Try database matching for regions
+            for country_name, regions in regions_db.items():
+                if isinstance(regions, dict):
+                    region_names = set(regions.keys())
+                    region, region_conf = self._fuzzy_match_in_text(text, region_names, cutoff)
+                    if region:
+                        extracted_fields['region'] = {'value': region, 'confidence': region_conf, 'provenance': 'database'}
+                        total_confidence += region_conf
+                        field_count += 1
+                        
+                        # Check for subregions
+                        if 'subregion' not in extracted_fields:
+                            subregions = set(regions[region]) if isinstance(regions[region], list) else set()
+                            subregion, subregion_conf = self._fuzzy_match_in_text(text, subregions, cutoff)
+                            if subregion:
+                                extracted_fields['subregion'] = {'value': subregion, 'confidence': subregion_conf, 'provenance': 'database'}
+                                total_confidence += subregion_conf
+                                field_count += 1
+                        break
         
-        # Normalize confidence
-        confidence = min(confidence, 1.0)
-        return extracted, confidence
+        # Calculate average confidence
+        avg_confidence = total_confidence / field_count if field_count > 0 else 0.0
+        return extracted_fields, avg_confidence
 
     def get_grape_varieties(self, country: str = None, region: str = None) -> List[str]:
         """

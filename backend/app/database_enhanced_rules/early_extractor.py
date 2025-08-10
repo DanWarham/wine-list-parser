@@ -113,6 +113,7 @@ class EarlyExtractor:
         
         # Check if the grape variety appears in the text
         if best_match.lower() in text:
+            logger.info(f"🎯 GRAPE VARIETY MATCH: '{best_match}' (score: {score:.2f}) in text: '{text[:100]}...'")
             return {
                 'name': best_match,
                 'confidence': score / 100.0
@@ -133,6 +134,7 @@ class EarlyExtractor:
         
         # Check if the producer appears in the text
         if best_match.lower() in text:
+            logger.info(f"🏭 PRODUCER MATCH: '{best_match}' (score: {score:.2f}) in text: '{text[:100]}...'")
             # Get additional location info for the producer
             producer_info = self._get_producer_info(best_match)
             
@@ -167,6 +169,7 @@ class EarlyExtractor:
             if isinstance(regions, dict):
                 for region in regions.keys():
                     if region.lower() in text:
+                        logger.info(f"🗺️  REGION MATCH: '{region}' (country: '{country}') in text: '{text[:100]}...'")
                         return {
                             'region': region,
                             'country': country,
@@ -175,6 +178,7 @@ class EarlyExtractor:
             elif isinstance(regions, list):
                 for region in regions:
                     if region.lower() in text:
+                        logger.info(f"🗺️  REGION MATCH: '{region}' (country: '{country}') in text: '{text[:100]}...'")
                         return {
                             'region': region,
                             'country': country,

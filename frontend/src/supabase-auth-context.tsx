@@ -22,8 +22,15 @@ async function syncUserWithBackend(user: User | null, session: Session | null) {
   if (!user || !session) return;
   try {
     await api.getCurrentUser(session.access_token);
-  } catch (e) {
+  } catch (e: any) {
     console.error('Sync user error:', e);
+    // Don't fail the auth flow if backend is unavailable
+    // Just log the error and continue
+    if (e.message?.includes('ECONNRESET') || 
+        e.message?.includes('socket hang up') ||
+        e.message?.includes('Network Error')) {
+      console.log('Backend unavailable during user sync, continuing with Supabase auth only');
+    }
   }
 }
 

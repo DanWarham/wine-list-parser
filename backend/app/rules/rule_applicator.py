@@ -1,6 +1,7 @@
 import re
 from typing import Dict, Any, List, Optional, Tuple
 import logging
+from .confidence_calculator import ConfidenceCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,7 @@ class RuleApplicator:
     def __init__(self):
         self.confidence_threshold = 0.8
         self.min_confidence_for_rule = 0.6
+        self.confidence_calculator = ConfidenceCalculator()
     
     def apply_rules(self, wine_block: Dict[str, Any], rules: Any) -> Dict[str, Any]:
         """Apply rules to a wine block. Handles both list and dictionary rule formats."""
@@ -20,8 +22,11 @@ class RuleApplicator:
             return {'fields': {}, 'confidence': 0.0, 'provenance': 'invalid_block'}
         
         if not rules:
-            logger.error(f"[apply_rules] rules was None or empty: {rules}")
-            return {'fields': {}, 'confidence': 0.0, 'provenance': 'invalid_rules'}
+            # Only log this error once per session to avoid spam
+            if not hasattr(self, '_logged_empty_rules'):
+                logger.error(f"[apply_rules] rules was None or empty: {rules}")
+                self._logged_empty_rules = True
+            return {'fields': {}, 'confidence': 0.0, 'provenance': 'no_rules'}
         
         text = wine_block.get('text', '')
         if not text:
@@ -569,100 +574,114 @@ class RuleApplicator:
         if not result:
             return 0.0
         
-        # Base confidence from the extraction
-        base_confidence = result.get('confidence', 0.0)
+        # Extract field confidences
+        fields = result.get('fields', {})
+        field_confidences = {}
         
-        # Apply confidence modifiers
-        confidence_modifiers = []
+        for field_name, field_data in fields.items():
+            if isinstance(field_data, dict) and 'confidence' in field_data:
+                field_confidences[field_name] = field_data['confidence']
         
-        # Validation passed bonus
+        # Use the new confidence calculator for overall confidence
+        if field_confidences:
+            overall_confidence = self.confidence_calculator.calculate_overall_confidence(field_confidences)
+        else:
+            # Fallback to base confidence if no field confidences
+            overall_confidence = result.get('confidence', 0.0)
+        
+        # Apply validation and conditional bonuses
+        validation_bonus = 0.0
         if result.get('validation_passed', False):
-            confidence_modifiers.append(1.1)
-        
-        # Conditional rules matched bonus
+            validation_bonus += 0.1
         if result.get('conditional_matched', False):
-            confidence_modifiers.append(1.05)
+            validation_bonus += 0.05
         
-        # Apply modifiers
-        final_confidence = base_confidence
-        for modifier in confidence_modifiers:
-            final_confidence *= modifier
+        final_confidence = min(1.0, overall_confidence + validation_bonus)
         
-        return min(1.0, final_confidence)
+        return final_confidence
     
     def should_use_fallback(self, result: Dict[str, Any]) -> bool:
         """Determine if AI fallback should be used."""
         if not result or not isinstance(result, dict):
             return True
         
-        confidence = result.get('confidence', 0.0)
+        rule_confidence = result.get('confidence', 0.0)
         fields = result.get('fields', {})
         
         # Use fallback if confidence is low or no fields extracted
-        return confidence < self.min_confidence_for_rule or not fields
+        if rule_confidence < self.min_confidence_for_rule or not fields:
+            return True
+        
+        # For specific fields, use the confidence calculator's fallback logic
+        # This would require AI confidence, but we can use a default threshold
+        for field_name, field_data in fields.items():
+            if isinstance(field_data, dict):
+                field_confidence = field_data.get('confidence', 0.0)
+                # Use fallback for low-confidence fields
+                if field_confidence < 0.4:  # Lower threshold for individual fields
+                    return True
+        
+        return False
     
     def merge_results(self, rule_result: Dict[str, Any], ai_result: Dict[str, Any]) -> Dict[str, Any]:
         """Merge rule results with AI fallback results."""
-        # Defensive: ensure merged is a dict
+        # Defensive: ensure inputs are valid
         if rule_result is None or not isinstance(rule_result, dict):
             logger.error(f"[merge_results] rule_result was None or not a dict: {rule_result}")
-            merged = {}
-        else:
-            merged = rule_result.copy()
+            rule_result = {'fields': {}, 'confidence': 0.0, 'provenance': 'error'}
 
-        # Ensure fields is always a dictionary - CRITICAL FIX
+        if ai_result is None or not isinstance(ai_result, dict):
+            logger.error(f"[merge_results] ai_result was None or not a dict: {ai_result}")
+            ai_result = {'fields': {}, 'confidence': 0.0, 'provenance': 'error'}
+
+        # Start with rule result
+        merged = rule_result.copy()
+
+        # Ensure fields is always a dictionary
         if 'fields' not in merged or merged['fields'] is None or not isinstance(merged['fields'], dict):
-            logger.error(f"[merge_results] merged['fields'] was None, not a dict, or missing, setting to {{}}. Previous value: {merged.get('fields')}")
+            logger.debug(f"[merge_results] Creating fields dict for rule_result")
             merged['fields'] = {}
 
-        # If rule result has low confidence, use AI result for missing fields
-        if self.should_use_fallback(rule_result):
-            rule_fields = rule_result.get('fields', {}) if rule_result and isinstance(rule_result, dict) else {}
-            if not isinstance(rule_fields, dict) or rule_fields is None:
-                logger.error(f"[merge_results] rule_fields was None or not a dict: {rule_fields}")
-                rule_fields = {}
-            ai_fields = ai_result.get('fields', {}) if ai_result and isinstance(ai_result, dict) else {}
-            if not isinstance(ai_fields, dict) or ai_fields is None:
-                logger.error(f"[merge_results] ai_fields was None or not a dict: {ai_fields}")
-                ai_fields = {}
+        # Get fields from both results
+        rule_fields = rule_result.get('fields', {})
+        ai_fields = ai_result.get('fields', {})
 
-            for field_name, ai_field_data in ai_fields.items():
-                if not isinstance(ai_field_data, dict):
-                    logger.error(f"[merge_results] ai_field_data for field '{field_name}' was not a dict: {ai_field_data}")
-                    continue
-                if field_name not in rule_fields:
-                    # Ensure merged['fields'] is still a dict before assignment
-                    if merged['fields'] is None:
-                        logger.error(f"[merge_results] merged['fields'] became None before assignment, recreating dict")
-                        merged['fields'] = {}
+        # Ensure both are dictionaries
+        if not isinstance(rule_fields, dict):
+            rule_fields = {}
+        if not isinstance(ai_fields, dict):
+            ai_fields = {}
+
+        # Merge AI fields into rule fields
+        for field_name, ai_field_data in ai_fields.items():
+            if not isinstance(ai_field_data, dict):
+                logger.warning(f"[merge_results] ai_field_data for field '{field_name}' was not a dict: {ai_field_data}")
+                continue
+
+            ai_value = ai_field_data.get('value')
+            ai_conf = ai_field_data.get('confidence', 0.0)
+
+            # Only use AI if it has a valid value
+            if ai_value and ai_value != 'null' and ai_value != '':
+                rule_field = rule_fields.get(field_name, {})
+                
+                # Check if rule field exists and compare confidence
+                if isinstance(rule_field, dict):
+                    rule_value = rule_field.get('value')
+                    rule_conf = rule_field.get('confidence', 0.0)
+                else:
+                    rule_value = rule_field
+                    rule_conf = 0.0
+
+                # Use AI if field is missing or AI has higher confidence
+                if not rule_value or ai_conf > rule_conf:
                     merged['fields'][field_name] = {
-                        'value': ai_field_data.get('value'),
-                        'confidence': ai_field_data.get('confidence', 0.0) * 0.8,  # Reduce AI confidence
-                        'provenance': 'ai_fallback'
-                    }
-                elif not isinstance(rule_fields[field_name], dict):
-                    logger.error(f"[merge_results] rule_fields['{field_name}'] was not a dict: {rule_fields[field_name]}")
-                    # Ensure merged['fields'] is still a dict before assignment
-                    if merged['fields'] is None:
-                        logger.error(f"[merge_results] merged['fields'] became None before assignment, recreating dict")
-                        merged['fields'] = {}
-                    merged['fields'][field_name] = {
-                        'value': ai_field_data.get('value'),
-                        'confidence': ai_field_data.get('confidence', 0.0) * 0.8,
-                        'provenance': 'ai_fallback'
-                    }
-                elif rule_fields[field_name].get('confidence', 0.0) < ai_field_data.get('confidence', 0.0) * 0.8:
-                    # Use AI result if it has higher confidence
-                    # Ensure merged['fields'] is still a dict before assignment
-                    if merged['fields'] is None:
-                        logger.error(f"[merge_results] merged['fields'] became None before assignment, recreating dict")
-                        merged['fields'] = {}
-                    merged['fields'][field_name] = {
-                        'value': ai_field_data.get('value'),
-                        'confidence': ai_field_data.get('confidence', 0.0) * 0.8,
+                        'value': ai_value,
+                        'confidence': ai_conf,
                         'provenance': 'ai_fallback'
                     }
 
-            merged['provenance'] = 'hybrid_rules_and_ai'
+        # Update provenance to indicate hybrid approach
+        merged['provenance'] = 'hybrid_rules_and_ai'
 
         return merged 

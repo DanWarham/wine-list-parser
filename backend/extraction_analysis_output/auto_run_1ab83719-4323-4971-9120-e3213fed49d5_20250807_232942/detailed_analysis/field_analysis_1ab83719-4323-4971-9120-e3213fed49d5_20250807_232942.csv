@@ -1,0 +1,14 @@
+field,total_extracted,unique_values,average_length,most_common_values
+producer,51,39,12.372549019607844,SCHOLIUM PROJECT:4; CHANNING DAUGHTERS:3; MASSICAN:3; TABLAS CREEK:3; OCHOTA BARRELS:2
+cuvee,33,21,7.909090909090909,20:13; NEUBURGER BETONT:1; MORILLON 'VOM OPOK':1; RIESLING 'SMARAGD':1; GABA DO XIL:1
+type,1,1,19.0,SOUTHERN HEMISPHERE:1
+vintage,53,7,2.7547169811320753,20:32; 2014:9; 2013:6; 2011:2; 2012:2
+price,53,24,2.0943396226415096,61:8; 44:6; 39:6; 49:4; 50:3
+bottle_size,1,1,6.0,IBERIA:1
+grape_variety,34,16,10.882352941176471,CHARDONNAY:12; Chardonnay:5; SAUVIGNON BLANC:4; Neuburger:1; Morillon:1
+country,25,10,6.28,Italy:6; Spain:5; USA:3; Germany:2; Portugal:2
+region,35,28,9.4,Trentino Alto Adige:2; Mosel:2; Vinho Verde:2; SWARTLAND:2; Adelaide Hills:2
+subregion,0,0,0.0,
+designation,2,2,10.5,SMARAGD:1; GOLDEN CLUSTER:1
+classification,0,0,0.0,
+sub_type,0,0,0.0,

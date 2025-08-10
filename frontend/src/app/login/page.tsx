@@ -33,14 +33,35 @@ export default function Login() {
       const session = data.session
       if (!session) throw new Error('No session after login')
       
-      const userInfo = await api.getCurrentUser(session.access_token)
-      if (userInfo.role === 'admin') {
-        await router.push('/admin')
-      } else {
-        await router.push('/search')
+      try {
+        // Try to get user info from backend
+        const userInfo = await api.getCurrentUser(session.access_token)
+        if (userInfo.role === 'admin') {
+          await router.push('/admin')
+        } else {
+          await router.push('/search')
+        }
+      } catch (apiError: any) {
+        console.error('Backend API error:', apiError)
+        // Check if it's a backend connection issue
+        if (apiError.message?.includes('ECONNRESET') || 
+            apiError.message?.includes('socket hang up') ||
+            apiError.message?.includes('Network Error')) {
+          setError('Backend service is currently unavailable. Please try again later.')
+        } else {
+          // For other API errors, still try to redirect based on Supabase user info
+          // This allows users to access the app even if backend is down
+          console.log('Backend unavailable, redirecting to home page')
+          await router.push('/')
+        }
       }
     } catch (err: any) {
-      setError('Invalid credentials')
+      console.error('Login error:', err)
+      if (err.message?.includes('Invalid login credentials')) {
+        setError('Invalid email or password')
+      } else {
+        setError('Login failed. Please try again.')
+      }
     }
     setLoading(false)
   }

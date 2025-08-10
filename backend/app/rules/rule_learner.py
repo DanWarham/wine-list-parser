@@ -25,7 +25,10 @@ class RuleLearner:
                 logger.warning(f"Failed to initialize hybrid pipeline: {str(e)}")
 
     def analyze_entries(self, entries: List[Dict[str, Any]], sample_size: int = 3) -> Dict[str, Any]:
-        """Analyze entries and generate rules using the AI Hybrid Rule Generation System only."""
+        """
+        Analyze entries and generate rules using the AI Hybrid Rule Generation System only.
+        AI parsing is run on a sample only, and the results are used to improve regex and other rules, which are then applied to all entries. AI fallback is only used for ambiguous/failed cases.
+        """
         try:
             logger.info(f"Starting rule learning for restaurant {self.restaurant_id} with {len(entries)} entries")
             if self.hybrid_pipeline and AI_RULE_GENERATION_ENABLED:

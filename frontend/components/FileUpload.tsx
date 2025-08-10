@@ -35,6 +35,9 @@ export default function FileUpload({ onFileSelect, accept = '.pdf,.jpg,.jpeg,.pn
       if (response.status === 'parsed') {
         setSuccess(`Successfully processed ${file.name}! ${response.message}`)
         onFileSelect(file)
+      } else if (response.status === 'processing') {
+        setSuccess(`File uploaded successfully! ${response.message}`)
+        onFileSelect(file)
       } else if (response.status === 'error') {
         throw new Error(response.message || 'Upload failed')
       } else {

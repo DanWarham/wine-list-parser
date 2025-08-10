@@ -8,12 +8,11 @@ logger = logging.getLogger(__name__)
 class IntelligentSampler:
     """
     Intelligent sampling system for wine list entries.
-    
-    Selects diverse samples based on:
-    - Regex failures (40% priority)
-    - Wine type diversity (30% priority) 
-    - Price range diversity (20% priority)
-    - Regional diversity (10% priority)
+    Selects diverse samples for AI parsing and rule generation, NOT for running AI on all entries.
+    - 40% regex failures (to improve rules)
+    - 30% wine type diversity
+    - 20% price range diversity
+    - 10% regional diversity
     """
     
     def __init__(self):
@@ -41,6 +40,21 @@ class IntelligentSampler:
             'napa', 'sonoma', 'barossa', 'marlborough', 'mosel'
         ]
 
+        # Entry length categories (character count)
+        self.length_bins = {
+            'short': (0, 40),
+            'medium': (40, 100),
+            'long': (100, float('inf'))
+        }
+        # Delimiter types
+        self.delimiters = [',', '\t', '|', ';', '/']
+        # Field order patterns (heuristic)
+        self.field_order_patterns = [
+            ('price_last', lambda t: bool(re.search(r'\d+(?:\.\d{2})?\s*$', t))),
+            ('vintage_first', lambda t: bool(re.match(r'\d{4}', t.strip()))),
+            # Add more as needed
+        ]
+
     def select_sample(self, entries: List[Dict[str, Any]], sample_size: int = 15) -> List[Dict[str, Any]]:
         """
         Select intelligent sample from wine list entries.
@@ -65,41 +79,67 @@ class IntelligentSampler:
         
         logger.info(f"Selecting {sample_size} entries from {len(valid_entries)} total entries")
         
-        # Step 1: Identify regex failures (40% priority)
+        # Calculate new axis sample sizes (rebalance for 6 axes)
+        axis_props = {
+            'regex': 0.25,
+            'wine_type': 0.18,
+            'price': 0.15,
+            'region': 0.10,
+            'length': 0.16,
+            'delimiter': 0.08,
+            'field_order': 0.08
+        }
+        # Step 1: Regex failures
         regex_failures = self._identify_regex_failures(valid_entries)
-        regex_sample_size = int(sample_size * 0.4)
+        regex_sample_size = int(sample_size * axis_props['regex'])
         selected_regex = self._select_regex_failures(regex_failures, regex_sample_size)
-        
-        # Step 2: Select diverse wine types (30% priority)
+        # Step 2: Wine type
         remaining_entries = [e for e in valid_entries if e not in selected_regex]
-        wine_type_sample_size = int(sample_size * 0.3)
+        wine_type_sample_size = int(sample_size * axis_props['wine_type'])
         selected_wine_types = self._select_wine_type_diversity(remaining_entries, wine_type_sample_size)
-        
-        # Step 3: Select price range diversity (20% priority)
+        # Step 3: Price
         remaining_entries = [e for e in remaining_entries if e not in selected_wine_types]
-        price_sample_size = int(sample_size * 0.2)
+        price_sample_size = int(sample_size * axis_props['price'])
         selected_price = self._select_price_diversity(remaining_entries, price_sample_size)
-        
-        # Step 4: Select regional diversity (10% priority)
+        # Step 4: Region
         remaining_entries = [e for e in remaining_entries if e not in selected_price]
-        region_sample_size = sample_size - len(selected_regex) - len(selected_wine_types) - len(selected_price)
+        region_sample_size = int(sample_size * axis_props['region'])
         selected_regions = self._select_regional_diversity(remaining_entries, region_sample_size)
-        
+        # Step 5: Entry length
+        remaining_entries = [e for e in remaining_entries if e not in selected_regions]
+        length_sample_size = int(sample_size * axis_props['length'])
+        selected_length = self._select_length_diversity(remaining_entries, length_sample_size)
+        # Step 6: Delimiter
+        remaining_entries = [e for e in remaining_entries if e not in selected_length]
+        delimiter_sample_size = int(sample_size * axis_props['delimiter'])
+        selected_delimiter = self._select_delimiter_diversity(remaining_entries, delimiter_sample_size)
+        # Step 7: Field order
+        remaining_entries = [e for e in remaining_entries if e not in selected_delimiter]
+        field_order_sample_size = sample_size - (
+            len(selected_regex) + len(selected_wine_types) + len(selected_price) +
+            len(selected_regions) + len(selected_length) + len(selected_delimiter)
+        )
+        selected_field_order = self._select_field_order_diversity(remaining_entries, field_order_sample_size)
         # Combine all selections
-        selected_sample = selected_regex + selected_wine_types + selected_price + selected_regions
-        
+        selected_sample = (
+            selected_regex + selected_wine_types + selected_price + selected_regions +
+            selected_length + selected_delimiter + selected_field_order
+        )
         # Add diversity metadata
         for entry in selected_sample:
-            if entry is not None:  # Double-check for None values
+            if entry is not None:
                 entry['_sampling_metadata'] = {
                     'diversity_score': self._calculate_diversity_score(entry),
-                    'selection_reason': self._get_selection_reason(entry, selected_regex, selected_wine_types, selected_price, selected_regions)
+                    'selection_reason': self._get_selection_reason(
+                        entry, selected_regex, selected_wine_types, selected_price,
+                        selected_regions, selected_length, selected_delimiter, selected_field_order
+                    )
                 }
-        
         logger.info(f"Selected {len(selected_sample)} entries with diversity breakdown: "
-                   f"regex_failures={len(selected_regex)}, wine_types={len(selected_wine_types)}, "
-                   f"price_ranges={len(selected_price)}, regions={len(selected_regions)}")
-        
+                    f"regex_failures={len(selected_regex)}, wine_types={len(selected_wine_types)}, "
+                    f"price_ranges={len(selected_price)}, regions={len(selected_regions)}, "
+                    f"length={len(selected_length)}, delimiter={len(selected_delimiter)}, "
+                    f"field_order={len(selected_field_order)}")
         return selected_sample
 
     def _identify_regex_failures(self, entries: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -279,6 +319,96 @@ class IntelligentSampler:
         
         return selected[:target_size]
 
+    def _select_length_diversity(self, entries: List[Dict[str, Any]], target_size: int) -> List[Dict[str, Any]]:
+        valid_entries = [e for e in entries if e is not None]
+        if len(valid_entries) <= target_size:
+            return valid_entries
+        categorized = defaultdict(list)
+        for entry in valid_entries:
+            text = entry.get('text', '')
+            length_cat = self._classify_length(text)
+            categorized[length_cat].append(entry)
+        selected = []
+        bins = list(categorized.keys())
+        if bins:
+            per_bin = max(1, target_size // len(bins))
+            for b in bins:
+                selected.extend(categorized[b][:per_bin])
+                if len(selected) >= target_size:
+                    break
+            remaining_slots = target_size - len(selected)
+            if remaining_slots > 0:
+                # Fill with any remaining
+                for b in bins:
+                    if len(selected) >= target_size:
+                        break
+                    selected.extend(categorized[b][per_bin:per_bin+remaining_slots])
+        return selected[:target_size]
+    def _classify_length(self, text: str) -> str:
+        l = len(text)
+        for bin_name, (min_l, max_l) in self.length_bins.items():
+            if min_l <= l < max_l:
+                return bin_name
+        return 'long'
+    def _select_delimiter_diversity(self, entries: List[Dict[str, Any]], target_size: int) -> List[Dict[str, Any]]:
+        valid_entries = [e for e in entries if e is not None]
+        if len(valid_entries) <= target_size:
+            return valid_entries
+        categorized = defaultdict(list)
+        for entry in valid_entries:
+            text = entry.get('text', '')
+            delim = self._classify_delimiter(text)
+            categorized[delim].append(entry)
+        selected = []
+        delims = list(categorized.keys())
+        if delims:
+            per_delim = max(1, target_size // len(delims))
+            for d in delims:
+                selected.extend(categorized[d][:per_delim])
+                if len(selected) >= target_size:
+                    break
+            remaining_slots = target_size - len(selected)
+            if remaining_slots > 0:
+                for d in delims:
+                    if len(selected) >= target_size:
+                        break
+                    selected.extend(categorized[d][per_delim:per_delim+remaining_slots])
+        return selected[:target_size]
+    def _classify_delimiter(self, text: str) -> str:
+        for delim in self.delimiters:
+            if delim in text:
+                return delim
+        return 'none'
+    def _select_field_order_diversity(self, entries: List[Dict[str, Any]], target_size: int) -> List[Dict[str, Any]]:
+        valid_entries = [e for e in entries if e is not None]
+        if len(valid_entries) <= target_size:
+            return valid_entries
+        categorized = defaultdict(list)
+        for entry in valid_entries:
+            text = entry.get('text', '')
+            order = self._classify_field_order(text)
+            categorized[order].append(entry)
+        selected = []
+        orders = list(categorized.keys())
+        if orders:
+            per_order = max(1, target_size // len(orders))
+            for o in orders:
+                selected.extend(categorized[o][:per_order])
+                if len(selected) >= target_size:
+                    break
+            remaining_slots = target_size - len(selected)
+            if remaining_slots > 0:
+                for o in orders:
+                    if len(selected) >= target_size:
+                        break
+                    selected.extend(categorized[o][per_order:per_order+remaining_slots])
+        return selected[:target_size]
+    def _classify_field_order(self, text: str) -> str:
+        for name, fn in self.field_order_patterns:
+            if fn(text):
+                return name
+        return 'other'
+
     def _classify_wine_type(self, text: str) -> Optional[str]:
         """Classify wine type from text."""
         text_lower = text.lower()
@@ -355,12 +485,7 @@ class IntelligentSampler:
         
         return min(1.0, score)
 
-    def _get_selection_reason(self, entry: Dict[str, Any], 
-                            regex_selected: List[Dict], 
-                            wine_type_selected: List[Dict],
-                            price_selected: List[Dict],
-                            region_selected: List[Dict]) -> str:
-        """Get the reason why this entry was selected."""
+    def _get_selection_reason(self, entry, regex_selected, wine_type_selected, price_selected, region_selected, length_selected=None, delimiter_selected=None, field_order_selected=None):
         if entry in regex_selected:
             return "regex_failure"
         elif entry in wine_type_selected:
@@ -369,6 +494,12 @@ class IntelligentSampler:
             return "price_diversity"
         elif entry in region_selected:
             return "regional_diversity"
+        elif length_selected and entry in length_selected:
+            return "length_diversity"
+        elif delimiter_selected and entry in delimiter_selected:
+            return "delimiter_diversity"
+        elif field_order_selected and entry in field_order_selected:
+            return "field_order_diversity"
         else:
             return "fallback"
 

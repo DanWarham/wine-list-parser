@@ -1,0 +1,474 @@
+{
+  "France": {
+    "Bordeaux": [
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Cabernet Franc",
+      "Petit Verdot",
+      "Malbec",
+      "Carm\u00e9n\u00e8re"
+    ],
+    "Burgundy": [
+      "Pinot Noir",
+      "Chardonnay",
+      "Aligot\u00e9",
+      "Gamay"
+    ],
+    "Loire Valley": [
+      "Sauvignon Blanc",
+      "Chenin Blanc",
+      "Cabernet Franc",
+      "Melon de Bourgogne",
+      "Grolleau",
+      "Pineau d'Aunis"
+    ],
+    "Rh\u00f4ne Valley": [
+      "Syrah",
+      "Grenache",
+      "Mourv\u00e8dre",
+      "Viognier",
+      "Marsanne",
+      "Roussanne",
+      "Carignan",
+      "Cinsault",
+      "Clairette"
+    ],
+    "Alsace": [
+      "Riesling",
+      "Gew\u00fcrztraminer",
+      "Pinot Gris",
+      "Pinot Blanc",
+      "Sylvaner",
+      "Muscat",
+      "Auxerrois"
+    ],
+    "Provence": [
+      "Grenache",
+      "Cinsault",
+      "Syrah",
+      "Mourv\u00e8dre",
+      "Tibouren",
+      "Carignan",
+      "Clairette"
+    ],
+    "Southwest France": [
+      "Tannat",
+      "Malbec",
+      "Gros Manseng",
+      "Petit Manseng",
+      "Negrette"
+    ],
+    "Languedoc-Roussillon": [
+      "Grenache",
+      "Syrah",
+      "Mourv\u00e8dre",
+      "Carignan",
+      "Cinsault",
+      "Picpoul",
+      "Muscat"
+    ]
+  },
+  "Italy": {
+    "Piedmont": [
+      "Nebbiolo",
+      "Barbera",
+      "Dolcetto",
+      "Moscato",
+      "Arneis",
+      "Cortese",
+      "Grignolino",
+      "Brachetto"
+    ],
+    "Tuscany": [
+      "Sangiovese",
+      "Canaiolo",
+      "Colorino",
+      "Trebbiano Toscano",
+      "Malvasia",
+      "Mammolo"
+    ],
+    "Veneto": [
+      "Corvina",
+      "Rondinella",
+      "Molinara",
+      "Garganega",
+      "Raboso",
+      "Vespaiola"
+    ],
+    "Sicily": [
+      "Nero d'Avola",
+      "Frappato",
+      "Grillo",
+      "Catarratto",
+      "Carricante",
+      "Inzolia",
+      "Perricone",
+      "Zibibbo"
+    ],
+    "Sardinia": [
+      "Cannonau",
+      "Vermentino",
+      "Carignano",
+      "Monica",
+      "Nuragus"
+    ],
+    "Trentino-Alto Adige": [
+      "Lagrein",
+      "Teroldego",
+      "Schiava",
+      "Pinot Grigio",
+      "Gew\u00fcrztraminer"
+    ],
+    "Friuli-Venezia Giulia": [
+      "Friulano",
+      "Refosco",
+      "Picolit",
+      "Ribolla Gialla",
+      "Schioppettino"
+    ],
+    "Lombardy": [
+      "Nebbiolo",
+      "Barbera",
+      "Croatina",
+      "Pinot Nero",
+      "Trebbiano di Lugana"
+    ]
+  },
+  "Spain": {
+    "Rioja": [
+      "Tempranillo",
+      "Garnacha",
+      "Mazuelo",
+      "Graciano",
+      "Viura",
+      "Malvas\u00eda",
+      "Tempranillo Blanco"
+    ],
+    "Ribera del Duero": [
+      "Tempranillo",
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Malbec",
+      "Garnacha"
+    ],
+    "R\u00edas Baixas": [
+      "Albari\u00f1o",
+      "Loureira",
+      "Treixadura",
+      "Ca\u00ed\u00f1o Blanco"
+    ],
+    "Priorat": [
+      "Garnacha",
+      "Cari\u00f1ena",
+      "Syrah",
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Carignan"
+    ],
+    "Sherry/Jerez": [
+      "Palomino",
+      "Pedro Xim\u00e9nez",
+      "Moscatel"
+    ]
+  },
+  "Portugal": {
+    "Douro": [
+      "Touriga Nacional",
+      "Tinta Roriz",
+      "Touriga Franca",
+      "Tinta Barroca",
+      "Tinto C\u00e3o",
+      "Sous\u00e3o"
+    ],
+    "Vinho Verde": [
+      "Alvarinho",
+      "Loureiro",
+      "Arinto",
+      "Avesso",
+      "Trajadura"
+    ],
+    "D\u00e3o": [
+      "Touriga Nacional",
+      "Jaen",
+      "Alfrocheiro",
+      "Encruzado"
+    ],
+    "Madeira": [
+      "Sercial",
+      "Verdelho",
+      "Bual",
+      "Malmsey",
+      "Tinta Negra"
+    ]
+  },
+  "Germany": {
+    "Rheingau": [
+      "Riesling",
+      "Sp\u00e4tburgunder",
+      "M\u00fcller-Thurgau"
+    ],
+    "Mosel": [
+      "Riesling",
+      "Elbling"
+    ],
+    "Pfalz": [
+      "Riesling",
+      "Sp\u00e4tburgunder",
+      "Dornfelder"
+    ],
+    "Franken": [
+      "Silvaner",
+      "M\u00fcller-Thurgau",
+      "Bacchus"
+    ]
+  },
+  "Austria": {
+    "Wachau": [
+      "Gr\u00fcner Veltliner",
+      "Riesling",
+      "Neuburger"
+    ],
+    "Burgenland": [
+      "Blaufr\u00e4nkisch",
+      "Zweigelt",
+      "St. Laurent",
+      "Welschriesling"
+    ]
+  },
+  "Switzerland": {
+    "Valais": [
+      "Chasselas",
+      "Petite Arvine",
+      "Cornalin",
+      "Humagne Rouge"
+    ]
+  },
+  "Greece": {
+    "Santorini": [
+      "Assyrtiko",
+      "Athiri",
+      "Aidani"
+    ],
+    "Nemea": [
+      "Agiorgitiko"
+    ],
+    "Naoussa": [
+      "Xinomavro"
+    ]
+  },
+  "Hungary": {
+    "Tokaj": [
+      "Furmint",
+      "H\u00e1rslevel\u0171",
+      "S\u00e1rgamuskot\u00e1ly",
+      "Z\u00e9ta"
+    ],
+    "Eger": [
+      "K\u00e9kfrankos",
+      "Bikav\u00e9r",
+      "Kadarka"
+    ]
+  },
+  "Georgia": [
+    "Saperavi",
+    "Rkatsiteli",
+    "Mtsvane",
+    "Kisi",
+    "Alexandrouli",
+    "Tavkveri"
+  ],
+  "United States": {
+    "California": [
+      "Cabernet Sauvignon",
+      "Chardonnay",
+      "Zinfandel",
+      "Merlot",
+      "Pinot Noir",
+      "Sauvignon Blanc",
+      "Syrah",
+      "Petite Sirah",
+      "Petite Syrah",
+      "Grenache"
+    ],
+    "Oregon": [
+      "Pinot Noir",
+      "Pinot Gris",
+      "Chardonnay",
+      "Riesling"
+    ],
+    "Washington": [
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Syrah",
+      "Chardonnay",
+      "Riesling"
+    ],
+    "New York": [
+      "Riesling",
+      "Concord",
+      "Catawba",
+      "Seyval Blanc",
+      "Chardonnay"
+    ]
+  },
+  "Canada": {
+    "Ontario": [
+      "Vidal",
+      "Riesling",
+      "Chardonnay",
+      "Cabernet Franc",
+      "Baco Noir"
+    ],
+    "British Columbia": [
+      "Pinot Gris",
+      "Merlot",
+      "Pinot Noir",
+      "Chardonnay",
+      "Gew\u00fcrztraminer"
+    ]
+  },
+  "Australia": {
+    "South Australia": [
+      "Shiraz",
+      "Cabernet Sauvignon",
+      "Grenache",
+      "Chardonnay",
+      "Riesling",
+      "Semillon"
+    ],
+    "Victoria": [
+      "Pinot Noir",
+      "Shiraz",
+      "Chardonnay",
+      "Cabernet Sauvignon"
+    ],
+    "Western Australia": [
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Chardonnay",
+      "Sauvignon Blanc"
+    ]
+  },
+  "New Zealand": {
+    "Marlborough": [
+      "Sauvignon Blanc",
+      "Pinot Noir",
+      "Chardonnay",
+      "Riesling",
+      "Pinot Gris"
+    ],
+    "Central Otago": [
+      "Pinot Noir",
+      "Riesling",
+      "Chardonnay"
+    ]
+  },
+  "South Africa": {
+    "General": [
+      "Chenin Blanc",
+      "Pinotage",
+      "Cabernet Sauvignon",
+      "Merlot",
+      "Sauvignon Blanc",
+      "Shiraz"
+    ],
+    "Western Cape": [
+      "Pinotage",
+      "Chenin Blanc",
+      "Shiraz",
+      "Cabernet Sauvignon"
+    ]
+  },
+  "Argentina": [
+    "Malbec",
+    "Bonarda",
+    "Torront\u00e9s",
+    "Cabernet Sauvignon",
+    "Syrah"
+  ],
+  "Chile": [
+    "Carmen\u00e8re",
+    "Cabernet Sauvignon",
+    "Merlot",
+    "Sauvignon Blanc",
+    "Syrah",
+    "Pais"
+  ],
+  "Uruguay": [
+    "Tannat",
+    "Albari\u00f1o"
+  ],
+  "Synonyms": {
+    "Syrah": [
+      "Shiraz"
+    ],
+    "Tempranillo": [
+      "Tinta Roriz",
+      "Aragon\u00e9s",
+      "Cencibel",
+      "Ull de Llebre",
+      "Tinta del Pa\u00eds",
+      "Tinto Fino"
+    ],
+    "Pinot Gris": [
+      "Pinot Grigio",
+      "Grauburgunder"
+    ],
+    "Mourv\u00e8dre": [
+      "Monastrell",
+      "Mataro"
+    ],
+    "Zinfandel": [
+      "Primitivo",
+      "Tribidrag"
+    ],
+    "Chenin Blanc": [
+      "Steen"
+    ],
+    "Grenache": [
+      "Garnacha",
+      "Cannonau"
+    ],
+    "S\u00e9millon": [
+      "Semillon"
+    ],
+    "Sauvignon Blanc": [
+      "Fum\u00e9 Blanc"
+    ],
+    "Muscat": [
+      "Moscato",
+      "Moscatel",
+      "Muscat Blanc \u00e0 Petits Grains"
+    ],
+    "Garnacha": [
+      "Grenache",
+      "Cannonau"
+    ],
+    "Carignan": [
+      "Cari\u00f1ena",
+      "Mazuelo"
+    ],
+    "Pinotage": [
+      "Hermitage x Pinot Noir"
+    ]
+  },
+  "International": [
+    "Cabernet Sauvignon",
+    "Merlot",
+    "Pinot Noir",
+    "Chardonnay",
+    "Syrah",
+    "Sauvignon Blanc",
+    "Riesling",
+    "Grenache",
+    "Tempranillo",
+    "Zinfandel",
+    "Malbec",
+    "Sangiovese",
+    "Nebbiolo",
+    "Moscato",
+    "Viognier",
+    "Petit Verdot",
+    "Torront\u00e9s"
+  ]
+}

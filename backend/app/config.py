@@ -49,7 +49,13 @@ try:
     SAMPLE_SIZE_RATIO = float(os.getenv('SAMPLE_SIZE_RATIO', '0.02'))  # 2% of entries
     MIN_SAMPLE_SIZE = int(os.getenv('MIN_SAMPLE_SIZE', '5'))
     MAX_SAMPLE_SIZE = int(os.getenv('MAX_SAMPLE_SIZE', '10'))  # Reduced from 20 to 10
-    MIN_CONFIDENCE_THRESHOLD_HYBRID = float(os.getenv('MIN_CONFIDENCE_THRESHOLD_HYBRID', '0.7'))
+    
+    # AI Fallback Configuration - LOWERED THRESHOLDS
+    MIN_CONFIDENCE_THRESHOLD_HYBRID = float(os.getenv('MIN_CONFIDENCE_THRESHOLD_HYBRID', '0.4'))  # Lowered from 0.7 to 0.4
+    MIN_FIELDS_EXTRACTED_THRESHOLD = int(os.getenv('MIN_FIELDS_EXTRACTED_THRESHOLD', '3'))  # New: minimum fields required
+    AI_FALLBACK_MAX_ENTRIES = int(os.getenv('AI_FALLBACK_MAX_ENTRIES', '50'))  # New: limit AI usage for large files
+    AI_FALLBACK_SAMPLE_RATIO = float(os.getenv('AI_FALLBACK_SAMPLE_RATIO', '0.3'))  # New: use AI on 30% of problematic entries
+    
     FALLBACK_AI_MODEL = os.getenv('FALLBACK_AI_MODEL', 'gpt-3.5-turbo')
     RULE_GENERATION_MODEL = os.getenv('RULE_GENERATION_MODEL', 'gpt-3.5-turbo')  # Changed from gpt-4 to gpt-3.5-turbo
     logger.info(f"[config] AI configuration loaded - AI_RULE_GENERATION_ENABLED: {AI_RULE_GENERATION_ENABLED}")

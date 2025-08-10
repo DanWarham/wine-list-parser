@@ -6,10 +6,10 @@ This directory contains the implementation of the AI-Enhanced Hybrid Rule Genera
 
 The AI Hybrid Rule Generation System provides a cost-effective, high-accuracy approach to wine list parsing by:
 
-1. **Intelligent Sampling**: Selects diverse sample entries based on regex failures, wine types, price ranges, and regions
-2. **AI Rule Generation**: Uses GPT-4 to generate comprehensive extraction rules from a small sample
-3. **Rule Application**: Applies generated rules to entire wine lists with confidence scoring
-4. **AI Fallback**: Falls back to GPT-3.5-turbo for low-confidence cases
+1. **Intelligent Sampling**: Selects diverse sample entries based on regex failures, wine types, price ranges, and regions (sample only, not all entries)
+2. **AI Rule Generation**: Uses GPT-4 to generate comprehensive extraction rules from a small sample (AI parsing is run on the sample only)
+3. **Rule Application**: Applies generated rules to entire wine lists with confidence scoring (majority of entries use rule-based extraction)
+4. **AI Fallback**: Falls back to GPT-3.5-turbo for low-confidence or failed cases only (not all entries)
 5. **Rule Caching**: Caches generated rules for similar wine list formats
 
 ## Architecture
@@ -136,7 +136,7 @@ results = learner.analyze_entries(entries, sample_size=3)
 
 ### Cost Optimization
 - **Before**: AI call per entry (~$0.50-2.00 per file)
-- **After**: 1 GPT-4 call + minimal GPT-3.5-turbo fallbacks (~$0.10-0.40 per file)
+- **After**: 1 GPT-4 call + minimal GPT-3.5-turbo fallbacks (~$0.10-0.40 per file, AI parsing is run on a sample only)
 - **Savings**: 90% cost reduction
 
 ### Accuracy Improvements

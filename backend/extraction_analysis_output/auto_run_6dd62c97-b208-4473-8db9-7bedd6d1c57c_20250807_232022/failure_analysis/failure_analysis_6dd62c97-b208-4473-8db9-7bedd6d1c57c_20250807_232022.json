@@ -1,0 +1,2595 @@
+{
+  "failed_fields": {
+    "producer": {
+      "count": 114,
+      "percentage": 0.7916666666666666,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, Paul Pernot, Bourgogne 2022 55...",
+        "Chardonnay, Aline Beaun\u00e9, Bourgogne 2022 57...",
+        "Aligot\u00e9, \u2018Galatee\u2019, Rapha\u00eblle Guyot, Saint-Bris-Le-Vineu 2022 58..."
+      ]
+    },
+    "cuvee": {
+      "count": 104,
+      "percentage": 0.7222222222222222,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, Paul Pernot, Bourgogne 2022 55...",
+        "Chardonnay, Aline Beaun\u00e9, Bourgogne 2022 57..."
+      ]
+    },
+    "type": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "vintage": {
+      "count": 68,
+      "percentage": 0.4722222222222222,
+      "sample_raw_texts": [
+        "Chardonnay, 1er Cru \u2018Beauregard\u2019, Domaine Pattes Loup, Chablis 2019 112...",
+        "Chardonnay, 1er Cru \u2018Sur La Roche\u2019, Jessica Litaud, Pouilly-Fuiss\u00e9 2020 136...",
+        "Chardonnay, 1er Cru \u2018Morgeot\u2019, Domaine Bernard Moreau et Fils, Chassagne-Montrachet 2020 188...",
+        "Cabernet Franc, \u2018Sur La Butte\u2019, Ch\u00e2teau de Plaisance, Anjou 2020 43...",
+        "Cabernet Franc, 'Le Pied de la Butte', Domaine de la Butte, Bourgueil 2022 44..."
+      ]
+    },
+    "price": {
+      "count": 67,
+      "percentage": 0.4652777777777778,
+      "sample_raw_texts": [
+        "Chardonnay, 1er Cru \u2018Beauregard\u2019, Domaine Pattes Loup, Chablis 2019 112...",
+        "Chardonnay, 1er Cru \u2018Sur La Roche\u2019, Jessica Litaud, Pouilly-Fuiss\u00e9 2020 136...",
+        "Chardonnay, 1er Cru \u2018Morgeot\u2019, Domaine Bernard Moreau et Fils, Chassagne-Montrachet 2020 188...",
+        "Cabernet Franc, \u2018Sur La Butte\u2019, Ch\u00e2teau de Plaisance, Anjou 2020 43...",
+        "Cabernet Franc, 'Le Pied de la Butte', Domaine de la Butte, Bourgueil 2022 44..."
+      ]
+    },
+    "bottle_size": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "grape_variety": {
+      "count": 67,
+      "percentage": 0.4652777777777778,
+      "sample_raw_texts": [
+        "Chardonnay, 1er Cru \u2018Beauregard\u2019, Domaine Pattes Loup, Chablis 2019 112...",
+        "Chardonnay, 1er Cru \u2018Sur La Roche\u2019, Jessica Litaud, Pouilly-Fuiss\u00e9 2020 136...",
+        "Chardonnay, 1er Cru \u2018Morgeot\u2019, Domaine Bernard Moreau et Fils, Chassagne-Montrachet 2020 188...",
+        "Cabernet Franc, \u2018Sur La Butte\u2019, Ch\u00e2teau de Plaisance, Anjou 2020 43...",
+        "Cabernet Franc, 'Le Pied de la Butte', Domaine de la Butte, Bourgueil 2022 44..."
+      ]
+    },
+    "country": {
+      "count": 76,
+      "percentage": 0.5277777777777778,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "region": {
+      "count": 77,
+      "percentage": 0.5347222222222222,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "subregion": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "designation": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "classification": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    },
+    "sub_type": {
+      "count": 144,
+      "percentage": 1.0,
+      "sample_raw_texts": [
+        "Chardonnay, Armand Heitz, Bourgogne 2022 48...",
+        "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49...",
+        "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54...",
+        "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55...",
+        "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55..."
+      ]
+    }
+  },
+  "common_failure_patterns": [],
+  "entries_with_multiple_failures": [
+    {
+      "entry_id": "f8f7aa08-6a15-42cc-8bee-5fe1d0436f14",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Armand Heitz, Bourgogne 2022 48",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c70a9b3f-4a24-4610-961b-50888d2c076b",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Les Longeroies\u2019, Domaine Bruno Clair, Marsannay 2017 49",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "2bd8ae67-0f4c-4fa6-a753-64c589ab8587",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, Domaine Chapelle de Blagny, Bourgogne 2022 54",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1069584c-f415-4cfd-bb67-be9f6344bc71",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Remi Rollin, Pernand-Vergelesses 2020 55",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "34655d23-b319-41cc-b837-77a075e08b44",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Les Sardines\u2019, Domaine Robert-Denogent, M\u00e2con-Villages 2022 55",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "e6f35af6-eb2f-465a-b05b-dc37f6055eb8",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Paul Pernot, Bourgogne 2022 55",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "3a05cb1e-6695-4fcb-b35a-03a58da960a2",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Aline Beaun\u00e9, Bourgogne 2022 57",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "d43b234c-fda3-4fa7-8f92-c84e931a2217",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, \u2018Galatee\u2019, Rapha\u00eblle Guyot, Saint-Bris-Le-Vineu 2022 58",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "7e9f26ea-2384-431a-9721-02eb46ecc22c",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, Domaine A&P De Villaine, Bouzeron 2022 60",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "defad457-34f0-41ac-b528-0b5c04152a15",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Chapuis & Chapuis, Rully 2022 61",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "3e470e19-9c8e-4208-8692-3dc83bb64b87",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Le Vendangeur Masqu\u00e9, Bourgogne 2022 61",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "90e9a78c-6e8b-4651-a050-0c8440705327",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Vieilles Vignes Pargues\u2019, Moreau-Naudet, Chablis 2022 63",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b85bef31-64d4-4328-991b-f29877650312",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, Ath\u00e9na\u00efs de B\u00e9ru, Bourgogne 2020 67",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8734f3ae-07e4-4e9c-a0d3-9d80cb5242ef",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, Renaud Boyer, Bourgogne 2021 68",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b95626d4-8d4c-41fb-925a-4f09c26eb0cb",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018La Fussiere\u2019, Nicolas Perrault, Maranges 2022 69",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8a9a248b-5829-419f-af54-3d9aec86f951",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Vau de Vey\u2019, Alain Mathias, Chablis 2021 72",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "76e3cb9a-15f6-45a8-a18b-6c172bde22dc",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Domaine Hubert Lignier, Saint Romain 2019 73",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a6cd5e65-8ee9-4b4b-b407-cf192e5c1b01",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Le Bas de Chapelot\u2019, Domaine Eleni et Edouard Vocoret, Chablis 2021 73",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8a8760bf-0991-4576-87ec-2f1d3256cafc",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Maison En Belles Lies, Month\u00e9lie 2021 78",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "bcbd498e-13e5-4594-9afa-bd4c5a537c85",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Aligot\u00e9, Domaine Sylvain Cathiard & Fils, Bourgogne 2020 79",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "d76dec41-822b-4a12-8105-46c61ec8e58d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Les Perri\u00e8res\u2019, Si Tu Sais, Bourgogne 2020 85",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "9f23add1-17f1-4be8-8b1a-5530fc784f7c",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Jardin du Calvaire\u2019, Etienne Sauzet, Hautes C\u00f4tes de Beaune 2022 86",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c833baac-89ce-4099-8fb2-549bcf1bdc26",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Mainbey\u2019, Chanter\u00eaves, Hautes C\u00f4tes de Beaune 2022 89",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "0cdfd232-e81b-4d7f-881c-2767b7f791fd",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Domaine Fernand & Laurent Pillot, Chassagne-Montrachet 2021 98",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "de11f5b9-3455-4183-b5b8-06d8b273d96a",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Domaine Ballot-Millot, Meursault 2021 102",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "34a0e617-fa39-4c8c-9599-b48d96baae81",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Beauregard\u2019, Domaine Pattes Loup, Chablis 2019 112",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "20338a0f-6084-46b4-9e19-a6946b4f648b",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Alex Moreau, Puligny-Montrachet 2021 127",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b69059d1-2e1f-495a-98f0-8cd58e2fc606",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Sur La Roche\u2019, Jessica Litaud, Pouilly-Fuiss\u00e9 2020 136",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "64ad48e1-08f8-409e-beeb-58ddea109cdb",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, \u2018Les Enc\u00e9gni\u00e9res\u2019, Etienne Sauzet, Chassagne-Montrachet 2022 144",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "d9cb807d-25bb-4c55-9bf6-c980d92f7a6e",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018En Remilly\u2019, Domaine Hubert Lamy, Saint-Aubin 2021 165",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "e77a12fd-6dda-49ed-9d95-8f80d2215c39",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Derriere Chez Edouard\u2019, Domaine Hubert Lamy, Saint-Aubin 2020 165",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "385b5700-a21b-4096-bef2-bca7cf2e2e3d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Morgeot\u2019, Domaine Bernard Moreau et Fils, Chassagne-Montrachet 2020 188",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a82128be-de73-4094-875e-c57fff252f3f",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Genevri\u00e8res\u2019, Domaine Ballot-Millot, Meursault 2019 210",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c1b84a74-ba21-47ce-9b5f-cbebc368667e",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Butteaux\u2019, Domaine Fran\u00e7ois Raveneau, Chablis 2018 260",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b4fed2af-ddc2-497f-a003-ef11792042ec",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018La Maltroie\u2019, Pierre-Yves Colin-Morey, Chassagne-Montrachet 2016 308",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c8a4be4e-7e8a-409c-b39f-0adef0f8725e",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, 1er Cru \u2018Les Baudines\u2019, Pierre-Yves Colin-Morey, Chassagne-Montrachet 2014 362",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1ffa0338-405b-4ed0-bdd6-2ef9ed1bda2d",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chardonnay, Grand Cru \u2018Valmur\u2019, Domaine Fran\u00e7ois Raveneau, Chablis 2016 500",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "20f411c3-1d55-4581-a853-e9b1d0516794",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, \u2018Sur La Butte\u2019, Ch\u00e2teau de Plaisance, Anjou 2020 43",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "63fdbfe0-e659-4031-a9b6-644bcb3ee13a",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, 'Le Pied de la Butte', Domaine de la Butte, Bourgueil 2022 44",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "71b80641-32b4-45e8-bf4f-f215f852f0b6",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, \u2018Jour du Soif\u2019, Domaine du Bel Air, Bourgueil 2021 45",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c60df4f5-926e-40d3-8d59-ea40e948787a",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Terre de Maimbray\u2019, Pascal et Nicolas Reverdy, Sancerre 2022 51",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "e6f6a22e-8a5f-46af-9034-289bd33b74b6",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Grolleau, \u2018M\u00e9tamorphose\u2019, Le Domaine des Grouas, Anjou 2022 52",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "d16715ef-6668-47df-8d1e-a1bd6ced9771",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, Ch\u00e2teau Yvonne, Saumur 2021 53",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "2f9b37f1-a601-4ee2-bba0-894aedc6958f",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay/Grolleau/Pineau d\u2019Aunis, \u2018Le Martray\u2019, Domaine Grange Saint-Sauveur, Thoureil 2022 55",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a6cdfcab-596c-4871-84e1-76788111fbf7",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, \u2018La Paterne\u2019, Domaine Antoine Sanzay, Saumur Champigny 2021 57",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "4f1a5262-646f-4a33-a698-11239ecc7cda",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc, Domaine Guiberteau, Saumur 2021 60",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "19e074d1-a6ef-48eb-8cdd-70cf55b6ed01",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pineau d\u2019Aunis, \u2018Nocturne\u2019, Robinot, Jasni\u00e8res 2021 78",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "456d2d06-e68f-43b5-a207-119731e2f621",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pineau d'Aunis, \u2018Hommage \u00e0 Louis Derr\u00e9\u2019, Domaine de Bellivi\u00e8re, Coteaux-Du-Loir 2020 76 BORDEAUX",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "fa5934c7-723e-4115-8cf0-2e565a6fdb19",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot/Cabernet Sauvignon/Cabernet Franc, Matthieu Cosse, Blaye C\u00f4tes de Bordeaux 2020 45",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "0cabc0d5-aea7-40da-8199-8b18faef0902",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Franc/Malbec/Merlot, Ch\u00e2teau Franc-Cardinal, C\u00f4tes de Bordeaux 2011 45",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "663ea517-ed8e-41d7-a73f-5faf9e044f28",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon, \u2018Marguerite\u2019, Ch\u00e2teau Moutte-Blanc, Haut-M\u00e9doc 2020 50",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "6b7d33f3-9c71-4d4e-b8bc-80405abb3f66",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot/Cabernet Franc, \u20185\u2019, Acte, Bordeaux Sup\u00e9rieur 2013 60",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a9fb3295-182a-4db0-8b40-38094a0cabf1",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot, Marius Bielle, Lalande de Pomerol 2018 64",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "dc8e0135-8d71-492a-b3a8-345761a68241",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Cabernet Franc, Ch\u00e2teau des Graviers, Margaux 2018 65",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "4f03ef73-e37a-43a4-8cc3-8adab9bfaa8b",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Cabernet Franc, Ch\u00e2teau Massereau, Graves 2013 70",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "2b98b9b6-255d-4983-b1d3-a8abf6656a17",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Petit Verdot, Ch\u00e2teau Latour-Martillac, Pessac-L\u00e9ognan 2014 87",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "818ec9bf-c4ca-429c-92b4-eb0d173f3f3a",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Cabernet Franc, Ch\u00e2teau Monbrison, Margaux 1994 87",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "9434a8d9-bf79-430f-aaab-61392a22e616",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Cabernet Franc, Clos du Jaugueyron, Margaux 2016 106",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "650a7349-9c74-4044-9d02-8a45e9a4ced6",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot/Cabernet Sauvignon/Cabernet Franc, Ch\u00e2teau Bel Air Marquis d\u2019Aligre, Margaux 2005 111",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "fa9a83c2-4405-404a-874e-e7692b96bb7d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Petit Verdot, Ch\u00e2teau La Lagune, Haut-M\u00e9doc 2000 142",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a2277fd3-658f-44ef-8303-48f681c1ed1e",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot, La Ros\u00e9 Co-operative, Pauillac 1959 *Facsimile label 230",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "bf2ec1bb-8b3f-4595-ba6a-09002956e5cf",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot, Cos d'Estournel, Saint-Est\u00e8phe 2011 262",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "789e2c50-28a4-429a-901b-10d14e16810a",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot/Cabernet Franc, Vieux Ch\u00e2teau Certan, Pomerol 1979 315",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "ce3124ed-99d5-4222-bc46-5de0f46e0a24",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot, \u2018Carruades de Lafite\u2019, Ch\u00e2teau Lafite-Rothschild, Pauillac 1986 430",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "e65c4eb5-835b-4894-97a5-a680317e05cb",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Merlot/Cabernet Sauvignon/Petit Verdot, Ch\u00e2teau Palmer, Margaux 1970 590",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "00ed329d-f0a9-4dfd-a894-d54c1bb2daa2",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon/Merlot/Cabernet Franc, Ch\u00e2teau Haut-Brion, Pessac-L\u00e9ognan 1986 650",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "72f54355-206a-4a67-882e-e2f35fe04bbd",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Mourv\u00e8dre/Grenache/Cinsault, Domaine de la Tour du Bon, Bandol 2021 65",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "cdedb02c-3c1d-490c-ab44-fdb92181d23d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Carignan/Syrah/Grenache, \u2018Lulu & Lucien\u2019, Domaine Tempier, Bandol 2020 70 JURA/SAVOIE",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "833e6b69-322e-429e-b050-927302f4e047",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Cul du Bray\u2019, Domaine des Notes Bleues, Mesnay 2023 55",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b7433e73-f55e-4bb5-94ed-a9999cb080dc",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018La Cabane\u2019, Les Dolomies, Passenans 2023 56",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c3d237de-024a-410a-95d1-beba88eceacd",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Trousseau, Caveau Val d \u0301Amour, Arbois 2021 62",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "5b819889-56a1-4ff3-bb27-29b3c14b1edf",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Trousseau, \u2018La Vigne du Louis\u2019, Michel Gahier, Arbois 2022 70",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8f1b5d83-307f-45c9-b24a-5eaa9a1aae7f",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Trousseau, \u2018Les Grands Vergers\u2019, Michel Gahier, Arbois 2022 71",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "fd64bec0-aa8c-4bee-872a-54eabd6e76b3",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Ploussard, \u2018Uva Arbosiana\u2019, Domaine De La Tournelle, Arbois 2022 80",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "9f49c8a9-0555-4ba7-be87-4425abcd5565",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Les Chonchons\u2019, Domaine Jean-Fran\u00e7ois Ganevat, Rotalier 2022 81",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "cbf167be-07d4-4194-acfc-d07329da70ae",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Persan/Mondeuse Noire, \u2018Am\u00e9thyste\u2019, Domaine des Ardoisi\u00e8res, Allobroges 2020 112",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "ad5baf30-09b8-464f-9868-12e54a636a1c",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Trousseau, \u2018Plein Sud\u2019, Domaine Jean-Fran\u00e7ois Ganevat, Rotalier 2019 115",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "041e89a9-77c3-4b49-910c-98e1a7159bb5",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Ploussard, \u2018Chambines\u2019, Cellier Saint Benoit, Arbois Pupillin 2021 120",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "7a7a126e-1d00-4c64-99f2-6f79a0995de9",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Poulssard/Trousseau/Pinot Noir, Jean Bourdy, C\u00f4tes du Jura 1967 342 BEAUJOLAIS",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "5ed7e05c-1a6e-454e-8b55-2e84efe9222a",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018La Cuv\u00e9e du Chat\u2019, Ch\u00e2teau Cambon, St Jean d\u2019Ardieres 2021 40",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a1562214-7691-49e0-ad56-88ceaef08ff0",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018La Bruy\u00e8re\u2019, Domaine Saint Cyr, Moulin-\u00e0-Vent 2019 46",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "79d0ac43-4ae8-4389-a59b-fe83409fc139",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Spaciale\u2019, Ch\u00e2teau de Grand Pr\u00e9, Fleurie 2020 49",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "4d0500ac-7e11-428a-89be-3c7bd33b86e2",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, Domaine Chamonard, Morgon 2019 52",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8d341fcc-90c8-4f5f-8936-09c320f52bb9",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Les Labourons\u2019, Domaine Valma, Fleurie 2022 53",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "75dd20c6-4e2b-4846-aecd-a581c6808cf1",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, Justin Dutraive, R\u00e9gni\u00e9 2023 56",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "45008e1e-00e3-4c20-8ce8-ac30dc86f8d8",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Charbonni\u00e8res\u2019, Domaine Chapel, Fleurie 2021 56",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "48bb6a35-9d76-4183-8a66-d68b94fde81f",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Vieilles Vignes\u2019, Guy Breton, Morgon 2021 57",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "54a47f4d-acf7-4134-97d3-82dfb1d06a05",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Chica\u2019, Jules M\u00e9tras, Vauxrenard 2022 58",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a67b5a5b-6a30-4243-8c56-7b1b81db7ef4",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018L'Alchimiste\u2019, Anne-Sophie Dubois, Fleurie 2022 58",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "df41746f-d640-4085-a0d5-f54cc51a8f87",
+      "failed_fields": [
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Cuv\u00e9e Face Nord - Charbonni\u00e8res\u2019, Domaine Chapel, Fleurie 2019 59",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a666d13d-3548-4d37-b8e2-3654250d01dd",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Vieilles Vignes\u2019, Jules M\u00e9tras, Chiroubles 2022 66",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "5ca5edd4-9e22-4e7d-aeeb-7e04c39b44ef",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Chassignol\u2019, Domaine Thillardon, Ch\u00e9nas 2022 68",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "356f9e51-c3c2-4b0c-9d84-ad6969cfe06d",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Vieilles Vignes\u2019, Domaine Jules Desjourneys, Morgon 2014 95",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "46a36e1f-513a-47a3-bcdc-fee1734d0186",
+      "failed_fields": [
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gamay, \u2018Le Jugement Dernier\u2019, Domaine Jules Desjourneys, Ch\u00e9nas 2014 95 FRANCHE-COMT\u00c9",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "0781f488-8903-4396-a909-c3c17138b737",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, Vignoble Guillaume, Besan\u00e7on 2022 43 CORSICA",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a3959f85-e954-4b29-87ee-75e1aa66f74f",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Nielluccio/Sciaccarellu, \u2018Clos d\u2019Alzeto\u2019, Moretelle, Ajaccio 2018 99",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "86ce7c69-d222-4f7e-8aac-fea3241d0818",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Nero d'Avola, Mount Horrocks, Clare Valley, South Australia 2021 51",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "a411dd08-f7c1-409f-9b73-66ee466e3b0b",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Meunier, \u2018Mark of Cain\u2019, Ochota Barrels, Adelaide Hills, South Australia 2023 52",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "f9fc79a0-9ed9-4b7f-aa20-22eb5d8e9014",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon, Nocturne, Yallingup, Margaret River, Western Australia 2021 53",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "212628f2-3d2b-47b9-a55e-90740c7231ee",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Syrah, \u2018One Block Yellingbo\u2019, Jayden Ong, Yarra Valley, Victoria 2021 54",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "ba89a8c1-0024-4b3a-a3d2-e4ef97040ec5",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Nebbiolo, Luke Lambert, Yarra Valley, Victoria 2021 60",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "f1b30da0-a198-4558-a79e-705f347c44aa",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018The Lantern\u2019, La Maison de Ong, Yarra Valley, Victoria 2019 64",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "34c06158-d1d1-4496-b6cb-a0ce44208143",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Shiraz/Viognier, \u2018Sutherlands Creek\u2019, Mulline, Geelong, Victoria 2022 66",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "0e9968d1-82ac-48f7-bb69-dbc60a12bdc8",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Small Wonder\u2019, Sailor Seeks Horse, Tamar Valley, Tasmania 2022 69",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "7092c865-22fd-4ac1-b165-65417a58c0e8",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, Gembrook Hill, Yarra Valley, Victoria 2022 73",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "909d9fd9-0538-4cbb-a19b-ce07cf83e963",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Ray-Monde\u2019, Joshua Cooper, Mount Macedon, Victoria 2021 76",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "55de1225-552a-413b-805b-eb13a88c2954",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Grenache, \u20181850\u2019, Cirillo, Barossa Valley, South Australia 2015 84",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "35acd7df-d086-462a-9d95-52ea1fbc2622",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Shiraz, \u2018Flaxman Valley\u2019, Agricola Vintners, Barossa Valley, South Australia 2021 84",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b285cef0-9c3d-4978-ae5c-60c3b3e97aff",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Nebbiolo, \u2018Capo\u2019, Protero, Adelaide Hills, South Australia 2019 88",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "5faa9ae1-f202-4f59-b6b6-78df5f2d2981",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Cabernet Sauvignon, \u2018Balgownie\u2019, Joshua Cooper, Bendigo, Victoria 2021 113",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1d97142c-686a-4f43-9f68-d8db9046e88f",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Shiraz, \u2018Georgia\u2019s Paddock\u2019, Jasper Hill, Heathcote, Victoria 2012 124",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "0f438882-1e0c-4686-8e98-e65e6d0a1763",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Grenache, \u2018Brini\u2019, Aphelion, McLaren Vale, South Australia 2022 126",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "c2640982-46cc-42e1-9ccf-342ee8e7c561",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Shiraz/Cabernet Franc, \u2018Emily\u2019s Paddock\u2019, Jasper Hill, Heathcote, Victoria 2016 142",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "eb0ec03b-40a6-4f06-a62e-03bab65ef35b",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Shiraz, \u2018Mount Edelstone\u2019, Henschke, Eden Valley, South Australia 2005 222 NEW ZEALAND",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "572bb087-3212-44fa-a633-5fbd6b7c00d5",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Mature Vine\u2019, Rippon, Central Otago 2019 65",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "28e4e57c-f2ba-4770-a6d4-3fad0653576e",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Moonlight Race\u2019, Burn Cottage, Central Otago 2016 75",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "fde5a495-7f96-414a-ad8b-8ce10f42464d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Noir, \u2018Cornish Point\u2019, Felton Road, Central Otago 2020 85 CHILE",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "8164a59a-4d36-4eda-b2a3-d4089c185c3d",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pa\u00eds, Ignacio Pino Rom\u00e1n, Valle del Itata 2021 49",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "5e19d213-1e02-4f61-b6b4-87a26a886644",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pa\u00eds, Darren Smith, Valle del Itata 2022 54 ARGENTINA",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "95451a2c-e52a-441a-af15-905748f7d395",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Bonarda/Barbera/Freisa, \u2018Paraje Hilario\u2019, Cara Sur, Calingasta Valley, Mendoza 2022 41",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "2214e5dd-6dde-4c58-9e45-bb6791ca4f65",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e9millon/Sauvignon, Ch\u00e2teau Dauphin\u00e9 Rondillon, Loupiac 2011 (375ml) 30",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "ac73efbd-4d58-4250-adba-dfa13f619445",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e9millon/Sauvignon, Ch\u00e2teau de Rayne Vigneau, Sauternes, Bordeaux 2005 (375ml) 37",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "827d0979-2a9f-4728-b1a7-2ae3dec53ba5",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e9millon/Sauvignon/Muscat, Ch\u00e2teau Coutet, 1er Cru Class\u00e9 Barsac, Bordeaux 1999 (375ml) 40",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1f9c99d6-51a4-4f21-aa62-94ffcb675f39",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gros-Manseng/Petit-Manseng, Domaine Castera, Juran\u00e7on 2022 45",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "db843c83-4128-46b0-8a9e-36cbd1b102dd",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gew\u00fcrztraminer, \u2018Vendanges Tardives\u2019, Domaine Mittnacht, Alsace 2017 58",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "62de9c1e-f6a3-4ce8-9f43-045a6c376f59",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Pinot Gris, Grand Cru \u2018L\u2019Exception\u2019, Domaine Josmeyer, Alsace 2009 88",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1d0d6b3b-a91a-4ec0-b7f6-020bfceaa9dc",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Trousseau/Poulsard/Chardonnay, \u2018Spirale\u2019, B\u00e9n\u00e9dicte & St\u00e9phane Tissot, Arbois 2018 118",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "08dc66f4-bda9-4769-935a-d7de03f7a215",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Gew\u00fcrztraminer, \u2018Selection Grains Nobles\u2019, Domaine Josmeyer, Alsace 1989 182",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "eb4623bc-dd27-47f6-8aea-104bea782ab0",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e9millon/Sauvignon, Ch\u00e2teau d\u2019Yquem, Sauternes Premier Cru Sup\u00e9rieur, Bordeaux 1986 (375ml) 280",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "3fbaf6b7-79de-4204-bd1a-ebdfce936e19",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e9millon/Sauvignon, Ch\u00e2teau d\u2019Yquem, Sauternes Premier Cru Sup\u00e9rieur, Bordeaux 1990 550",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "6703acc1-7310-443b-a8ff-68d88ca82760",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "bottle_size",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "HUNGARY 6 6",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "7e303d54-52d3-46b4-be2e-46e8431e5b67",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Furmint, 5 Puttonyos, Monimpex, Tokaji 1964 (500ml) 302 GERMANY",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "6af80694-5771-4f28-9865-51261bfc59f1",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Riesling Auslese, \u2018Lorenzhofer\u2019, Weingut Karlsm\u00fchle, Mosel 1997 38",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b068c17c-c024-4d7b-b188-832065a82b75",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Riesling Auslese, Weingut Keller, Rheinhessen 2020 (375ml) 51 Riesling Beerenauslese, \u2018Wolfer Goldgrube\u2019, Weingut Vollenweider, Mosel 2009 (375ml) 130",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "d66b8f8e-6abc-47d6-9ad3-43a97df4c95f",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Riesling Auslese, Goldkap \u2018Bernkasteler Lay\u2019, Joh Jos Pr\u00fcm, Mosel 2016 131",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b0fd959d-c6b5-48b1-b0bf-876332925a13",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Riesling Auslese, 'R\u00f6ttgen', Heymann-L\u00f6wenstein, Mosel 2010 138 AUSTRIA Weissburgunder/Chardonnay, 'Beerenauslese', Feiler-Artinger, Burgenland 2018 (375ml) 40",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "1b534524-17d2-4f58-bc00-b1c4e017da00",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "S\u00e4mling, 'TBA', Weingut Tschida Angerhof, Neusiedlersee, Austria 2004 (375ml) 50",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "594be09a-e866-4327-ba8a-1dd935f7b1a1",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "SPAIN Pedro Ximenez, \u2018Dolce Natural\u2019, Callejeula, Sanlucar de Barramada NV (500ml) 62 ITALY",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "b3828b2b-c31d-4659-bd6b-8ac5e3a03f5a",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Sparkling Brachetto d\u2019Acqui, Contero, Asti, Piemonte 2022 37",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "80bcc748-0da7-45e3-81c5-dbcc64eea9c4",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Grillo/Cataratto, \u2018Passito Bianco\u2019, Feudo Montoni, Sicily NV (375ml) 49",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "ec17c434-5e0c-47c2-b47a-43b89c6f9d1a",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "SOUTH AFRICA Chenin Blanc, \u2018Straw wine\u2019, Mullineux, Swartland 2023 (375ml) 57",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "cbe86568-a0bb-48dd-9697-3b92a3e53449",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Chenin, \u2018Not Tonight Josephine\u2019, Savage, Cederberg 2020 (375ml) 70",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "9212fb30-d0b6-4f4a-988b-7d0b2d59b95b",
+      "failed_fields": [
+        "producer",
+        "type",
+        "bottle_size",
+        "country",
+        "region",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "Muscat of Alexandria, \u2018Lost & Found\u2019, Alheit Vineyards, Breedekloof 2019 (375ml) 102",
+      "row_confidence": null
+    },
+    {
+      "entry_id": "e02f2b67-b737-45cf-af56-39b469ee20a4",
+      "failed_fields": [
+        "producer",
+        "cuvee",
+        "type",
+        "vintage",
+        "price",
+        "bottle_size",
+        "grape_variety",
+        "subregion",
+        "designation",
+        "classification",
+        "sub_type"
+      ],
+      "raw_text": "NEW ZEALAND Riesling, \u2018Late Harvest\u2019, T\u016bpari, Awatere Valley, Marlborough 2014 (375ml) 37",
+      "row_confidence": null
+    }
+  ]
+}

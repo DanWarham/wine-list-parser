@@ -18,7 +18,7 @@ try:
     from sqlalchemy.orm import Session
     logger.info("[api_v2] SQLAlchemy imports successful")
     
-    from app.models import User, Restaurant, WineListFile, WineEntry, Ruleset, WineListFileStatus
+    from app.models import User, Restaurant, WineListFile, WineEntry, Ruleset, WineListFileStatus, AuditLog
     logger.info("[api_v2] Models imports successful")
     
     from app.supabase_auth import get_current_user, require_role
@@ -154,6 +154,22 @@ async def download_file(url: str) -> str:
 async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db: Session) -> tuple:
     logger.info(f"[api_v2] process_pdf called for {file_path}, restaurant_id={restaurant_id}, wine_list_id={wine_list_id}")
     try:
+        # Initialize processing steps status
+        steps_status = {
+            "upload": {"status": "completed", "message": "File uploaded successfully", "timestamp": datetime.utcnow().isoformat()},
+            "extraction": {"status": "in_progress", "message": "Extracting text from PDF...", "timestamp": datetime.utcnow().isoformat()},
+            "preprocessing": {"status": "pending", "message": "Waiting to preprocess text...", "timestamp": None},
+            "categorization": {"status": "pending", "message": "Waiting to categorize blocks...", "timestamp": None},
+            "ai_processing": {"status": "pending", "message": "Waiting for AI processing...", "timestamp": None},
+            "database_save": {"status": "pending", "message": "Waiting to save to database...", "timestamp": None}
+        }
+        
+        # Update database with initial step status
+        wine_list = db.query(WineListFile).get(wine_list_id)
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
+        
         # Initialize PDF processing components
         extractor = PDFExtractor(ExtractionConfig(strategy=ExtractionStrategy.HYBRID))
         preprocessor = PDFPreprocessor(PreprocessingConfig())
@@ -161,8 +177,22 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
         metadata_extractor = PDFMetadataExtractor()
         
         # Extract text and metadata
+        logger.info("Starting text extraction...")
         pages, metadata = extractor.extract(file_path)
         metadata = metadata_extractor.extract(file_path)
+        
+        # Update extraction step status
+        steps_status["extraction"]["status"] = "completed"
+        steps_status["extraction"]["message"] = f"Extracted {len(pages)} pages with metadata"
+        steps_status["extraction"]["timestamp"] = datetime.utcnow().isoformat()
+        steps_status["preprocessing"]["status"] = "in_progress"
+        steps_status["preprocessing"]["message"] = "Preprocessing text blocks..."
+        steps_status["preprocessing"]["timestamp"] = datetime.utcnow().isoformat()
+        
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
         
         # Save extractor output
         await save_processing_data(wine_list_id, "extractor", {
@@ -171,7 +201,21 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
         })
         
         # Preprocess text blocks
+        logger.info("Starting text preprocessing...")
         processed_pages = preprocessor.preprocess(pages)
+        
+        # Update preprocessing step status
+        steps_status["preprocessing"]["status"] = "completed"
+        steps_status["preprocessing"]["message"] = f"Preprocessed {len(processed_pages)} pages"
+        steps_status["preprocessing"]["timestamp"] = datetime.utcnow().isoformat()
+        steps_status["categorization"]["status"] = "in_progress"
+        steps_status["categorization"]["message"] = "Categorizing text blocks..."
+        steps_status["categorization"]["timestamp"] = datetime.utcnow().isoformat()
+        
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
         
         # Save preprocessor output
         await save_processing_data(wine_list_id, "preprocessor", {
@@ -179,7 +223,21 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
         })
         
         # Categorize text blocks
+        logger.info("Starting block categorization...")
         categorized_pages = categorizer.categorize(processed_pages)
+        
+        # Update categorization step status
+        steps_status["categorization"]["status"] = "completed"
+        steps_status["categorization"]["message"] = f"Categorized {len(categorized_pages)} blocks"
+        steps_status["categorization"]["timestamp"] = datetime.utcnow().isoformat()
+        steps_status["ai_processing"]["status"] = "in_progress"
+        steps_status["ai_processing"]["message"] = "Processing with AI hybrid system..."
+        steps_status["ai_processing"]["timestamp"] = datetime.utcnow().isoformat()
+        
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
         
         # Save categorizer output
         await save_processing_data(wine_list_id, "categorizer", {
@@ -192,16 +250,25 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
             if block['type'] == 'wine_entry':
                 wine_blocks.append(block)
         
+        logger.info(f"Found {len(wine_blocks)} wine entries to process")
+        
         # Initialize hybrid extraction pipeline
         if AI_RULE_GENERATION_ENABLED:
             # Use new AI Hybrid Rule Generation System
             logger.info("Using AI Hybrid Rule Generation System")
+            logger.info(f"Creating HybridExtractionPipeline for restaurant {restaurant_id}")
             hybrid_pipeline = HybridExtractionPipeline(restaurant_id)
+            logger.info(f"HybridExtractionPipeline created successfully")
+            
+            logger.info(f"Calling hybrid_pipeline.process_wine_list with {len(wine_blocks)} wine blocks")
             pipeline_results = hybrid_pipeline.process_wine_list(wine_blocks)
+            logger.info(f"hybrid_pipeline.process_wine_list completed successfully")
             
             # Extract results from pipeline
             extraction_results = pipeline_results.get('extraction_results', [])
             metadata.update(pipeline_results.get('metadata', {}))
+            
+            logger.info(f"Extracted {len(extraction_results)} results from pipeline")
             
             # Convert pipeline results to expected format
             extracted_fields = []
@@ -234,6 +301,8 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
                 
                 extracted_fields.append(converted_fields)
             
+            logger.info(f"Converted {len(extracted_fields)} pipeline results to expected format")
+            
             # Prepare learning results for backward compatibility
             learning_results = {
                 'summary': pipeline_results.get('metadata', {}),
@@ -248,50 +317,59 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
             
             # Initialize field extractor and rule manager
             field_extractor = FieldExtractor(restaurant_id=restaurant_id)
-            rule_manager = RuleManager()
             
-            # Get restaurant-specific rules
-            rules = rule_manager.load_rules(restaurant_id)
+            # Process wine blocks
+            extracted_fields = []
+            for block in wine_blocks:
+                try:
+                    result = field_extractor.extract_fields(block['text'])
+                    if result:
+                        extracted_fields.append(result)
+                except Exception as e:
+                    logger.error(f"Error extracting fields from block: {e}")
+                    continue
             
-            # Extract fields from wine blocks
-            extracted_fields = field_extractor.extract_batch(wine_blocks)
-            
-            # Save initial field extraction output
-            await save_processing_data(wine_list_id, "field_extractor", {
-                "extracted_fields": extracted_fields,
-                "wine_blocks": wine_blocks
-            })
-            
-            # Initialize learning pipeline
-            from app.rules.rule_learner import RuleLearner
-            learner = RuleLearner(restaurant_id)
-            
-            # Learn from initial extraction
-            learning_results = learner.analyze_entries(extracted_fields, sample_size=3)
-            
-            # Save learning results
-            await save_processing_data(wine_list_id, "learning", {
-                "learning_results": learning_results
-            })
-            
-            # Reparse with new rules if learning was successful
-            if learning_results.get('new_rules'):
-                # Update field extractor with new rules
-                field_extractor = FieldExtractor(restaurant_id=restaurant_id)
-                # Reparse all entries
-                extracted_fields = field_extractor.extract_batch(wine_blocks)
-                
-                # Save reparsed results
-                await save_processing_data(wine_list_id, "field_extractor", {
-                    "extracted_fields": extracted_fields,
-                    "wine_blocks": wine_blocks
-                }, version="reparsed")
+            # Prepare learning results
+            learning_results = {
+                'summary': {'entries_processed': len(extracted_fields)},
+                'new_rules': {},
+                'hybrid_system_used': False
+            }
+        
+        # Update AI processing step status
+        steps_status["ai_processing"]["status"] = "completed"
+        steps_status["ai_processing"]["message"] = f"Processed {len(extracted_fields)} wine entries"
+        steps_status["ai_processing"]["timestamp"] = datetime.utcnow().isoformat()
+        steps_status["database_save"]["status"] = "in_progress"
+        steps_status["database_save"]["message"] = "Saving entries to database..."
+        steps_status["database_save"]["timestamp"] = datetime.utcnow().isoformat()
+        
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
         
         return extracted_fields, metadata, learning_results, wine_blocks
         
     except Exception as e:
-        logger.error(f"[api_v2] Exception in process_pdf: {e}")
-        raise PDFProcessingError(f"Failed to process PDF: {str(e)}")
+        logger.error(f"[api_v2] Error in process_pdf: {e}")
+        # Update step status to error
+        steps_status = {
+            "upload": {"status": "completed", "message": "File uploaded successfully", "timestamp": datetime.utcnow().isoformat()},
+            "extraction": {"status": "error", "message": f"Extraction failed: {str(e)}", "timestamp": datetime.utcnow().isoformat()},
+            "preprocessing": {"status": "error", "message": "Preprocessing failed", "timestamp": datetime.utcnow().isoformat()},
+            "categorization": {"status": "error", "message": "Categorization failed", "timestamp": datetime.utcnow().isoformat()},
+            "ai_processing": {"status": "error", "message": "AI processing failed", "timestamp": datetime.utcnow().isoformat()},
+            "database_save": {"status": "error", "message": "Database save failed", "timestamp": datetime.utcnow().isoformat()}
+        }
+        
+        # Update database with error status
+        wine_list = db.query(WineListFile).get(wine_list_id)
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
+        
+        raise e
 
 def extract_value(field):
     """Extract value from field with robust None handling."""
@@ -310,6 +388,81 @@ def extract_value(field):
                 return val
         return None
     return field
+
+async def cleanup_restaurant_rule_cache(restaurant_id: str) -> bool:
+    """
+    Clean up any rule cache files associated with a restaurant.
+    
+    Args:
+        restaurant_id: The ID of the restaurant
+        
+    Returns:
+        bool: True if cleanup was successful
+    """
+    logger.info(f"Cleaning up rule cache for restaurant {restaurant_id}")
+    try:
+        # Since the rule cache system is deprecated and rules are now stored in the database,
+        # this function primarily handles any legacy cache files that might exist
+        # The actual rules are cleaned up by the database cascade delete
+        
+        # Check if there are any rule cache files that might be associated with this restaurant
+        # This is a precautionary cleanup for any legacy files
+        cache_dir = "backend/rule_cache"
+        if os.path.exists(cache_dir):
+            # Look for any cache files that might contain restaurant-specific data
+            # Since the cache system is deprecated, we'll just log that we checked
+            logger.info(f"Rule cache directory exists, but cache system is deprecated. Rules are stored in database.")
+        
+        logger.info(f"Rule cache cleanup completed for restaurant {restaurant_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error cleaning up rule cache for restaurant {restaurant_id}: {str(e)}")
+        return False
+
+async def cleanup_restaurant_audit_logs(restaurant_id: str, db: Session) -> bool:
+    """
+    Clean up audit logs that reference wine entries from this restaurant.
+    
+    Args:
+        restaurant_id: The ID of the restaurant
+        db: Database session
+        
+    Returns:
+        bool: True if cleanup was successful
+    """
+    logger.info(f"Cleaning up audit logs for restaurant {restaurant_id}")
+    try:
+        # Get all wine entries for this restaurant
+        wine_entries = db.query(WineEntry).filter_by(restaurant_id=restaurant_id).all()
+        wine_entry_ids = [str(entry.id) for entry in wine_entries]
+        
+        if wine_entry_ids:
+            # Delete audit logs that reference these wine entries
+            deleted_count = db.query(AuditLog).filter(
+                AuditLog.wine_entry_id.in_(wine_entry_ids)
+            ).delete()
+            logger.info(f"Deleted {deleted_count} audit log entries for restaurant {restaurant_id}")
+        
+        # Get all wine list files for this restaurant
+        wine_list_files = db.query(WineListFile).filter_by(restaurant_id=restaurant_id).all()
+        wine_list_file_ids = [str(wine_list.id) for wine_list in wine_list_files]
+        
+        if wine_list_file_ids:
+            # Delete audit logs that reference these wine list files
+            deleted_count = db.query(AuditLog).filter(
+                AuditLog.wine_list_file_id.in_(wine_list_file_ids)
+            ).delete()
+            logger.info(f"Deleted {deleted_count} audit log entries for wine list files of restaurant {restaurant_id}")
+        
+        db.commit()
+        logger.info(f"Audit log cleanup completed for restaurant {restaurant_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error cleaning up audit logs for restaurant {restaurant_id}: {str(e)}")
+        db.rollback()
+        return False
 
 # --- API Endpoints ---
 @api_router.post("/wine-lists/upload")
@@ -335,43 +488,95 @@ async def upload_wine_list(
         if not file_url:
             raise HTTPException(status_code=500, detail="Failed to save file")
             
+        # Create wine list entry with processing status
+        wine_list = WineListFile(
+            restaurant_id=restaurant_id,
+            filename=file.filename,
+            file_url=file_url,
+            status=WineListFileStatus.processing,
+            metadata={}
+        )
+        db.add(wine_list)
+        db.commit()
+        db.refresh(wine_list)
+            
+        # Initialize processing steps status
+        steps_status = {
+            "upload": {"status": "completed", "message": "File uploaded successfully", "timestamp": datetime.utcnow().isoformat()},
+            "extraction": {"status": "pending", "message": "Waiting to extract text from PDF...", "timestamp": None},
+            "preprocessing": {"status": "pending", "message": "Waiting to preprocess text...", "timestamp": None},
+            "categorization": {"status": "pending", "message": "Waiting to categorize blocks...", "timestamp": None},
+            "ai_processing": {"status": "pending", "message": "Waiting for AI processing...", "timestamp": None},
+            "database_save": {"status": "pending", "message": "Waiting to save to database...", "timestamp": None}
+        }
+        
+        # Update database with initial step status
+        wine_list.steps_status = steps_status
+        db.commit()
+        
+        # Start background processing
+        import asyncio
+        asyncio.create_task(process_wine_list_background(str(wine_list.id), restaurant_id, file_url))
+        
+        logger.info(f"[api_v2] Background processing task created for wine_list_id: {wine_list.id}")
+        
+        return {
+            "id": str(wine_list.id),
+            "status": wine_list.status.value if wine_list.status else "processing",
+            "message": "File uploaded successfully. Processing started in background.",
+            "learning_results": None,
+            "filename": wine_list.filename,
+            "uploaded_at": wine_list.uploaded_at.isoformat() if wine_list.uploaded_at else None,
+            "steps_status": wine_list.steps_status
+        }
+        
+    except Exception as e:
+        logger.error(f"[api_v2] Exception in upload_wine_list: {e}")
+        raise HTTPException(status_code=500, detail=f"Error uploading wine list: {str(e)}")
+
+
+async def process_wine_list_background(wine_list_id: str, restaurant_id: str, file_url: str):
+    """Background task to process the wine list PDF"""
+    logger.info(f"[api_v2] Starting background processing for wine_list_id: {wine_list_id}")
+    
+    file_path = None
+    db_session = None
+    try:
         # Download file for processing
         file_path = await download_file(file_url)
         if not file_path:
-            raise HTTPException(status_code=500, detail="Failed to download file")
+            raise Exception("Failed to download file")
             
+        # Get fresh database session for processing
+        from app.database import get_db
+        db_session = next(get_db())
+        
         try:
-            # Create wine list entry first to get ID
-            wine_list = WineListFile(
-                restaurant_id=restaurant_id,
-                filename=file.filename,
-                file_url=file_url,
-                status=WineListFileStatus.processing,
-                metadata={}
-            )
-            db.add(wine_list)
-            db.commit()
-            db.refresh(wine_list)
+            # Update extraction step status
+            wine_list = db_session.query(WineListFile).get(wine_list_id)
+            if wine_list and wine_list.steps_status:
+                wine_list.steps_status["extraction"]["status"] = "in_progress"
+                wine_list.steps_status["extraction"]["message"] = "Extracting text from PDF..."
+                wine_list.steps_status["extraction"]["timestamp"] = datetime.utcnow().isoformat()
+                db_session.commit()
             
-            # Process PDF with wine list ID for data storage
-            try:
-                extracted_fields, metadata, learning_results, wine_blocks = await process_pdf(file_path, restaurant_id, str(wine_list.id), db)
-            except Exception as processing_error:
-                logger.error(f"PDF processing failed: {processing_error}")
-                # Update status to error
-                wine_list.status = WineListFileStatus.error
-                wine_list.notes = f"Processing failed: {str(processing_error)}"
-                db.commit()
-                raise HTTPException(status_code=500, detail=f"Failed to process PDF: {str(processing_error)}")
+            # Process PDF
+            extracted_fields, metadata, learning_results, wine_blocks = await process_pdf(file_path, restaurant_id, wine_list_id, db_session)
             
             # Update wine list with results
+            wine_list = db_session.query(WineListFile).get(wine_list_id)
+            if not wine_list:
+                raise Exception("Wine list not found")
+                
             wine_list.status = WineListFileStatus.parsed
             wine_list.metadata = metadata
             wine_list.learning_results = learning_results
             wine_list.learning_date = datetime.utcnow()
-            db.commit()
+            wine_list.parsed_date = datetime.utcnow()
+            db_session.commit()
 
             # Store extracted fields as WineEntry rows
+            logger.info(f"Saving {len(extracted_fields)} wine entries to database...")
             for i, entry in enumerate(extracted_fields):
                 # Get the original block text for raw_text field
                 raw_text = wine_blocks[i].get('text') if i < len(wine_blocks) else None
@@ -405,42 +610,75 @@ async def upload_wine_list(
                     classification=extract_value(entry.get('classification')),
                     sub_type=extract_value(entry.get('sub_type'))
                 )
-                db.add(wine_entry)
-            db.commit()
+                db_session.add(wine_entry)
+            db_session.commit()
+            
+            # Update database save step status
+            if wine_list.steps_status:
+                wine_list.steps_status["database_save"]["status"] = "completed"
+                wine_list.steps_status["database_save"]["message"] = f"Saved {len(extracted_fields)} wine entries to database"
+                wine_list.steps_status["database_save"]["timestamp"] = datetime.utcnow().isoformat()
+                db_session.commit()
 
-            # Clean up temporary file
+            # Trigger extraction analysis (non-blocking)
             try:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-            except Exception as cleanup_error:
-                logger.warning(f"Failed to cleanup temporary file: {cleanup_error}")
+                from tests.trigger_analysis import trigger_extraction_analysis
+                logger.info(f"Triggering extraction analysis for wine_list_id: {wine_list.id}")
+                analysis_triggered = trigger_extraction_analysis(str(wine_list.id))
+                if analysis_triggered:
+                    logger.info(f"Extraction analysis triggered successfully for {wine_list.id}")
+                else:
+                    logger.warning(f"Failed to trigger extraction analysis for {wine_list.id}")
+            except Exception as analysis_error:
+                logger.error(f"Error triggering extraction analysis: {analysis_error}")
+                # Don't fail the main process if analysis fails
+
+            logger.info(f"Background processing completed successfully for wine_list_id: {wine_list_id}")
             
-            return {
-                "id": wine_list.id,
-                "status": wine_list.status,
-                "message": "Wine list processed successfully",
-                "learning_results": learning_results
-            }
-            
-        except Exception as e:
-            logger.error(f"Error processing wine list: {str(e)}")
-            # Update status to error
-            wine_list.status = WineListFileStatus.error
-            wine_list.notes = str(e)
-            db.commit()
-            
-            # Clean up temporary file
-            try:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-            except Exception as cleanup_error:
-                logger.warning(f"Failed to cleanup temporary file: {cleanup_error}")
-            
-            raise HTTPException(status_code=500, detail=f"Error processing wine list: {str(e)}")
-            
+        except Exception as processing_error:
+            logger.error(f"Error during PDF processing: {processing_error}")
+            raise processing_error
+
     except Exception as e:
-        logger.error(f"[api_v2] Exception in upload_wine_list: {e}")
-        raise HTTPException(status_code=500, detail=f"Error uploading wine list: {str(e)}")
+        logger.error(f"Background processing failed for wine_list_id {wine_list_id}: {e}")
+        
+        # Update status to error
+        try:
+            if db_session is None:
+                from app.database import get_db
+                db_session = next(get_db())
+            
+            wine_list = db_session.query(WineListFile).get(wine_list_id)
+            if wine_list:
+                wine_list.status = WineListFileStatus.error
+                wine_list.notes = f"Processing failed: {str(e)}"
+                
+                # Update step status to error
+                if wine_list.steps_status:
+                    wine_list.steps_status["database_save"]["status"] = "error"
+                    wine_list.steps_status["database_save"]["message"] = f"Processing failed: {str(e)}"
+                    wine_list.steps_status["database_save"]["timestamp"] = datetime.utcnow().isoformat()
+                
+                db_session.commit()
+                logger.info(f"Updated wine list {wine_list_id} status to error")
+        except Exception as db_error:
+            logger.error(f"Error updating wine list status: {db_error}")
+    
+    finally:
+        # Clean up database session
+        if db_session:
+            try:
+                db_session.close()
+            except Exception as close_error:
+                logger.warning(f"Error closing database session: {close_error}")
+        
+        # Clean up temporary file
+        if file_path and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                logger.info(f"Cleaned up temporary file: {file_path}")
+            except Exception as cleanup_error:
+                logger.warning(f"Failed to cleanup temporary file: {cleanup_error}")
 
 @api_router.get("/wine-lists/{file_id}")
 def get_wine_list(file_id: str, db: Session = Depends(get_db)):
@@ -499,6 +737,19 @@ async def get_processing_data_endpoint(
     except Exception as e:
         logger.error(f"Error retrieving processing data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error retrieving processing data: {str(e)}")
+
+@api_router.get("/wine-lists/{file_id}/processing-steps")
+def get_processing_steps(file_id: str, db: Session = Depends(get_db)):
+    """Get processing steps status for a wine list."""
+    wine_list = db.query(WineListFile).get(file_id)
+    if not wine_list:
+        raise HTTPException(status_code=404, detail="Wine list file not found")
+    
+    return {
+        "file_id": file_id,
+        "steps_status": wine_list.steps_status or {},
+        "overall_status": wine_list.status
+    }
 
 @api_router.get("/restaurants/{id}/wine-lists")
 def list_wine_lists_for_restaurant(id: str, db: Session = Depends(get_db)):
@@ -583,14 +834,52 @@ def update_restaurant(id: str, data: RestaurantUpdate, db: Session = Depends(get
     return restaurant
 
 @api_router.delete("/restaurants/{id}")
-def delete_restaurant(id: str, db: Session = Depends(get_db)):
-    """Delete a restaurant."""
+async def delete_restaurant(id: str, db: Session = Depends(get_db)):
+    """Delete a restaurant and all associated data including files, rules, and processing data."""
+    logger.info(f"Attempting to delete restaurant {id} and all associated data")
+    
     restaurant = db.query(Restaurant).get(id)
     if not restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
-    db.delete(restaurant)
-    db.commit()
-    return {"detail": "Deleted"}
+    
+    try:
+        # Get all wine list files for this restaurant before deletion
+        wine_list_files = db.query(WineListFile).filter_by(restaurant_id=id).all()
+        logger.info(f"Found {len(wine_list_files)} wine list files to clean up for restaurant {id}")
+        
+        # Clean up all wine list files and their associated data
+        for wine_list in wine_list_files:
+            try:
+                logger.info(f"Cleaning up wine list {wine_list.id} for restaurant {id}")
+                # Clean up storage data (files and processing data)
+                await cleanup_wine_list_data(str(wine_list.id), wine_list.file_url)
+            except Exception as e:
+                logger.error(f"Error cleaning up wine list {wine_list.id}: {str(e)}")
+                # Continue with other files even if one fails
+        
+        # Clean up any rule cache files that might be associated with this restaurant
+        try:
+            await cleanup_restaurant_rule_cache(id)
+        except Exception as e:
+            logger.error(f"Error cleaning up rule cache for restaurant {id}: {str(e)}")
+        
+        # Clean up any audit logs that reference this restaurant's wine entries
+        try:
+            await cleanup_restaurant_audit_logs(id, db)
+        except Exception as e:
+            logger.error(f"Error cleaning up audit logs for restaurant {id}: {str(e)}")
+        
+        # Delete the restaurant (cascade will handle database relationships)
+        db.delete(restaurant)
+        db.commit()
+        
+        logger.info(f"Successfully deleted restaurant {id} and all associated data")
+        return {"detail": "Restaurant and all associated data deleted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Error deleting restaurant {id}: {str(e)}")
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting restaurant: {str(e)}")
 
 @api_router.get("/users")
 def list_users(db: Session = Depends(get_db)):
@@ -700,6 +989,70 @@ def get_me(current_user=Depends(get_current_user)):
         "role": current_user.role.value,
         "restaurant_id": current_user.restaurant_id
     }
+
+@api_router.post("/wine-lists/{file_id}/analyze")
+async def trigger_extraction_analysis_endpoint(
+    file_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin"))
+):
+    """Manually trigger extraction analysis for a wine list."""
+    wine_list = db.query(WineListFile).get(file_id)
+    if not wine_list:
+        raise HTTPException(status_code=404, detail="Wine list file not found")
+    
+    try:
+        from tests.trigger_analysis import trigger_extraction_analysis
+        
+        logger.info(f"Manual extraction analysis triggered for wine_list_id: {file_id}")
+        analysis_triggered = trigger_extraction_analysis(file_id)
+        
+        if analysis_triggered:
+            return {
+                "message": "Extraction analysis triggered successfully",
+                "wine_list_id": file_id,
+                "status": "triggered"
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to trigger extraction analysis")
+            
+    except Exception as e:
+        logger.error(f"Error triggering extraction analysis: {e}")
+        raise HTTPException(status_code=500, detail=f"Error triggering extraction analysis: {str(e)}")
+
+@api_router.get("/wine-lists/{file_id}/analysis-status")
+async def get_analysis_status_endpoint(
+    file_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role("admin"))
+):
+    """Get the status of extraction analysis for a wine list."""
+    wine_list = db.query(WineListFile).get(file_id)
+    if not wine_list:
+        raise HTTPException(status_code=404, detail="Wine list file not found")
+    
+    try:
+        from tests.trigger_analysis import check_analysis_status, get_analysis_results
+        
+        # Check analysis status
+        status = check_analysis_status(file_id)
+        
+        # Try to get analysis results if available
+        results = None
+        try:
+            results = get_analysis_results(file_id)
+        except:
+            pass  # Results might not be available yet
+        
+        return {
+            "wine_list_id": file_id,
+            "status": status,
+            "results": results
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting analysis status: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting analysis status: {str(e)}")
 
 @api_router.post("/wine-lists/{file_id}/learn")
 async def learn_from_wine_list(

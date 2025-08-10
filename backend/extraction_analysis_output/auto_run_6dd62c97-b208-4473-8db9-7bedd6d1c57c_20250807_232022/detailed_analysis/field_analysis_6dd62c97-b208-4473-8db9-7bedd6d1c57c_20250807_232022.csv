@@ -1,0 +1,14 @@
+field,total_extracted,unique_values,average_length,most_common_values
+producer,30,24,18.233333333333334,Domaine Ballot:2; Domaine Hubert Lamy:2; Domaine Fran:2; Domaine Jean:2; Domaine Chapel:2
+cuvee,40,38,14.275,‘Vieilles Vignes’:3; ‘Les Longeroies’:1; ‘Les Sardines’:1; ‘Galatee’:1; ‘Vieilles Vignes Pargues’:1
+type,0,0,0.0,
+vintage,76,12,3.973684210526316,2022:28; 2021:16; 2020:8; 2019:7; 2018:4
+price,77,54,2.1818181818181817,55:5; 49:3; 57:3; 58:3; 56:3
+bottle_size,0,0,0.0,
+grape_variety,77,22,8.077922077922079,Chardonnay:28; Gamay:15; Aligot:6; Pinot:4; Trousseau:4
+country,68,11,8.647058823529411,Switzerland:20; Australia:18; France:16; New Zealand:4; Germany:3
+region,67,19,7.343283582089552,Bern:20; Victoria:9; Bordeaux:8; South Australia:7; Central Otago:3
+subregion,0,0,0.0,
+designation,0,0,0.0,
+classification,0,0,0.0,
+sub_type,0,0,0.0,

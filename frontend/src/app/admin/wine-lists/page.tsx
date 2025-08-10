@@ -26,6 +26,7 @@ export default function AdminWineLists() {
   const [parsedDate, setParsedDate] = useState('')
   const [roleChecked, setRoleChecked] = useState(false)
   const [uploadStatus, setUploadStatus] = useState<'idle'|'uploading'|'processing'|'parsing'|'complete'|'error'>('idle')
+  const [processingSteps, setProcessingSteps] = useState<any>({})
   const [reprocessingFiles, setReprocessingFiles] = useState<Set<string>>(new Set())
   const pollRef = useRef<NodeJS.Timeout|null>(null)
 
@@ -120,7 +121,15 @@ export default function AdminWineLists() {
   }
 
   // Handle status updates from polling
-  const handleStatusUpdate = useCallback((currentList: any) => {
+  const handleStatusUpdate = useCallback(async (currentList: any) => {
+    // Fetch processing steps for detailed progress
+    try {
+      const stepsData = await api.getProcessingSteps(session!.access_token, currentList.id)
+      setProcessingSteps(stepsData.steps_status || {})
+    } catch (error) {
+      console.error('Failed to fetch processing steps:', error)
+    }
+    
     switch (currentList.status) {
       case 'uploaded':
         setUploadStatus('uploading')
@@ -177,6 +186,8 @@ export default function AdminWineLists() {
       
       console.log('Upload API call successful:', wineList)
       setUploadStatus('processing')
+      setUploadSuccess('File uploaded successfully! Processing in background...')
+      
       // Start polling for status
       pollRef.current = setInterval(async () => {
         try {
@@ -202,7 +213,7 @@ export default function AdminWineLists() {
             clearInterval(pollRef.current)
           }
         }
-      }, 2000)
+      }, 1000) // Poll every second for more responsive updates
     } catch (e: any) {
       console.error('Upload API call failed:', e)
       console.log('Error details:', {
@@ -211,38 +222,9 @@ export default function AdminWineLists() {
         data: e?.response?.data
       })
       
-      // The upload response failed, but the file might still be processing
-      // Start polling to see if the file appears in the list
-      setUploadStatus('processing')
-      setUploadError('Upload response failed, but checking if file was processed...')
-      
-      // Start polling immediately to check if file was uploaded despite the error
-      pollRef.current = setInterval(async () => {
-        try {
-          const updatedList = await api.getWineLists(session!.access_token, selected)
-          const newFile = updatedList.find(wl => wl.filename === file.name && wl.status !== 'error')
-          
-          if (newFile) {
-            // File was uploaded successfully despite the error response
-            console.log('File found in list despite upload error response:', newFile)
-            setUploadError('') // Clear any error message
-            handleStatusUpdate(newFile)
-            return
-          }
-        } catch (pollError) {
-          console.error('Failed to check for uploaded file:', pollError)
-        }
-      }, 2000)
-      
-      // If no file appears after 10 seconds, then it really failed
-      setTimeout(() => {
-        if (pollRef.current) {
-          clearInterval(pollRef.current)
-          setUploadStatus('error')
-          setUploadError('Upload failed - file not found in system after 10 seconds')
-          setUploading(false)
-        }
-      }, 10000)
+      setUploadStatus('error')
+      setUploadError(e?.message || 'Upload failed. Please try again.')
+      setUploading(false)
     }
   }, [selected, session])
 
@@ -305,25 +287,56 @@ export default function AdminWineLists() {
             </div>
             
             {uploading && (
-              <div className="mt-4">
-                <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                  <span>Upload Progress</span>
-                  <span>{uploadProgress}%</span>
+              <div className="mt-4 space-y-4">
+                {/* Upload Progress */}
+                <div>
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                    <span>Upload Progress</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-                <div className="flex items-center gap-2 mt-2">
+
+                {/* Processing Steps */}
+                {Object.keys(processingSteps).length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium">Processing Steps:</h4>
+                    <div className="space-y-2">
+                      {Object.entries(processingSteps).map(([step, data]: [string, any]) => (
+                        <div key={step} className="flex items-center gap-2 text-sm">
+                          {data.status === 'completed' && <CheckCircle2 className="h-4 w-4 text-green-600" />}
+                          {data.status === 'in_progress' && <Loader2 className="animate-spin h-4 w-4 text-blue-600" />}
+                          {data.status === 'pending' && <div className="h-4 w-4 rounded-full border-2 border-gray-300" />}
+                          {data.status === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
+                          <span className="capitalize">{step.replace('_', ' ')}:</span>
+                          <span className={`text-xs ${
+                            data.status === 'completed' ? 'text-green-600' :
+                            data.status === 'in_progress' ? 'text-blue-600' :
+                            data.status === 'error' ? 'text-red-600' :
+                            'text-gray-500'
+                          }`}>
+                            {data.message}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Status and Actions */}
+                <div className="flex items-center gap-2">
                   {uploadStatus === 'uploading' && <Loader2 className="animate-spin h-4 w-4 text-primary" />}
                   {uploadStatus === 'processing' && <Loader2 className="animate-spin h-4 w-4 text-primary" />}
                   {uploadStatus === 'complete' && <CheckCircle2 className="h-4 w-4 text-green-600" />}
                   {uploadStatus === 'error' && <XCircle className="h-4 w-4 text-red-600" />}
                   <p className="text-sm text-muted-foreground">
                     {uploadStatus === 'uploading' && `Uploading file... ${uploadProgress}%`}
-                    {uploadStatus === 'processing' && 'Processing wine list with AI...'}
+                    {uploadStatus === 'processing' && 'Processing wine list with AI in background...'}
                     {uploadStatus === 'complete' && 'Complete! Redirecting to results...'}
                     {uploadStatus === 'error' && 'Error occurred'}
                   </p>

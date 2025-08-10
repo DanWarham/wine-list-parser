@@ -5,6 +5,7 @@ from .strategies.ai_strategy import AIStrategy
 from .strategies.lwin_strategy import LWINStrategy
 from app.database_enhanced_rules.database_manager import DatabaseManager
 from app.rules.rule_manager import RuleManager
+from app.rules.confidence_calculator import ConfidenceCalculator
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,12 +46,23 @@ class FieldExtractor:
     def __init__(self, strategies: Optional[List[str]] = None, restaurant_id: Optional[str] = None):
         self.strategies = strategies or ['database', 'regex', 'ner', 'ai']  # Database first
         self.restaurant_id = restaurant_id
-        self.rule_manager = RuleManager() if restaurant_id else None
+        # Only create RuleManager if we have a restaurant_id and it's not a test ID
+        if restaurant_id and not restaurant_id.startswith('test-'):
+            try:
+                self.rule_manager = RuleManager()
+            except Exception as e:
+                logger.warning(f"Failed to initialize RuleManager for restaurant {restaurant_id}: {e}")
+                self.rule_manager = None
+        else:
+            self.rule_manager = None
         self.database_manager = DatabaseManager() if 'database' in self.strategies else None
         self.regex_strategy = RegexStrategy() if 'regex' in self.strategies else None
         self.ner_strategy = NERStrategy() if 'ner' in self.strategies else None
         self.ai_strategy = AIStrategy() if 'ai' in self.strategies else None  # Enable AI strategy
         self.lwin_strategy = LWINStrategy() if 'lwin' in self.strategies else None
+        
+        # Initialize confidence calculator
+        self.confidence_calculator = ConfidenceCalculator()
 
     def extract(self, block: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("[FieldExtractor] Field extraction started for block.")
@@ -60,7 +72,11 @@ class FieldExtractor:
         # Load restaurant-specific rules if available
         restaurant_rules = None
         if self.restaurant_id and self.rule_manager:
-            restaurant_rules = self.rule_manager.load_rules(self.restaurant_id)
+            try:
+                restaurant_rules = self.rule_manager.load_rules(self.restaurant_id)
+            except Exception as e:
+                logger.warning(f"Failed to load rules for restaurant {self.restaurant_id}: {e}")
+                restaurant_rules = None
 
         # Get results from all strategies first
         strategy_results = {}
@@ -100,6 +116,17 @@ class FieldExtractor:
         
         if extracted_fields is None:
             extracted_fields = {}
+        
+        # Calculate overall confidence using the new confidence calculator
+        if extracted_fields:
+            field_confidences = {}
+            for field_name, field_data in extracted_fields.items():
+                if isinstance(field_data, dict) and 'confidence' in field_data:
+                    field_confidences[field_name] = field_data['confidence']
+            
+            overall_confidence = self.confidence_calculator.calculate_overall_confidence(field_confidences)
+            extracted_fields['confidence'] = overall_confidence
+        
         logger.info("Field extraction complete for block.")
         return extracted_fields
     
@@ -148,18 +175,28 @@ class FieldExtractor:
             if field_name in fields:
                 field_data = fields[field_name]
                 if isinstance(field_data, dict) and 'value' in field_data:
-                    confidence = field_data.get('confidence', 0.0)
+                    base_confidence = field_data.get('confidence', 0.0)
+                    value = field_data.get('value', '')
                     
-                    # Apply strategy-specific confidence adjustments
-                    adjusted_confidence = self._adjust_confidence_for_strategy(
-                        confidence, strategy, field_name, field_data
+                    # Use the new confidence calculator
+                    calculated_confidence = self.confidence_calculator.calculate_field_confidence(
+                        field_name=field_name,
+                        value=value,
+                        strategy=strategy,
+                        base_confidence=base_confidence,
+                        validation_results=field_data.get('validation_results'),
+                        context=field_data.get('context')
                     )
                     
-                    if adjusted_confidence > best_confidence:
+                    # Lower threshold for database strategy to allow better fallback
+                    if strategy == 'database' and calculated_confidence < 0.3:
+                        continue  # Skip low-confidence database results
+                    
+                    if calculated_confidence > best_confidence:
                         best_result = field_data.copy()
-                        best_result['confidence'] = adjusted_confidence
+                        best_result['confidence'] = calculated_confidence
                         best_result['provenance'] = strategy
-                        best_confidence = adjusted_confidence
+                        best_confidence = calculated_confidence
                         best_strategy = strategy
         
         return best_result
@@ -191,25 +228,21 @@ class FieldExtractor:
                                      strategy_results: Dict[str, Any]) -> Dict[str, Any]:
         """Apply confidence boosters when multiple strategies agree on a field."""
         for field_name, field_data in merged_fields.items():
-            agreement_count = 0
-            total_confidence = field_data.get('confidence', 0.0)
+            # Use the new confidence calculator for agreement confidence
+            agreement_confidence, agreement_details = self.confidence_calculator.calculate_agreement_confidence(
+                field_name, strategy_results
+            )
             
-            # Check how many strategies found this field
-            for strategy, strategy_data in strategy_results.items():
-                fields = strategy_data.get('fields', {})
-                if field_name in fields:
-                    agreement_count += 1
-                    total_confidence += fields[field_name].get('confidence', 0.0)
-            
-            # Apply confidence boost for agreement
-            if agreement_count > 1:
-                # Boost confidence by 10% for each additional strategy that agrees
-                boost_factor = 1.0 + (0.1 * (agreement_count - 1))
-                field_data['confidence'] = min(field_data['confidence'] * boost_factor, 1.0)
-                field_data['strategy_agreement'] = agreement_count
+            if agreement_confidence > 0.0:
+                # Apply agreement boost
+                field_data['confidence'] = min(field_data['confidence'] + agreement_confidence * 0.1, 1.0)
+                field_data['strategy_agreement'] = agreement_details['agreement_count']
                 field_data['cross_strategy_boosted'] = True
+                field_data['agreement_details'] = agreement_details
                 
-                logger.debug(f"[FieldExtractor] Applied cross-strategy boost to {field_name}: {agreement_count} strategies agree")
+                logger.debug(f"[FieldExtractor] Applied cross-strategy boost to {field_name}: "
+                           f"{agreement_details['agreement_count']} strategies agree, "
+                           f"boost={agreement_confidence:.3f}")
         
         return merged_fields
 

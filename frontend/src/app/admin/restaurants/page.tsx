@@ -86,16 +86,29 @@ export default function AdminRestaurants() {
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!window.confirm('Delete this restaurant?')) return
+  async function handleDelete(id: string, restaurantName: string) {
+    const confirmMessage = `Are you sure you want to delete "${restaurantName}"?
+
+This will permanently delete:
+• All wine list files uploaded for this restaurant
+• All wine entries extracted from those files
+• All processing data and analysis results
+• All restaurant-specific rules and learning data
+• All audit logs related to this restaurant
+• All users associated with this restaurant
+
+This action cannot be undone.`
+
+    if (!window.confirm(confirmMessage)) return
     try {
       setError('')
       setSuccess('')
       await api.deleteRestaurant(session!.access_token, id)
+      setSuccess(`Restaurant "${restaurantName}" and all associated data deleted successfully`)
       fetchRestaurants()
     } catch (e) { 
       console.error('Failed to delete restaurant:', e)
-      setError('Failed to delete') 
+      setError('Failed to delete restaurant') 
     }
   }
 
@@ -259,7 +272,7 @@ export default function AdminRestaurants() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleDelete(r.id)}
+                          onClick={() => handleDelete(r.id, r.name)}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
                           Delete
