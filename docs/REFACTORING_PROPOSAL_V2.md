@@ -127,22 +127,23 @@ frontend/
 1. **AI Rule Generation**
    - Use corrected samples to generate extraction rules
    - Create regex patterns, positional rules, validation rules
-   - Generate confidence thresholds and fallback logic
+   - Generate initial confidence thresholds (3-tier system)
 
 2. **Rule Application & Testing**
    - Apply rules to entire document
    - Process with database matching and rule-based extraction
-   - AI fallback only for low-confidence cases
+   - AI fallback only for low-confidence cases (<0.5 confidence)
 
 3. **Quality Assessment**
    - Analyze extraction accuracy
    - Identify problematic patterns
    - Calculate confidence scores
 
-4. **User Refinement Cycle**
+4. **User Refinement Cycle (2-3 iterations max)**
    - Present new sample for user review
    - Allow additional corrections
    - Merge feedback into rule improvements
+   - Stop after 2-3 cycles to control AI costs
 
 ### Phase 3: Production Processing
 1. **Optimized Processing**
@@ -171,10 +172,11 @@ frontend/
 - **Streaming processing**: Handle large files without memory issues
 
 ### 3. AI Usage Optimization
-- **Strategic AI deployment**: Only for complex cases
-- **Batch processing**: Group similar AI requests
-- **Confidence-based fallback**: Use AI only when necessary
+- **Strategic AI deployment**: Only for initial rule generation (5-10 samples) and low-confidence cases
+- **Batch processing**: Group similar AI requests together
+- **Confidence-based fallback**: Use AI only when confidence <0.5
 - **Result caching**: Store AI results for similar patterns
+- **Limited iterations**: Maximum 2-3 refinement cycles to control costs
 
 ## 🎨 User Experience Improvements
 
@@ -183,6 +185,8 @@ frontend/
 - **Visual feedback**: Show processing status and results
 - **Error handling**: Graceful handling of setup issues
 - **Progress saving**: Resume setup from any point
+- **Single profile per restaurant**: Simplified configuration (no multiple format profiles)
+- **Format consistency assumption**: Optimized for consistent wine list formats within each restaurant
 
 ### 2. Interactive Refinement
 - **Real-time preview**: Show extraction results immediately
@@ -206,13 +210,13 @@ class RestaurantSetupService:
         # 1. Analyze file format
         format_analysis = await self.analyze_format(file_path)
         
-        # 2. Extract and sample entries
-        sample_entries = await self.extract_sample_entries(file_path, format_analysis)
+        # 2. Extract and sample entries (5-10 diverse samples)
+        sample_entries = await self.extract_sample_entries(file_path, format_analysis, sample_size=8)
         
         # 3. Process samples with multiple strategies
         results = await self.process_samples(sample_entries)
         
-        # 4. Generate initial rules
+        # 4. Generate initial rules from user-corrected samples
         rules = await self.generate_initial_rules(results)
         
         return SetupResult(
@@ -221,6 +225,37 @@ class RestaurantSetupService:
             initial_rules=rules,
             next_steps=self.get_next_steps()
         )
+
+class ConfidenceManager:
+    def calculate_confidence(self, extraction_result) -> float:
+        # 3-tier confidence system
+        # High: 0.8+ (use as-is)
+        # Medium: 0.5-0.8 (user review)
+        # Low: <0.5 (AI fallback)
+        pass
+```
+
+### 2. Confidence System Design
+```python
+class ConfidenceSystem:
+    def __init__(self):
+        self.high_threshold = 0.8      # Use as-is
+        self.medium_threshold = 0.5    # User review
+        self.low_threshold = 0.5       # AI fallback
+    
+    def get_confidence_tier(self, confidence_score: float) -> str:
+        if confidence_score >= self.high_threshold:
+            return "high"
+        elif confidence_score >= self.medium_threshold:
+            return "medium"
+        else:
+            return "low"
+    
+    def should_use_ai(self, confidence_score: float) -> bool:
+        return confidence_score < self.low_threshold
+    
+    def needs_user_review(self, confidence_score: float) -> bool:
+        return self.medium_threshold <= confidence_score < self.high_threshold
 ```
 
 ### 2. Frontend Components
@@ -287,7 +322,7 @@ CREATE TABLE extraction_rules (
 
 ### 1. Performance Improvements
 - **Processing speed**: 3-5x faster file processing
-- **AI cost reduction**: 80-90% reduction in AI API calls
+- **AI cost reduction**: 85-95% reduction in AI API calls (limited to 5-10 samples + low-confidence cases)
 - **Memory usage**: 50% reduction in memory footprint
 - **Scalability**: Handle 10x more concurrent users
 
@@ -310,6 +345,7 @@ CREATE TABLE extraction_rules (
 - [ ] Implement core interfaces and contracts
 - [ ] Set up new database schema
 - [ ] Create basic setup workflow structure
+- [ ] Implement confidence system with 3-tier approach
 
 ### Phase 2: Core Services (Weeks 3-4)
 - [ ] Implement restaurant setup service
@@ -328,6 +364,8 @@ CREATE TABLE extraction_rules (
 - [ ] End-to-end testing
 - [ ] Performance optimization
 - [ ] User acceptance testing
+- [ ] Confidence threshold validation with real wine lists
+- [ ] A/B testing for optimal threshold values
 
 ### Phase 5: Deployment & Migration (Weeks 9-10)
 - [ ] Deploy new system
@@ -342,6 +380,7 @@ CREATE TABLE extraction_rules (
 - **Test coverage**: Achieve 90%+ test coverage
 - **Performance**: Process 1000+ entries in under 30 seconds
 - **Reliability**: 99.9% uptime with graceful error handling
+- **AI efficiency**: Process 95%+ of entries without AI (rules + database only)
 
 ### Business Metrics
 - **User adoption**: 80% of users complete setup in first attempt
@@ -355,6 +394,7 @@ CREATE TABLE extraction_rules (
 - **Data migration**: Comprehensive backup and rollback strategy
 - **Performance regression**: A/B testing with gradual rollout
 - **Integration issues**: Extensive testing and staging environment
+- **Confidence thresholds**: Extensive testing with real wine lists and A/B testing for optimal values
 
 ### 2. User Experience Risks
 - **Learning curve**: Comprehensive onboarding and help system
@@ -372,6 +412,22 @@ CREATE TABLE extraction_rules (
 - **Cross-restaurant learning**: Share successful patterns between similar establishments
 - **Industry-specific rules**: Pre-built rules for common wine list formats
 - **Predictive analytics**: Anticipate user needs and suggest improvements
+- **Adaptive confidence thresholds**: Self-adjusting thresholds based on historical accuracy
+
+## 🧪 Testing & Validation Strategy
+
+### 1. Confidence System Testing
+- **Unit tests**: Test each confidence tier with known inputs
+- **Integration tests**: Validate confidence scores across different wine list formats
+- **A/B testing**: Compare different threshold values (0.7 vs 0.8, 0.4 vs 0.5)
+- **Real-world validation**: Test with actual restaurant wine lists
+- **Performance testing**: Ensure confidence calculation doesn't impact processing speed
+
+### 2. Threshold Optimization
+- **Baseline testing**: Start with conservative thresholds (0.8, 0.5, 0.5)
+- **Iterative refinement**: Adjust based on user feedback and accuracy metrics
+- **Restaurant-specific tuning**: Allow per-restaurant threshold customization
+- **Continuous monitoring**: Track false positives/negatives and adjust accordingly
 
 ### 2. Integration Capabilities
 - **POS system integration**: Direct import from restaurant management systems
