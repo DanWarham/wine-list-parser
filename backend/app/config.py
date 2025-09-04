@@ -45,6 +45,11 @@ try:
     MIN_SAMPLE_SIZE = int(os.getenv('MIN_SAMPLE_SIZE', '5'))
     MAX_SAMPLE_SIZE = int(os.getenv('MAX_SAMPLE_SIZE', '10'))  # Reduced from 20 to 10
     
+    # Database Integration Configuration
+    DATABASE_INTEGRATION_ENABLED = os.getenv('DATABASE_INTEGRATION_ENABLED', 'true').lower() == 'true'
+    EARLY_EXTRACTOR_CONFIDENCE_THRESHOLD = float(os.getenv('EARLY_EXTRACTOR_CONFIDENCE_THRESHOLD', '0.6'))
+    logger.info(f"[config] Database integration config loaded - DATABASE_INTEGRATION_ENABLED: {DATABASE_INTEGRATION_ENABLED}")
+    
     # AI Fallback Configuration - LOWERED THRESHOLDS
     MIN_CONFIDENCE_THRESHOLD_HYBRID = float(os.getenv('MIN_CONFIDENCE_THRESHOLD_HYBRID', '0.4'))  # Lowered from 0.7 to 0.4
     MIN_FIELDS_EXTRACTED_THRESHOLD = int(os.getenv('MIN_FIELDS_EXTRACTED_THRESHOLD', '3'))  # New: minimum fields required

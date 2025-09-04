@@ -17,7 +17,8 @@ from app.config import (
     AI_RULE_GENERATION_ENABLED, SAMPLE_SIZE_RATIO, MIN_SAMPLE_SIZE, MAX_SAMPLE_SIZE,
     MIN_CONFIDENCE_THRESHOLD_HYBRID, FALLBACK_AI_MODEL,
     MIN_VALIDATION_ENTRIES, VALIDATION_SPLIT_RATIO,
-    MIN_FIELDS_EXTRACTED_THRESHOLD, AI_FALLBACK_MAX_ENTRIES, AI_FALLBACK_SAMPLE_RATIO
+    MIN_FIELDS_EXTRACTED_THRESHOLD, AI_FALLBACK_MAX_ENTRIES, AI_FALLBACK_SAMPLE_RATIO,
+    DATABASE_INTEGRATION_ENABLED, EARLY_EXTRACTOR_CONFIDENCE_THRESHOLD
 )
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class HybridExtractionPipeline:
         self.rule_validator = RuleValidator()
         self.rule_manager = RuleManager()
         self.ai_strategy = AIStrategy()
-        self.early_extractor = EarlyExtractor()
+        self.early_extractor = EarlyExtractor() if DATABASE_INTEGRATION_ENABLED else None
         
         # Configure AI fallback thresholds
         self.confidence_threshold = MIN_CONFIDENCE_THRESHOLD_HYBRID
@@ -945,6 +946,11 @@ class HybridExtractionPipeline:
     def _perform_early_database_extraction(self, wine_blocks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Perform early database extraction before rule processing."""
         logger.info(f"[EarlyDB] 🗄️ Starting early database extraction for {len(wine_blocks)} wine blocks")
+        
+        # Check if database integration is enabled
+        if not DATABASE_INTEGRATION_ENABLED or not self.early_extractor:
+            logger.info("[EarlyDB] ❌ Database integration disabled, skipping early extraction")
+            return [{} for _ in wine_blocks]
         
         early_results = []
         processed_count = 0

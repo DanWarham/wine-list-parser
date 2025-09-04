@@ -22,9 +22,19 @@ class EarlyExtractor:
             database_manager: Database manager instance (optional)
         """
         self.db_manager = database_manager or DatabaseManager()
-        self.confidence_threshold = 0.6  # Lower threshold to be more permissive
+        self.confidence_threshold = 0.6  # Will be updated from config
+        self._update_config_threshold()
         
         logger.info("EarlyExtractor initialized")
+    
+    def _update_config_threshold(self):
+        """Update confidence threshold from config."""
+        try:
+            from app.config import EARLY_EXTRACTOR_CONFIDENCE_THRESHOLD
+            self.confidence_threshold = EARLY_EXTRACTOR_CONFIDENCE_THRESHOLD
+            logger.info(f"Updated confidence threshold to {self.confidence_threshold}")
+        except ImportError:
+            logger.warning("Could not import config, using default threshold")
     
     def extract_wine_info(self, wine_text: str) -> Dict[str, Any]:
         """
