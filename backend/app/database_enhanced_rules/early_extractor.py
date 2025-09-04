@@ -38,7 +38,7 @@ class EarlyExtractor:
     
     def extract_wine_info(self, wine_text: str) -> Dict[str, Any]:
         """
-        Extract wine information from text using local databases.
+        Extract wine information from text using DatabaseManager's unified matching system.
         
         Args:
             wine_text: Raw wine text to extract from
@@ -46,43 +46,14 @@ class EarlyExtractor:
         Returns:
             Dictionary with extracted fields and confidence scores
         """
-        result = {
-            'grape_variety': None,
-            'producer': None,
-            'region': None,
-            'country': None,
-            'confidence': 0.0,
-            'extraction_method': 'database',
-            'field_confidence': {}
-        }
+        # Use DatabaseManager's working extract_fields method
+        extracted_fields, confidence = self.db_manager.extract_fields(
+            {'text': wine_text}, 
+            cutoff=self.confidence_threshold
+        )
         
-        # Normalize text for better matching
-        normalized_text = self._normalize_text(wine_text)
-        
-        # Extract grape variety
-        grape_result = self._extract_grape_variety(normalized_text)
-        if grape_result:
-            result['grape_variety'] = grape_result['name']
-            result['field_confidence']['grape_variety'] = grape_result['confidence']
-        
-        # Extract producer
-        producer_result = self._extract_producer(normalized_text)
-        if producer_result:
-            result['producer'] = producer_result['name']
-            result['field_confidence']['producer'] = producer_result['confidence']
-        
-        # Extract region/country
-        region_result = self._extract_region(normalized_text)
-        if region_result:
-            result['region'] = region_result['region']
-            result['country'] = region_result['country']
-            result['field_confidence']['region'] = region_result['confidence']
-            result['field_confidence']['country'] = region_result['confidence']
-        
-        # Calculate overall confidence
-        confidences = list(result['field_confidence'].values())
-        if confidences:
-            result['confidence'] = sum(confidences) / len(confidences)
+        # Map to EarlyExtractor's expected format
+        result = self._map_extracted_fields(extracted_fields, confidence)
         
         # Determine if we should skip AI processing
         if result['confidence'] >= self.confidence_threshold:
@@ -91,6 +62,79 @@ class EarlyExtractor:
         else:
             result['skip_ai'] = False
             logger.info(f"Low confidence database extraction ({result['confidence']:.2f}), will use AI fallback")
+        
+        return result
+    
+    def _map_extracted_fields(self, extracted_fields: Dict[str, Any], confidence: float) -> Dict[str, Any]:
+        """
+        Map DatabaseManager's extracted fields to EarlyExtractor's expected format.
+        
+        Args:
+            extracted_fields: Fields extracted by DatabaseManager
+            confidence: Overall confidence score
+            
+        Returns:
+            Mapped result in EarlyExtractor format
+        """
+        result = {
+            'grape_variety': None,
+            'producer': None,
+            'region': None,
+            'country': None,
+            'confidence': confidence,
+            'extraction_method': 'database',
+            'field_confidence': {}
+        }
+        
+        # Map grape variety
+        if 'grape_variety' in extracted_fields:
+            grape_data = extracted_fields['grape_variety']
+            if isinstance(grape_data, dict) and grape_data.get('value'):
+                result['grape_variety'] = grape_data['value']
+                result['field_confidence']['grape_variety'] = grape_data.get('confidence', 0.9)
+        
+        # Map producer (check both producer and producer_name fields)
+        producer_value = None
+        producer_confidence = 0.0
+        
+        if 'producer' in extracted_fields:
+            producer_data = extracted_fields['producer']
+            if isinstance(producer_data, dict) and producer_data.get('value'):
+                producer_value = producer_data['value']
+                producer_confidence = producer_data.get('confidence', 0.9)
+        elif 'producer_name' in extracted_fields:
+            producer_data = extracted_fields['producer_name']
+            if isinstance(producer_data, dict) and producer_data.get('value'):
+                producer_value = producer_data['value']
+                producer_confidence = producer_data.get('confidence', 0.9)
+        
+        if producer_value:
+            result['producer'] = producer_value
+            result['field_confidence']['producer'] = producer_confidence
+        
+        # Map region
+        if 'region' in extracted_fields:
+            region_data = extracted_fields['region']
+            if isinstance(region_data, dict) and region_data.get('value'):
+                result['region'] = region_data['value']
+                result['field_confidence']['region'] = region_data.get('confidence', 0.9)
+        
+        # Map country
+        if 'country' in extracted_fields:
+            country_data = extracted_fields['country']
+            if isinstance(country_data, dict) and country_data.get('value'):
+                result['country'] = country_data['value']
+                result['field_confidence']['country'] = country_data.get('confidence', 0.9)
+        
+        # Log successful matches
+        if result['grape_variety']:
+            logger.info(f"🎯 GRAPE VARIETY MATCH: '{result['grape_variety']}' (conf: {result['field_confidence'].get('grape_variety', 0):.2f})")
+        
+        if result['producer']:
+            logger.info(f"🏭 PRODUCER MATCH: '{result['producer']}' (conf: {result['field_confidence'].get('producer', 0):.2f})")
+        
+        if result['region']:
+            logger.info(f"🗺️  REGION MATCH: '{result['region']}' (conf: {result['field_confidence'].get('region', 0):.2f})")
         
         return result
     
@@ -110,92 +154,6 @@ class EarlyExtractor:
         
         return text.strip()
     
-    def _extract_grape_variety(self, text: str) -> Optional[Dict[str, Any]]:
-        """Extract grape variety from text."""
-        # Search for grape varieties in the text
-        search_results = self.db_manager.search_grape_variety(text, threshold=0.6)  # Lower threshold
-        
-        if not search_results:
-            return None
-        
-        # Get the best match
-        best_match, score = search_results[0]
-        
-        # Check if the grape variety appears in the text
-        if best_match.lower() in text:
-            logger.info(f"🎯 GRAPE VARIETY MATCH: '{best_match}' (score: {score:.2f}) in text: '{text[:100]}...'")
-            return {
-                'name': best_match,
-                'confidence': score / 100.0
-            }
-        
-        return None
-    
-    def _extract_producer(self, text: str) -> Optional[Dict[str, Any]]:
-        """Extract producer from text."""
-        # Search for producers in the text
-        search_results = self.db_manager.search_producer(text, threshold=0.6)  # Lower threshold
-        
-        if not search_results:
-            return None
-        
-        # Get the best match
-        best_match, score = search_results[0]
-        
-        # Check if the producer appears in the text
-        if best_match.lower() in text:
-            logger.info(f"🏭 PRODUCER MATCH: '{best_match}' (score: {score:.2f}) in text: '{text[:100]}...'")
-            # Get additional location info for the producer
-            producer_info = self._get_producer_info(best_match)
-            
-            return {
-                'name': best_match,
-                'confidence': score / 100.0,
-                'locations': producer_info.get('locations', [])
-            }
-        
-        return None
-    
-    def _get_producer_info(self, producer_name: str) -> Dict[str, Any]:
-        """Get additional information about a producer."""
-        producers_db = self.db_manager._databases.get('producers', {})
-        
-        if producer_name in producers_db:
-            return {
-                'name': producer_name,
-                'locations': producers_db[producer_name]
-            }
-        
-        return {'name': producer_name, 'locations': []}
-    
-    def _extract_region(self, text: str) -> Optional[Dict[str, Any]]:
-        """Extract region and country from text."""
-        # This is a simplified implementation
-        # In practice, you might want more sophisticated region matching
-        
-        regions_db = self.db_manager._databases.get('regions', {})
-        
-        for country, regions in regions_db.items():
-            if isinstance(regions, dict):
-                for region in regions.keys():
-                    if region.lower() in text:
-                        logger.info(f"🗺️  REGION MATCH: '{region}' (country: '{country}') in text: '{text[:100]}...'")
-                        return {
-                            'region': region,
-                            'country': country,
-                            'confidence': 0.9
-                        }
-            elif isinstance(regions, list):
-                for region in regions:
-                    if region.lower() in text:
-                        logger.info(f"🗺️  REGION MATCH: '{region}' (country: '{country}') in text: '{text[:100]}...'")
-                        return {
-                            'region': region,
-                            'country': country,
-                            'confidence': 0.9
-                        }
-        
-        return None
     
     def batch_extract(self, wine_texts: List[str]) -> List[Dict[str, Any]]:
         """
