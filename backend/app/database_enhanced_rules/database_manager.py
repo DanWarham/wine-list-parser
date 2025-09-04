@@ -49,12 +49,7 @@ class DatabaseManager:
                     self._databases['grape_varieties'] = json.load(f)
                 logger.info(f"Loaded enhanced grape varieties database: {len(self._databases['grape_varieties'])} countries")
             else:
-                # Fallback to original file if enhanced doesn't exist
-                grape_file = self.databases_path / "grape_varieties.json"
-                if grape_file.exists():
-                    with open(grape_file, 'r', encoding='utf-8') as f:
-                        self._databases['grape_varieties'] = json.load(f)
-                    logger.info(f"Loaded original grape varieties database: {len(self._databases['grape_varieties'])} countries")
+                raise FileNotFoundError(f"Enhanced grape varieties database not found at {grape_file}")
             
             # Load producers database (enhanced_producer_locations.json)
             producers_file = self.databases_path / "enhanced_producer_locations.json"
@@ -63,12 +58,7 @@ class DatabaseManager:
                     self._databases['producers'] = json.load(f)
                 logger.info(f"Loaded enhanced producers database: {len(self._databases['producers'])} producers")
             else:
-                # Fallback to original file if enhanced doesn't exist
-                producers_file = self.databases_path / "producer_locations.json"
-                if producers_file.exists():
-                    with open(producers_file, 'r', encoding='utf-8') as f:
-                        self._databases['producers'] = json.load(f)
-                    logger.info(f"Loaded original producers database: {len(self._databases['producers'])} producers")
+                raise FileNotFoundError(f"Enhanced producers database not found at {producers_file}")
             
             # Load regions database (enhanced_geo_hierarchy.json)
             regions_file = self.databases_path / "enhanced_geo_hierarchy.json"
@@ -77,12 +67,7 @@ class DatabaseManager:
                     self._databases['regions'] = json.load(f)
                 logger.info(f"Loaded enhanced regions database: {len(self._databases['regions'])} countries")
             else:
-                # Fallback to original file if enhanced doesn't exist
-                regions_file = self.databases_path / "geo_hierarchy.json"
-                if regions_file.exists():
-                    with open(regions_file, 'r', encoding='utf-8') as f:
-                        self._databases['regions'] = json.load(f)
-                    logger.info(f"Loaded original regions database: {len(self._databases['regions'])} countries")
+                raise FileNotFoundError(f"Enhanced regions database not found at {regions_file}")
             
             self._loaded = True
             logger.info("All databases loaded successfully")
