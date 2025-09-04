@@ -10,6 +10,13 @@ import re
 from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass
 
+# Integrate with contracts
+from app.contracts import (
+    ConfidenceCalculator as ContractConfidenceCalculator,
+    ConfidenceTier,
+    ConfidenceThresholds,
+)
+
 logger = logging.getLogger(__name__)
 
 @dataclass
@@ -23,10 +30,11 @@ class ConfidenceFactors:
     context_boost: float = 0.0
     quality_penalty: float = 0.0
 
-class ConfidenceCalculator:
+class ConfidenceCalculator(ContractConfidenceCalculator):
     """Advanced confidence calculator for wine field extraction."""
     
     def __init__(self):
+        super().__init__()
         # Field-specific confidence weights
         self.field_weights = {
             'vintage': 1.2,      # High importance, well-defined patterns
@@ -61,7 +69,8 @@ class ConfidenceCalculator:
             'cross_strategy_agreement': 0.15
         }
     
-    def calculate_field_confidence(self, 
+    # Sync helper used across the codebase
+    def calculate_field_confidence_sync(self, 
                                  field_name: str, 
                                  value: str, 
                                  strategy: str, 
@@ -69,18 +78,7 @@ class ConfidenceCalculator:
                                  validation_results: Optional[Dict[str, Any]] = None,
                                  context: Optional[Dict[str, Any]] = None) -> float:
         """
-        Calculate comprehensive confidence for a field extraction.
-        
-        Args:
-            field_name: Name of the field
-            value: Extracted value
-            strategy: Extraction strategy used
-            base_confidence: Base confidence from the strategy
-            validation_results: Results from validation rules
-            context: Additional context information
-            
-        Returns:
-            Calculated confidence score (0.0 to 1.0)
+        Calculate comprehensive confidence for a field extraction (sync).
         """
         factors = ConfidenceFactors(base_confidence=base_confidence)
         
@@ -116,25 +114,40 @@ class ConfidenceCalculator:
         # Ensure confidence is within bounds
         final_confidence = max(0.0, min(1.0, final_confidence))
         
-        logger.debug(f"Confidence calculation for {field_name}: base={factors.base_confidence:.3f}, "
-                    f"field_boost={factors.field_type_boost:.3f}, strategy_boost={factors.strategy_boost:.3f}, "
-                    f"validation_boost={factors.validation_boost:.3f}, context_boost={factors.context_boost:.3f}, "
-                    f"quality_penalty={factors.quality_penalty:.3f}, final={final_confidence:.3f}")
+        logger.debug(
+            f"Confidence calculation for {field_name}: base={factors.base_confidence:.3f}, "
+            f"field_boost={factors.field_type_boost:.3f}, strategy_boost={factors.strategy_boost:.3f}, "
+            f"validation_boost={factors.validation_boost:.3f}, context_boost={factors.context_boost:.3f}, "
+            f"quality_penalty={factors.quality_penalty:.3f}, final={final_confidence:.3f}"
+        )
         
         return final_confidence
     
-    def calculate_agreement_confidence(self, 
+    # Contract-compliant async
+    async def calculate_field_confidence(self, 
+                                       field_data: Dict[str, Any],
+                                       context: Optional[Dict[str, Any]] = None) -> float:  # type: ignore[override]
+        field_name = field_data.get('field_name') or field_data.get('name') or ''
+        value = field_data.get('value', '')
+        strategy = field_data.get('strategy', '')
+        base_confidence = float(field_data.get('confidence', field_data.get('base_confidence', 0.0)))
+        validation_results = field_data.get('validation_results')
+        ctx = context or field_data.get('context')
+        return self.calculate_field_confidence_sync(
+            field_name=field_name,
+            value=value,
+            strategy=strategy,
+            base_confidence=base_confidence,
+            validation_results=validation_results,
+            context=ctx
+        )
+
+    # Sync helper for agreement
+    def calculate_agreement_confidence_sync(self, 
                                      field_name: str, 
                                      strategy_results: Dict[str, Any]) -> Tuple[float, Dict[str, Any]]:
         """
-        Calculate confidence boost when multiple strategies agree on a field.
-        
-        Args:
-            field_name: Name of the field
-            strategy_results: Results from different strategies
-            
-        Returns:
-            Tuple of (agreement_confidence, agreement_details)
+        Calculate confidence boost when multiple strategies agree on a field (sync).
         """
         agreement_details = {
             'strategies_agreeing': [],
@@ -157,7 +170,7 @@ class ConfidenceCalculator:
                         value = field_data.get('value')
                         confidence = field_data.get('confidence', 0.0)
                         
-                        if value and value != 'null' and value != '':
+                        if value and value not in ['null', '', 'None']:
                             agreeing_strategies.append(strategy)
                             confidence_values[strategy] = confidence
                             agreement_details['confidence_values'][strategy] = confidence
@@ -166,80 +179,89 @@ class ConfidenceCalculator:
         agreement_details['agreement_count'] = len(agreeing_strategies)
         
         if len(agreeing_strategies) > 1:
-            # Check if values agree
-            values = [confidence_values[s] for s in agreeing_strategies]
-            value_agreement = len(set(values)) == 1  # All values are the same
-            agreement_details['value_agreement'] = value_agreement
-            
-            # Calculate boost factor based on agreement count and value agreement
+            # Calculate boost factor based on agreement count
             base_boost = 1.0 + (0.1 * (len(agreeing_strategies) - 1))
-            if value_agreement:
-                base_boost += 0.1  # Extra boost for value agreement
-            
             agreement_details['boost_factor'] = min(base_boost, 1.5)  # Cap at 50% boost
             
             agreement_confidence = sum(confidence_values.values()) / len(confidence_values.values())
             agreement_confidence *= agreement_details['boost_factor']
             
-            logger.debug(f"Agreement confidence for {field_name}: {len(agreeing_strategies)} strategies agree, "
-                        f"boost_factor={agreement_details['boost_factor']:.3f}, "
-                        f"final_confidence={agreement_confidence:.3f}")
+            logger.debug(
+                f"Agreement confidence for {field_name}: {len(agreeing_strategies)} strategies agree, "
+                f"boost_factor={agreement_details['boost_factor']:.3f}, final={agreement_confidence:.3f}"
+            )
             
             return min(agreement_confidence, 1.0), agreement_details
         
         return 0.0, agreement_details
-    
-    def calculate_overall_confidence(self, 
-                                   field_confidences: Dict[str, float], 
-                                   field_weights: Optional[Dict[str, float]] = None) -> float:
-        """
-        Calculate overall confidence for an extraction result.
-        
-        Args:
-            field_confidences: Dictionary of field_name -> confidence
-            field_weights: Optional weights for fields (defaults to self.field_weights)
-            
-        Returns:
-            Overall confidence score
-        """
-        if not field_confidences:
+
+    # Contract-compliant async agreement
+    async def calculate_agreement_confidence(self, 
+                                           strategy_results: List[Dict[str, Any]]) -> Tuple[float, Dict[str, Any]]:  # type: ignore[override]
+        # Attempt to infer field name from provided results
+        field_name = ''
+        if strategy_results and isinstance(strategy_results[0], dict):
+            field_name = strategy_results[0].get('field_name') or strategy_results[0].get('name') or ''
+        # Convert list form into the dict format expected by the sync method when possible
+        merged: Dict[str, Any] = {}
+        for entry in strategy_results:
+            strategy = entry.get('strategy')
+            fields = entry.get('fields')
+            if strategy and fields:
+                merged[strategy] = {'fields': fields}
+        if not field_name or not merged:
+            return 0.0, {'strategies_agreeing': [], 'agreement_count': 0, 'confidence_values': {}, 'value_agreement': False, 'boost_factor': 1.0}
+        return self.calculate_agreement_confidence_sync(field_name, merged)
+
+    # Contract-compliant overall confidence
+    async def calculate_overall_confidence(self, 
+                                         field_confidences: Dict[str, float],
+                                         context: Optional[Dict[str, Any]] = None) -> float:  # type: ignore[override]
+        return self.calculate_overall_confidence_sync(field_confidences, None)
+
+    # Sync helper overall
+    def calculate_overall_confidence_sync(self, 
+                                        field_confidences: Dict[str, float], 
+                                        field_weights: Optional[Dict[str, float]] = None) -> float:
+        values = field_confidences
+        if not values:
             return 0.0
-        
         weights = field_weights or self.field_weights
-        
         total_weighted_confidence = 0.0
         total_weight = 0.0
-        
-        for field_name, confidence in field_confidences.items():
+        for field_name, confidence in values.items():
             weight = weights.get(field_name, 1.0)
             total_weighted_confidence += confidence * weight
             total_weight += weight
-        
         if total_weight == 0:
             return 0.0
-        
         overall_confidence = total_weighted_confidence / total_weight
-        
-        logger.debug(f"Overall confidence calculation: {len(field_confidences)} fields, "
-                    f"total_weighted_confidence={total_weighted_confidence:.3f}, "
-                    f"total_weight={total_weight:.3f}, overall={overall_confidence:.3f}")
-        
+        logger.debug(
+            f"Overall confidence calculation: {len(values)} fields, "
+            f"total_weighted_confidence={total_weighted_confidence:.3f}, "
+            f"total_weight={total_weight:.3f}, overall={overall_confidence:.3f}"
+        )
         return overall_confidence
-    
+
+    async def get_confidence_metadata(self, field_name: str, confidence: float) -> Dict[str, Any]:  # type: ignore[override]
+        tier = ConfidenceThresholds.get_tier(confidence)
+        return {
+            'field': field_name,
+            'confidence': confidence,
+            'tier': tier.value
+        }
+
     def _calculate_validation_boost(self, validation_results: Dict[str, Any]) -> float:
         """Calculate confidence boost from validation results."""
         total_boost = 0.0
-        
         for validation_type, boost in self.validation_boosts.items():
             if validation_results.get(validation_type, False):
                 total_boost += boost
-        
         return min(total_boost, 0.3)  # Cap validation boost at 30%
     
     def _calculate_context_boost(self, field_name: str, value: str, context: Dict[str, Any]) -> float:
         """Calculate confidence boost from context information."""
         boost = 0.0
-        
         # Check for context consistency
         if field_name == 'vintage' and 'year' in context:
             try:
@@ -249,57 +271,38 @@ class ConfidenceCalculator:
                     boost += 0.05
             except (ValueError, TypeError):
                 pass
-        
-        # Check for region consistency
+        # Check for region consistency (placeholder)
         if field_name == 'region' and 'country' in context:
-            # This would require a region-country mapping
-            # For now, just a placeholder
             pass
-        
         return boost
     
     def _calculate_quality_penalty(self, field_name: str, value: str) -> float:
         """Calculate quality penalty based on field characteristics."""
         penalty = 0.0
-        
-        if not value or value == 'null' or value == '':
+        if not value or value in ['null', '']:
             penalty += 0.3
-        
         # Field-specific quality checks
         if field_name == 'vintage':
             if not re.match(r'^(19|20)\d{2}$|^NV$', value):
                 penalty += 0.2
-        
         elif field_name == 'price':
             if not re.match(r'^\d+(?:\.\d{2})?$', value):
                 penalty += 0.2
-        
         elif field_name == 'region':
             if len(value) < 2:  # Very short region names are suspicious
                 penalty += 0.1
-        
         return penalty
     
     def normalize_confidence(self, confidence: float, strategy: str, field_name: str) -> float:
         """
         Normalize confidence scores across strategies and fields.
-        
-        Args:
-            confidence: Raw confidence score
-            strategy: Extraction strategy
-            field_name: Field name
-            
-        Returns:
-            Normalized confidence score
         """
         # Apply strategy normalization
         strategy_factor = self.strategy_adjustments.get(strategy, 1.0)
         normalized = confidence / strategy_factor
-        
         # Apply field normalization
         field_factor = self.field_weights.get(field_name, 1.0)
         normalized = normalized / field_factor
-        
         # Ensure within bounds
         return max(0.0, min(1.0, normalized))
     
@@ -310,27 +313,15 @@ class ConfidenceCalculator:
                           threshold: float = 0.6) -> bool:
         """
         Determine if AI fallback should be used based on confidence comparison.
-        
-        Args:
-            rule_confidence: Confidence from rule-based extraction
-            ai_confidence: Confidence from AI extraction
-            field_name: Name of the field
-            threshold: Minimum confidence threshold
-            
-        Returns:
-            True if AI fallback should be used
         """
         # If rule confidence is below threshold, use AI
         if rule_confidence < threshold:
             return True
-        
         # If AI confidence is significantly higher, use AI
         if ai_confidence > rule_confidence + 0.2:
             return True
-        
         # For certain fields, prefer AI even with similar confidence
         ai_preferred_fields = ['wine_name', 'producer_name', 'grape_variety']
         if field_name in ai_preferred_fields and ai_confidence > rule_confidence:
             return True
-        
         return False 

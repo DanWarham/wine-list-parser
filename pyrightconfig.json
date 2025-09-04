@@ -1,0 +1,23 @@
+{
+  "venvPath": "backend",
+  "venv": "venv",
+  "include": [
+    "backend/app",
+    "backend/tests"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "backend/tests",
+      "extraPaths": [
+        "backend/app",
+        "backend"
+      ]
+    },
+    {
+      "root": "backend/app",
+      "extraPaths": [
+        "backend"
+      ]
+    }
+  ]
+}

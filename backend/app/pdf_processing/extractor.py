@@ -33,8 +33,6 @@ class ExtractionConfig:
     dpi: int = 300
     ocr_lang: str = "eng+fra"
     min_confidence: float = 0.5
-    include_metadata: bool = True
-    extract_dates: bool = True
 
 class PDFExtractor:
     """Handles PDF text extraction with support for multiple strategies."""
@@ -43,18 +41,13 @@ class PDFExtractor:
         logger.info("[PDFExtractor] __init__ called.")
         self.config = config or ExtractionConfig()
     
-    def extract(self, pdf_path: str) -> Tuple[List[List[Dict[str, Any]]], Dict[str, Any]]:
-        """Extract text and metadata from PDF."""
+    def extract_text_blocks(self, pdf_path: str) -> List[List[Dict[str, Any]]]:
+        """Extract text blocks from PDF pages."""
         logger.info(f"[PDFExtractor] Processing {pdf_path}")
         
         try:
             doc = fitz.open(pdf_path)
             pages = []
-            metadata = {}
-            
-            # Extract metadata if configured
-            if self.config.include_metadata:
-                metadata = self._extract_metadata(doc)
             
             # Extract text from pages
             for page_num in range(len(doc)):
@@ -64,35 +57,11 @@ class PDFExtractor:
             
             logger.info(f"[PDFExtractor] Completed processing {pdf_path} - {len(doc)} pages")
             
-            return pages, metadata
+            return pages
             
         except Exception as e:
-            logger.error(f"[PDFExtractor] Exception in extract: {e}")
-            raise PDFExtractionError(f"Failed to extract PDF: {str(e)}")
-    
-    def _extract_metadata(self, doc: fitz.Document) -> Dict[str, Any]:
-        meta = doc.metadata
-        metadata = {
-            'title': meta.get('title'),
-            'author': meta.get('author'),
-            'subject': meta.get('subject'),
-            'keywords': meta.get('keywords'),
-            'creator': meta.get('creator'),
-            'producer': meta.get('producer'),
-            'page_count': len(doc),
-            'file_size': os.path.getsize(doc.name)
-        }
-        
-        # Extract dates if configured
-        if self.config.extract_dates:
-            creation_date = self._parse_pdf_date(meta.get('creationDate'))
-            mod_date = self._parse_pdf_date(meta.get('modDate'))
-            if creation_date:
-                metadata['creation_date'] = creation_date
-            if mod_date:
-                metadata['modification_date'] = mod_date
-        
-        return metadata
+            logger.error(f"[PDFExtractor] Exception in extract_text_blocks: {e}")
+            raise PDFExtractionError(f"Failed to extract PDF text: {str(e)}")
     
     def _extract_page(self, page: fitz.Page, page_num: int) -> List[Dict[str, Any]]:
         if self.config.strategy in [ExtractionStrategy.TEXT, ExtractionStrategy.HYBRID]:
@@ -157,25 +126,4 @@ class PDFExtractor:
                         "source": "ocr",
                         "confidence": confidence
                     })
-        return page_lines
-    
-    @staticmethod
-    def _parse_pdf_date(date_str: Optional[str]) -> Optional[datetime]:
-        """Parse PDF date string into datetime object."""
-        if not date_str:
-            return None
-            
-        # PDF dates are often in the format D:YYYYMMDDHHmmSS
-        m = re.match(r"D:(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?(\d{2})?", date_str)
-        if m:
-            try:
-                year = int(m.group(1))
-                month = int(m.group(2))
-                day = int(m.group(3))
-                hour = int(m.group(4) or 0)
-                minute = int(m.group(5) or 0)
-                second = int(m.group(6) or 0)
-                return datetime(year, month, day, hour, minute, second)
-            except (ValueError, TypeError):
-                pass
-        return None 
+        return page_lines 

@@ -10,11 +10,15 @@ from .extractor import PDFExtractor, ExtractionStrategy
 from .preprocessor import PDFPreprocessor
 from .metadata import PDFMetadataExtractor
 from .exceptions import PDFProcessingError
+from .header_associator import HeaderWineAssociator
+from .categorizer import PDFBlockCategorizer
 
 __all__ = [
     'PDFExtractor',
     'ExtractionStrategy',
     'PDFPreprocessor',
     'PDFMetadataExtractor',
-    'PDFProcessingError'
+    'PDFProcessingError',
+    'HeaderWineAssociator',
+    'PDFBlockCategorizer'
 ] 

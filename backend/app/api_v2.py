@@ -70,6 +70,9 @@ try:
     from app.config import AI_RULE_GENERATION_ENABLED
     logger.info("[api_v2] Config imports successful")
     
+    from app.pdf_processing.header_associator import HeaderWineAssociator
+    logger.info("[api_v2] Header wine associator imports successful")
+    
     logger.info("[api_v2] All imports completed successfully")
 
 except ImportError as e:
@@ -160,6 +163,7 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
             "extraction": {"status": "in_progress", "message": "Extracting text from PDF...", "timestamp": datetime.utcnow().isoformat()},
             "preprocessing": {"status": "pending", "message": "Waiting to preprocess text...", "timestamp": None},
             "categorization": {"status": "pending", "message": "Waiting to categorize blocks...", "timestamp": None},
+            "header_association": {"status": "pending", "message": "Waiting to associate headers with wines...", "timestamp": None},
             "ai_processing": {"status": "pending", "message": "Waiting for AI processing...", "timestamp": None},
             "database_save": {"status": "pending", "message": "Waiting to save to database...", "timestamp": None}
         }
@@ -217,6 +221,11 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
             wine_list.steps_status = steps_status
             db.commit()
         
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
+        
         # Save preprocessor output
         await save_processing_data(wine_list_id, "preprocessor", {
             "processed_pages": processed_pages
@@ -243,6 +252,31 @@ async def process_pdf(file_path: str, restaurant_id: str, wine_list_id: str, db:
         await save_processing_data(wine_list_id, "categorizer", {
             "categorized_pages": categorized_pages
         })
+        
+        # Analyze wine list structure with header association
+        logger.info("Starting header-wine association analysis...")
+        header_associator = HeaderWineAssociator()
+        structure_analysis = header_associator.analyze_wine_list_structure(categorized_pages)
+        
+        # Save header association results
+        await save_processing_data(wine_list_id, "header_association", {
+            "structure_analysis": structure_analysis
+        })
+        
+        # Update steps status
+        steps_status["header_association"] = {
+            "status": "completed",
+            "message": f"Associated {structure_analysis.get('summary', {}).get('wines_with_headers', 0)} wines with headers",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        steps_status["ai_processing"]["status"] = "in_progress"
+        steps_status["ai_processing"]["message"] = "Processing with AI hybrid system..."
+        steps_status["ai_processing"]["timestamp"] = datetime.utcnow().isoformat()
+        
+        # Update database
+        if wine_list:
+            wine_list.steps_status = steps_status
+            db.commit()
         
         # Filter for wine entries and combine into text
         wine_blocks = []

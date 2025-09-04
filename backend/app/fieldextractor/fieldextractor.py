@@ -114,8 +114,7 @@ class FieldExtractor:
             for field_name, field_data in extracted_fields.items():
                 if isinstance(field_data, dict) and 'confidence' in field_data:
                     field_confidences[field_name] = field_data['confidence']
-            
-            overall_confidence = self.confidence_calculator.calculate_overall_confidence(field_confidences)
+            overall_confidence = self.confidence_calculator.calculate_overall_confidence_sync(field_confidences)
             extracted_fields['confidence'] = overall_confidence
         
         logger.info("Field extraction complete for block.")
@@ -169,8 +168,8 @@ class FieldExtractor:
                     base_confidence = field_data.get('confidence', 0.0)
                     value = field_data.get('value', '')
                     
-                    # Use the new confidence calculator
-                    calculated_confidence = self.confidence_calculator.calculate_field_confidence(
+                    # Use the new confidence calculator (sync)
+                    calculated_confidence = self.confidence_calculator.calculate_field_confidence_sync(
                         field_name=field_name,
                         value=value,
                         strategy=strategy,
@@ -219,8 +218,8 @@ class FieldExtractor:
                                      strategy_results: Dict[str, Any]) -> Dict[str, Any]:
         """Apply confidence boosters when multiple strategies agree on a field."""
         for field_name, field_data in merged_fields.items():
-            # Use the new confidence calculator for agreement confidence
-            agreement_confidence, agreement_details = self.confidence_calculator.calculate_agreement_confidence(
+            # Use the new confidence calculator for agreement confidence (sync)
+            agreement_confidence, agreement_details = self.confidence_calculator.calculate_agreement_confidence_sync(
                 field_name, strategy_results
             )
             
